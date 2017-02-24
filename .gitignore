@@ -1,0 +1,9 @@
+# Project folders
+
+# 
+
+node_modules/
+
+# Tool
+.idea/
+.vscode/
