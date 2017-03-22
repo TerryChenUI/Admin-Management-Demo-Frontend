@@ -1,4 +1,5 @@
 import React from 'react';
+import { Route, Link } from 'react-router';
 
 class Header extends React.Component {
     constructor(props) {
@@ -19,15 +20,14 @@ class Header extends React.Component {
                         <a className="navbar-brand" href="#">React Redux Crud Demo</a>
                     </div>
                     <div id="navbar" className="navbar-collapse collapse">
-                        <ul className="nav navbar-nav navbar-right">
-                            <li><a href="#">Dashboard</a></li>
-                            <li><a href="#">Settings</a></li>
-                            <li><a href="#">Profile</a></li>
-                            <li><a href="#">Help</a></li>
+                        <ul className="nav navbar-nav navbar-left">
+                            <li><Link to='/home'>Home</Link></li>
+                            <li><Link to='/category/list'>Category</Link></li>
+                            <li><Link to='/article/list'>Article</Link></li>
                         </ul>
-                        <form className="navbar-form navbar-right">
+                        {/*<form className="navbar-form navbar-right">
                             <input type="text" className="form-control" placeholder="Search..." />
-                        </form>
+                        </form>*/}
                     </div>
                 </div>
             </nav>

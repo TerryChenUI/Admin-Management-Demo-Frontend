@@ -1,13 +1,14 @@
 import fetch from 'isomorphic-fetch';
+import fetchWrapper from '../services/request';
 
 // List categories
-export const GET_ALL_CATEGORIES = 'GET_ALL_CATEGORIES';
+export const GET_ALL_CATEGORIES_REQUEST = 'GET_ALL_CATEGORIES_REQUEST';
 export const GET_ALL_CATEGORIES_SUCCESS = 'GET_ALL_CATEGORIES_SUCCESS';
 export const GET_ALL_CATEGORIES_FAILURE = 'GET_ALL_CATEGORIES_FAILURE';
 export const RESET_GET_ALL_CATEGORIES = 'RESET_GET_ALL_CATEGORIES';
 
 // Get category by id
-export const GET_CATEGORY_BY_ID = 'GET_CATEGORY_BY_ID';
+export const GET_CATEGORY_BY_ID_REQUEST = 'GET_CATEGORY_BY_ID_REQUEST';
 export const GET_CATEGORY_BY_ID_SUCCESS = 'GET_CATEGORY_BY_ID_SUCCESS';
 export const GET_CATEGORY_BY_ID_FAILURE = 'GET_CATEGORY_BY_ID_FAILURE';
 export const RESET_CURRENT_CATEGORY = 'RESET_CURRENT_CATEGORY';
@@ -31,12 +32,20 @@ export const DELETE_CATEGORY_FAILURE = 'DELETE_CATEGORY_FAILURE';
 export const RESET_DELETED_CATEGORY = 'RESET_DELETED_CATEGORY';
 
 // get all categories
-export function getAllCategories() {
-    const promise = fetch(`/api/categories`);
+export function getAllCategories(page, count) {
+    return function (dispatch) {
+        dispatch(getAllCategoriesRequest());
+        return fetchWrapper(`/api/categories?page=${page}&count=${count}`)
+            .then(response => dispatch(getAllCategoriesSuccess(response)))
+            .catch(error => dispatch(getAllCategoriesFailure(error)));
+    }
+}
+
+export function getAllCategoriesRequest() {
     return {
-        type: GET_ALL_CATEGORIES,
-        payload: promise
-    };
+        type: GET_ALL_CATEGORIES_REQUEST,
+        payload: null
+    }
 }
 
 export function getAllCategoriesSuccess(response) {
@@ -46,10 +55,10 @@ export function getAllCategoriesSuccess(response) {
     }
 }
 
-export function getAllCategoriesFailure(response) {
+export function getAllCategoriesFailure(error) {
     return {
         type: GET_ALL_CATEGORIES_FAILURE,
-        payload: response
+        payload: error.message
     }
 }
 
@@ -61,11 +70,19 @@ export function resetgetAllCategories() {
 
 // get category by id
 export function getCategoryById(id) {
-    const promise = fetch(`/api/categories/${id}`);
+    return function (dispatch) {
+        dispatch(getCategoryByIdRequest());
+        return fetchWrapper(`/api/categories?page=${page}&count=${count}`)
+            .then(response => dispatch(getAllCategoriesSuccess(response)))
+            .catch(error => dispatch(getAllCategoriesFailure(error)));
+    }
+}
+
+export function getCategoryByIdRequest() {
     return {
-        type: GET_CATEGORY_BY_ID,
-        payload: promise
-    };
+        type: GET_CATEGORY_BY_ID_REQUEST,
+        payload: null
+    }
 }
 
 export function getCategoryByIdSuccess(response) {

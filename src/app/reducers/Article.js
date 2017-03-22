@@ -1,25 +1,25 @@
 import * as types from '../actions/Category';
 
 const INITIAL_STATE = {
-    list: { data: null, error: null, isFetching: false },
+    list: { data: [], error: null, isFetching: false },
     current: { data: null, error: null, isFetching: false },
     created: { data: null, error: null, isFetching: false },
     updated: { data: null, error: null, isFetching: false },
     deleted: { data: null, error: null, isFetching: false }
 };
 
-export default function Category(state = INITIAL_STATE, action) {
+export default function Article(state = INITIAL_STATE, action) {
     switch (action.type) {
-        case types.GET_ALL_CATEGORIES_REQUEST:
-            return { ...state, list: { data: null, error: null, isFetching: true } };
+        case types.GET_ALL_CATEGORIES:
+            return { ...state, list: { data: [], error: null, isFetching: true } };
         case types.GET_ALL_CATEGORIES_SUCCESS:
             return { ...state, list: { data: action.payload.data, error: null, isFetching: false } };
         case types.GET_ALL_CATEGORIES_FAILURE:
-            return { ...state, list: { data: null, error: action.payload, isFetching: false } };
+            return { ...state, list: { data: [], error: action.payload.message, isFetching: false } };
         case types.RESET_GET_ALL_CATEGORIES:
-            return { ...state, list: { data: null, error: null, isFetching: false } };
+            return { ...state, list: { data: [], error: null, isFetching: false } };
 
-        case types.GET_CATEGORY_BY_ID_REQUEST:
+        case types.GET_CATEGORY_BY_ID:
             return { ...state, current: { data: null, error: null, isFetching: true } };
         case types.GET_CATEGORY_BY_ID_SUCCESS:
             return { ...state, current: { data: action.payload.data, error: null, isFetching: false } };
