@@ -1,0 +1,83 @@
+$notification-prefix-cls: 'rui-notification';
+$notification-width: 335px;
+$notification-padding: 16px;
+$notification-margin-bottom: 10px;
+.#{$notification-prefix-cls} {
+  position: fixed;
+  z-index: 1040;
+  width: $notification-width;
+  margin-right: 24px;
+  right: 0px;
+  top: 24px;
+  bottom: auto;
+  &-notice {
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 8px;
+    line-height: 1.5;
+    position: relative;
+    margin-bottom: $notification-margin-bottom;
+    padding: $notification-padding;
+    border-radius: 4px;
+    background: #FFF;
+    overflow: hidden;
+    &-message {
+      font-size: 14px;
+      color: rgba(0, 0, 0, 0.85098);
+      margin-bottom: 4px;
+      line-height: 20px;
+    }
+    &-description {
+      font-size: 12px;
+    }
+    &-close {
+      position: absolute;
+      right: 16px;
+      top: 10px;
+      font-size: 12px;
+      color: rgba(0, 0, 0, 0.431373);
+      outline: none;
+      cursor: pointer;
+    }
+  }
+}
+
+.notification-enter {
+  opacity: 0;
+  &.notification-enter-active {
+    animation-name: NotificationFadeIn
+  }
+}
+
+.notification-leave {
+  opacity: 1;
+  &.notification-leave-active {
+    animation-name: NotificationFadeOut
+  }
+}
+
+@keyframes NotificationFadeIn {
+  0% {
+    opacity: 0;
+    right: $notification-width;
+  }
+  100% {
+    right: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes NotificationFadeOut {
+  0% {
+    opacity: 1;
+    margin-bottom: $notification-margin-bottom;
+    padding-top: $notification-padding;
+    padding-bottom: $notification-padding;
+    max-height: 150px;
+  }
+  100% {
+    opacity: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    max-height: 0;
+  }
+}

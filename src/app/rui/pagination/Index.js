@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 
 class Pagination extends React.Component {
     constructor(props) {
@@ -12,10 +12,10 @@ class Pagination extends React.Component {
     };
 
     static propTypes = {
-        pageSize: React.PropTypes.number,
-        pageCount: React.PropTypes.number,
-        total: React.PropTypes.number,
-        onChange: React.PropTypes.func,
+        pageSize: PropTypes.number,
+        pageCount: PropTypes.number,
+        total: PropTypes.number,
+        onChange: PropTypes.func,
     };
 
     renderRow(numberOfPage) {

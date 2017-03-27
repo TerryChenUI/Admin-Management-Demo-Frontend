@@ -5,6 +5,7 @@ var webpackHotMiddleware = require('webpack-hot-middleware');
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
+var bodyParser = require('body-parser')
 
 var config = require('./webpack.dev.config');
 
@@ -17,6 +18,8 @@ var compiler = webpack(config);
 
 app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: config.output.publicPath }));
 app.use(webpackHotMiddleware(compiler));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'src')));
 // app.use(favicon(path.join(__dirname, 'assets', 'favicon.ico')));
 
@@ -37,61 +40,54 @@ app.get("/api/categories", function (req, res) {
 
     resData.data.result = getCategories.slice(start, end);
     resData.data.total = getCategories.length;
-    // resData.data.total = Math.ceil(getCategories.length / count);
+
+    res.send(resData);
+})
+
+app.get("/api/categories/:id", function (req, res) {
+    const filterCategory = getCategories.find(function(t) {return t.id === req.params.id;} );
+    var resData = {
+        status: 200,
+        message: null,
+        data: filterCategory
+    };
+    res.status(200).send(resData);
+})
+
+app.post("/api/categories", function (req, res) {
+    var data = {
+        id: Date.now() + '',
+        name: req.body.name,
+        enabled: req.body.enabled
+    };
+    getCategories = getCategories.concat(data);
+    
+    var resData = {
+        status: 200,
+        message: null,
+        data: data
+    };
+
+     res.status(200).send(resData);
+})
+
+app.put("/api/categories/:id", function (req, res) {
+    const filterCategory = getCategories.find(function(t) {return t.id === req.params.id;} );
+    filterCategory.name = req.body.name;
+    filterCategory.enabled = req.body.enabled;
+
+    var resData = {
+        status: 200,
+        message: null,
+        data: filterCategory
+    };
 
     res.status(200).send(resData);
 })
 
-app.get("/api/categories/:id", function (req, res) {
-    res.send(getCategory);
-})
-
-app.post("/api/categories", function (req, res) {
-    // res.send(getCategory);
-    res.send({
-        "status": "200",
-        "message": null,
-        "data": {
-            "id": 1,
-            "name": "已新增",
-            "imageUrl": "",
-            "description": "Adidas 品牌",
-            "displayOrder": 1,
-            "enabled": true,
-            "create": "2016-07-21 14:17:56Z",
-            "update": "2016-07-22 22:30:22Z"
-        }
-    })
-    // res.send({
-    //     "status": "400",
-    //     "message": 'update category error message'
-    // })
-})
-
-app.put("/api/categories/:id", function (req, res) {
-    // res.send(getCategory);
-    res.send({
-        "status": "200",
-        "message": null,
-        "data": {
-            "id": 1,
-            "name": "已更新",
-            "imageUrl": "",
-            "description": "Adidas 品牌",
-            "displayOrder": 1,
-            "enabled": true,
-            "create": "2016-07-21 14:17:56Z",
-            "update": "2016-07-22 22:30:22Z"
-        }
-    })
-    // res.send({
-    //     "status": "500",
-    //     "message": 'update category error message'
-    // })
-})
-
 app.delete("/api/categories/:id", function (req, res) {
-    res.send(getCategory);
+    getCategories = getCategories.filter(function(t) {return t.id !== req.params.id;} );
+    res.status(200).send(true);
 })
 
 app.get('*', function (req, res) {

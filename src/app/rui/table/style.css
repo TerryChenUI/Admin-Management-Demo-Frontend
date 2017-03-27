@@ -4,7 +4,7 @@
 
 .rui-table thead,
 .rui-table tbody {
-  display: table;
+  /*display: table;*/
   width: 100%;
 }
 

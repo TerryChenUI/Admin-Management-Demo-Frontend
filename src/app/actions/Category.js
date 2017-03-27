@@ -72,9 +72,9 @@ export function resetgetAllCategories() {
 export function getCategoryById(id) {
     return function (dispatch) {
         dispatch(getCategoryByIdRequest());
-        return fetchWrapper(`/api/categories?page=${page}&count=${count}`)
-            .then(response => dispatch(getAllCategoriesSuccess(response)))
-            .catch(error => dispatch(getAllCategoriesFailure(error)));
+        return fetchWrapper(`/api/categories/${id}`)
+            .then(response => dispatch(getCategoryByIdSuccess(response)))
+            .catch(error => dispatch(getCategoryByIdFailure(error)));
     }
 }
 
@@ -107,14 +107,15 @@ export function resetCurrentCategory() {
 
 // create category
 export function createCategory(params) {
-    const promise = fetch(`/api/categories`, {
-        method: 'POST',
-        body: JSON.stringify(params)
-    });
-    return {
-        type: CREATE_CATEGORY,
-        payload: promise
-    };
+    return function (dispatch) {
+        const options = {
+            method: 'POST',
+            body: params
+        };
+        return fetchWrapper(`/api/categories`, options)
+            .then(response => dispatch(createCategorySuccess(response)))
+            .catch(error => dispatch(createCategoryFailure(error)));
+    }
 }
 
 export function createCategorySuccess(response) {
@@ -139,14 +140,15 @@ export function resetCreateCategory() {
 
 // update category
 export function updateCategory(id, params) {
-    const promise = fetch(`/api/categories/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(params)
-    });
-    return {
-        type: UPDATE_CATEGORY,
-        payload: promise
-    };
+    return function (dispatch) {
+        const options = {
+            method: 'PUT',
+            body: params
+        };
+        return fetchWrapper(`/api/categories/${id}`, options)
+            .then(response => dispatch(updateCategorySuccess(response)))
+            .catch(error => dispatch(updateCategoryFailure(error)));
+    }
 }
 
 export function updateCategorySuccess(response) {
@@ -171,13 +173,14 @@ export function resetUpdateCategory() {
 
 // delete category
 export function deleteCategory(id) {
-    const promise = fetch(`/api/categories/${id}`, {
-        method: 'DELETE'
-    });
-    return {
-        type: DELETE_CATEGORY,
-        payload: promise
-    };
+    return function (dispatch) {
+        const options = {
+            method: 'DELETE',
+        };
+        return fetchWrapper(`/api/categories/${id}`, options)
+            .then(response => dispatch(deleteCategorySuccess(id)))
+            .catch(error => dispatch(deleteCategoryFailure(error)));
+    }
 }
 
 export function deleteCategorySuccess(id) {
