@@ -4,7 +4,7 @@ import './style.scss';
 
 let notificationInstance = null;
 const prefixCls = 'rui-notification-notice';
-const defaultDuration = 0;
+const defaultDuration = 3;
 const types = {
   success: 'success',
   info: 'info',

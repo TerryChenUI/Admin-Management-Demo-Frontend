@@ -10,6 +10,10 @@ $notification-margin-bottom: 10px;
   right: 0px;
   top: 24px;
   bottom: auto;
+  .#{$notification-prefix-cls}-fade-enter.#{$notification-prefix-cls}-fade-enter-active,
+  .#{$notification-prefix-cls}-fade-appear.#{$notification-prefix-cls}-fade-appear-active {
+    animation-name: NotificationLeftFadeIn;
+  }
   &-notice {
     box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 8px;
     line-height: 1.5;
@@ -55,6 +59,17 @@ $notification-margin-bottom: 10px;
 }
 
 @keyframes NotificationFadeIn {
+  0% {
+    opacity: 0;
+    right: $notification-width;
+  }
+  100% {
+    right: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes NotificationLeftFadeIn {
   0% {
     opacity: 0;
     right: $notification-width;

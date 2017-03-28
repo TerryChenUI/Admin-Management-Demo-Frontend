@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { getAllCategories, deleteCategory } from '../../actions/Category';
-import Pagination from '../../rui/pagination';
 import Table from '../../rui/table';
+import Popconfirm from '../../rui/popconfirm';
 
 class CategoryList extends React.Component {
     constructor(props) {
@@ -12,25 +12,29 @@ class CategoryList extends React.Component {
             search: {
                 name: ''
             },
-            pagination: {
-                pageSize: 1,
-                pageCount: 3,
-                total: 0
-            }
+            pageSize: 1,
+            pageCount: 5
         }
     }
 
     componentDidMount() {
-        this.props.getAllCategories(this.state.pagination.pageSize, this.state.pagination.pageCount);
+        this.props.getAllCategories(this.state.pageSize, this.state.pageCount);
     }
 
     onPageChange = (pageSize) => {
-        const updatePagination = this.state.pagination;
-        updatePagination.pageSize = pageSize;
         this.setState({
-            pagination: updatePagination
+            pageSize: pageSize
         });
-        this.props.getAllCategories(pageSize, this.state.pagination.pageCount);
+        this.props.getAllCategories(pageSize, this.state.pageCount);
+    }
+
+    getPagination(total) {
+        return {
+            pageSize: this.state.pageSize,
+            pageCount: this.state.pageCount,
+            total: total,
+            onChange: this.onPageChange
+        }
     }
 
     handleNameChange(e) {
@@ -41,19 +45,17 @@ class CategoryList extends React.Component {
         });
     }
 
-    remove(id) {
-        this.props.deleteCategory(id);
-    };
-
     search() {
         console.log(this.state.search.name);
     }
 
+    onConfirmDelete(e) {
+        this.props.deleteCategory(id);
+    }
+
     render() {
         const { data, error, isFetching } = this.props.list;
-        if (data) {
-            this.state.pagination.total = data.total;
-        }
+        const pagination = data ? this.getPagination(data.total) : null;
         const columns = [
             {
                 title: '类别',
@@ -77,13 +79,16 @@ class CategoryList extends React.Component {
                 render: (id) => (
                     <div>
                         <Link to={`/category/edit/${id}`} className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-pencil" aria-hidden="true"></span> 编辑</Link>
-                        <button type="button" className="btn btn-danger btn-xs" onClick={() => this.remove(id)}>
-                            <span className="glyphicon glyphicon-trash" aria-hidden="true"></span> 删除
-                        </button>
+                        <Popconfirm title="你确认要删除这条记录?" onConfirm={this.onConfirmDelete} okText="确定" cancelText="取消">
+                            <button type="button" className="btn btn-danger btn-xs">
+                                <span className="glyphicon glyphicon-trash" aria-hidden="true"></span> 删除
+                            </button>
+                        </Popconfirm>
                     </div>
                 ),
             }
         ];
+
         return (
             <div>
                 <h2 className="sub-header">
@@ -99,8 +104,7 @@ class CategoryList extends React.Component {
                     </div>
                     <button type="button" className="btn btn-primary btn-sm" onClick={() => this.search()}>Search</button>
                 </form>
-                {data && <Table columns={columns} dataSource={data.result} loading={isFetching} />}
-                <Pagination {...this.state.pagination} onChange={this.onPageChange} />
+                {data ? <Table columns={columns} dataSource={data.result} pagination={pagination} loading={isFetching} /> : null}
             </div>
         );
     }
@@ -114,8 +118,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getAllCategories: (page, count) => {
-            dispatch(getAllCategories(page, count));
+        getAllCategories: (pageSize, pageCount) => {
+            dispatch(getAllCategories(pageSize, pageCount));
         },
         deleteCategory: (id) => {
             dispatch(deleteCategory(id));

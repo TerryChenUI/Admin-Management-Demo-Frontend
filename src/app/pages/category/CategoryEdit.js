@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 
-import { getCategoryById, createCategory, updateCategory, resetCurrentCategory, resetCreateCategory, resetUpdateCategory, resetDeleteCategory } from '../../actions/Category';
+import { getCategoryById, createCategory, updateCategory, resetCurrentCategory, resetCreateCategory, resetUpdateCategory } from '../../actions/Category';
 import CategoryForm from './CategoryForm';
 import notification from '../../rui/notification';
 
@@ -53,11 +53,11 @@ class CategoryEdit extends React.Component {
 
     render() {
         const { data, error, isFetching } = this.props.current;
-        const handleSubmit = this.props.params.id ? this.props.updateCategory : this.props.createCategory;
+        const onSubmit = this.props.params.id ? this.props.updateCategory : this.props.createCategory;
         return (
             <div>
                 <h2>category {this.props.params.id ? 'edit' : 'add'} page</h2>
-                <CategoryForm data={data} handleSubmit={handleSubmit} />
+                <CategoryForm data={data} onSubmit={onSubmit} />
             </div>
         );
     }
@@ -80,7 +80,6 @@ function mapDispatchToProps(dispatch) {
             dispatch(resetCurrentCategory());
             dispatch(resetCreateCategory());
             dispatch(resetUpdateCategory());
-            dispatch(resetDeleteCategory());
         }
     }
 }

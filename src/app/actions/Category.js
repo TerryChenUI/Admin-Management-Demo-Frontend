@@ -32,10 +32,10 @@ export const DELETE_CATEGORY_FAILURE = 'DELETE_CATEGORY_FAILURE';
 export const RESET_DELETED_CATEGORY = 'RESET_DELETED_CATEGORY';
 
 // get all categories
-export function getAllCategories(page, count) {
+export function getAllCategories(pageSize, pageCount) {
     return function (dispatch) {
         dispatch(getAllCategoriesRequest());
-        return fetchWrapper(`/api/categories?page=${page}&count=${count}`)
+        return fetchWrapper(`/api/categories?pageSize=${pageSize}&pageCount=${pageCount}`)
             .then(response => dispatch(getAllCategoriesSuccess(response)))
             .catch(error => dispatch(getAllCategoriesFailure(error)));
     }

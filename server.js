@@ -24,8 +24,8 @@ app.use(express.static(path.join(__dirname, 'src')));
 // app.use(favicon(path.join(__dirname, 'assets', 'favicon.ico')));
 
 app.get("/api/categories", function (req, res) {
-    var page = parseInt(req.query.page) - 1;
-    var count = parseInt(req.query.count);
+    var page = parseInt(req.query.pageSize) - 1;
+    var count = parseInt(req.query.pageCount);
     var start = page * count;
     var end = start + count;
 
@@ -45,7 +45,7 @@ app.get("/api/categories", function (req, res) {
 })
 
 app.get("/api/categories/:id", function (req, res) {
-    const filterCategory = getCategories.find(function(t) {return t.id === req.params.id;} );
+    const filterCategory = getCategories.find(function (t) { return t.id === req.params.id; });
     var resData = {
         status: 200,
         message: null,
@@ -61,18 +61,18 @@ app.post("/api/categories", function (req, res) {
         enabled: req.body.enabled
     };
     getCategories = getCategories.concat(data);
-    
+
     var resData = {
         status: 200,
         message: null,
         data: data
     };
 
-     res.status(200).send(resData);
+    res.status(200).send(resData);
 })
 
 app.put("/api/categories/:id", function (req, res) {
-    const filterCategory = getCategories.find(function(t) {return t.id === req.params.id;} );
+    const filterCategory = getCategories.find(function (t) { return t.id === req.params.id; });
     filterCategory.name = req.body.name;
     filterCategory.enabled = req.body.enabled;
 
@@ -86,7 +86,7 @@ app.put("/api/categories/:id", function (req, res) {
 })
 
 app.delete("/api/categories/:id", function (req, res) {
-    getCategories = getCategories.filter(function(t) {return t.id !== req.params.id;} );
+    getCategories = getCategories.filter(function (t) { return t.id !== req.params.id; });
     res.status(200).send(true);
 })
 

@@ -15,7 +15,7 @@ class Pagination extends React.Component {
         pageSize: PropTypes.number,
         pageCount: PropTypes.number,
         total: PropTypes.number,
-        onChange: PropTypes.func,
+        onPageChange: PropTypes.func,
     };
 
     renderRow(numberOfPage) {
