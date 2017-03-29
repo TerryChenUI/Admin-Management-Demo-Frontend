@@ -1,6 +1,70 @@
 import React, { Component, PropTypes } from 'react';
-import ReactDom from 'react-dom';
+import ReactDOM from 'react-dom';
 import './style.scss';
+
+const nodeArray = [];
+
+class ConfirmContainer extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            visible: true
+        };
+    }
+
+    setVisible(visible) {
+        this.setState({ visible: visible });
+    }
+
+    componentDidMount() {
+        document.addEventListener('click', this.handleClickOutside.bind(this), true);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('click', this.handleClickOutside.bind(this), true);
+    }
+
+    handleClickOutside(e) {
+        const domNode = ReactDOM.findDOMNode(this);
+        if (!domNode || !domNode.contains(e.target)) {
+            this.setVisible(false);
+        }
+    }
+
+    onConfirm() {
+        this.setVisible(false);
+        this.props.onConfirm && this.props.onConfirm();
+    }
+
+    onCancel() {
+        this.setVisible(false);
+        this.props.onCancel && this.props.onCancel();
+    }
+
+    render() {
+        const { title, okText, cancelText, rect } = this.props;
+        const styles = {
+            top: rect.top,
+            left: rect.left,
+            display: this.state.visible ? null : 'none'
+        };
+        return (
+            <div className="rui-popover" style={styles}>
+                <div className="rui-popover-content">
+                    <div className="rui-popover-inner">
+                        <div className="rui-popover-message">
+                            {title}
+                        </div>
+                        <div className="rui-popover-buttons">
+                            <button type="button" className="btn btn-primary btn-xs" onClick={() => this.onConfirm()}><span>{okText}</span></button>
+                            <button type="button" className="btn btn-default btn-xs" onClick={() => this.onCancel()}><span>{cancelText}</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
 
 class Popconfirm extends React.Component {
     constructor(props) {
@@ -23,51 +87,25 @@ class Popconfirm extends React.Component {
         onCancel: PropTypes.func
     }
 
-    setVisible(visible) {
-        this.setState({ visible: visible });
-    }
-
-    onConfirm() {
-        this.setVisible(false);
-        this.props.onConfirm && this.props.onConfirm();
-    }
-
-    onCancel() {
-        this.setVisible(false);
-        this.props.onCancel && this.props.onCancel();
-    }
-
-    confirmContent() {
-        const { title, okText, cancelText } = this.props;
-        return (
-            <div className="rui-popover-content">
-                <div className="rui-popover-inner">
-                    <div className="rui-popover-message">
-                        {title}
-                    </div>
-                    <div className="rui-popover-buttons">
-                        <button type="button" className="btn btn-primary btn-xs"><span>{okText}</span></button>
-                        <button type="button" className="btn btn-default btn-xs"><span>{cancelText}</span></button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-
     openConfirmPop(e) {
-        const rect = e.target.getBoundingClientRect();
-        const styles = {
-            top: rect.top,
-            left: rect.left,
-            display: this.state.visible
-        };
+        const node = nodeArray.find(node => { return node.target === e.target });
 
-        const div = document.createElement('div');
-        div.setAttribute('class', 'pop-confirm-panel');
-        document.body.appendChild(div);
+        if (node) {
+            // node.instance.render();
+        } else {
+            const rect = e.target.getBoundingClientRect()
 
-        ReactDom.render(<div className="rui-popover rui-popover-placement-top" style={styles}>{this.confirmContent()}</div>, div);
+            const div = document.createElement('div');
+            div.setAttribute('class', 'pop-confirm-panel');
+            document.body.appendChild(div);
+            
+            const instance = <ConfirmContainer {...this.props} rect={rect} />;
+            ReactDOM.render(instance, div);
+            nodeArray.push({
+                target: e.target,
+                instance: instance
+            });
+        }
     }
 
     render() {

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { getAllCategories, deleteCategory } from '../../actions/Category';
 import Table from '../../rui/table';
 import Popconfirm from '../../rui/popconfirm';
+import Dialog from '../../rui/modal'
 
 class CategoryList extends React.Component {
     constructor(props) {
@@ -13,7 +14,8 @@ class CategoryList extends React.Component {
                 name: ''
             },
             pageSize: 1,
-            pageCount: 5
+            pageCount: 5,
+            show: false
         }
     }
 
@@ -97,6 +99,12 @@ class CategoryList extends React.Component {
                         <span className="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加
                     </Link>
                 </h2>
+                <input type="button" value="demo1" className="demo" onClick={() => this.setState({ show: true })} />
+                <Dialog show={this.state.show} title="title" onOk={() => { console.log('ok'); this.setState({ show: false }) }} onCancel={() => { this.setState({ show: false }) }}>
+                    <p>看我随手一打就是标准十五字</p>
+                    <p>看我随手一打就是标准十五字</p>
+                    <p>看我随手一打就是标准十五字</p>
+                </Dialog>
                 <form className="form-inline search-form">
                     <div className="form-group">
                         <label htmlFor="name">类别</label>

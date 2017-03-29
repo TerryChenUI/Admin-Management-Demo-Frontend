@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import ReactDom from 'react-dom';
+import ReactDOM from 'react-dom';
 import Notice from './Notice';
 
 class Notification extends React.Component {
@@ -63,7 +63,7 @@ Notification.newInstance = function newNotificationInstance(properties) {
     div.setAttribute('class', 'rui-notification-panel');
     document.body.appendChild(div);
 
-    const notification = ReactDom.render(<Notification {...props} />, div);
+    const notification = ReactDOM.render(<Notification {...props} />, div);
     return {
         component: notification,
         notice(noticeProps) {
@@ -73,7 +73,7 @@ Notification.newInstance = function newNotificationInstance(properties) {
             notification.remove(key);
         },
         destroy() {
-            ReactDom.unmountComponentAtNode(div);
+            ReactDOM.unmountComponentAtNode(div);
             document.body.removeChild(div);
         }
     };
