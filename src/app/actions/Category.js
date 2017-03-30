@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch';
-import fetchWrapper from '../services/request';
+import { getFetch, postFetch, putFetch, deleteFetch } from '../services/request';
 
 // List categories
 export const GET_ALL_CATEGORIES_REQUEST = 'GET_ALL_CATEGORIES_REQUEST';
@@ -14,48 +14,56 @@ export const GET_CATEGORY_BY_ID_FAILURE = 'GET_CATEGORY_BY_ID_FAILURE';
 export const RESET_CURRENT_CATEGORY = 'RESET_CURRENT_CATEGORY';
 
 // Create category
-export const CREATE_CATEGORY = 'CREATE_CATEGORY';
+export const CREATE_CATEGORY_REQUEST = 'CREATE_CATEGORY_REQUEST';
 export const CREATE_CATEGORY_SUCCESS = 'CREATE_CATEGORY_SUCCESS';
 export const CREATE_CATEGORY_FAILURE = 'CREATE_CATEGORY_FAILURE';
 export const RESET_CREATE_CATEGORY = 'RESET_CREATE_CATEGORY';
 
 // Update category
-export const UPDATE_CATEGORY = 'UPDATE_CATEGORY';
+export const UPDATE_CATEGORY_REQUEST = 'UPDATE_CATEGORY_REQUEST';
 export const UPDATE_CATEGORY_SUCCESS = 'UPDATE_CATEGORY_SUCCESS';
 export const UPDATE_CATEGORY_FAILURE = 'UPDATE_CATEGORY_FAILURE';
 export const RESET_UPDATE_CATEGORY = 'RESET_UPDATE_CATEGORY';
 
 // Delete category
-export const DELETE_CATEGORY = 'DELETE_CATEGORY';
+export const DELETE_CATEGORY_REQUEST = 'DELETE_CATEGORY_REQUEST';
 export const DELETE_CATEGORY_SUCCESS = 'DELETE_CATEGORY_SUCCESS';
 export const DELETE_CATEGORY_FAILURE = 'DELETE_CATEGORY_FAILURE';
-export const RESET_DELETED_CATEGORY = 'RESET_DELETED_CATEGORY';
+export const RESET_DELETE_CATEGORY = 'RESET_DELETE_CATEGORY';
 
 // get all categories
-export function getAllCategories(pageSize, pageCount) {
-    return function (dispatch) {
+export function getAllCategories(filter, pageSize, pageCount) {
+    return async (dispatch) => {
         dispatch(getAllCategoriesRequest());
-        return fetchWrapper(`/api/categories?pageSize=${pageSize}&pageCount=${pageCount}`)
-            .then(response => dispatch(getAllCategoriesSuccess(response)))
-            .catch(error => dispatch(getAllCategoriesFailure(error)));
+        try {
+            let params = [];
+            filter && Object.keys(filter).map((key) => {
+                params.push(`${key}=${filter[key]}`);
+            });
+            params = params.concat([`pageSize=${pageSize}`, `pageCount=${pageCount}`]);
+            const response = await getFetch(`/api/categories?${params.join('&')}`);
+            dispatch(getAllCategoriesSuccess(response));
+        } catch (error) {
+            dispatch(getAllCategoriesFailure(error));
+        }
     }
 }
 
-export function getAllCategoriesRequest() {
+function getAllCategoriesRequest() {
     return {
         type: GET_ALL_CATEGORIES_REQUEST,
         payload: null
     }
 }
 
-export function getAllCategoriesSuccess(response) {
+function getAllCategoriesSuccess(response) {
     return {
         type: GET_ALL_CATEGORIES_SUCCESS,
         payload: response
     }
 }
 
-export function getAllCategoriesFailure(error) {
+function getAllCategoriesFailure(error) {
     return {
         type: GET_ALL_CATEGORIES_FAILURE,
         payload: error.message
@@ -70,29 +78,32 @@ export function resetgetAllCategories() {
 
 // get category by id
 export function getCategoryById(id) {
-    return function (dispatch) {
-        dispatch(getCategoryByIdRequest());
-        return fetchWrapper(`/api/categories/${id}`)
-            .then(response => dispatch(getCategoryByIdSuccess(response)))
-            .catch(error => dispatch(getCategoryByIdFailure(error)));
+    return async (dispatch) => {
+        try {
+            dispatch(getCategoryByIdRequest());
+            const response = await getFetch(`/api/categories/${id}`);
+            dispatch(getCategoryByIdSuccess(response));
+        } catch (error) {
+            dispatch(getCategoryByIdFailure(error));
+        }
     }
 }
 
-export function getCategoryByIdRequest() {
+function getCategoryByIdRequest() {
     return {
         type: GET_CATEGORY_BY_ID_REQUEST,
         payload: null
     }
 }
 
-export function getCategoryByIdSuccess(response) {
+function getCategoryByIdSuccess(response) {
     return {
         type: GET_CATEGORY_BY_ID_SUCCESS,
         payload: response
     }
 }
 
-export function getCategoryByIdFailure(response) {
+function getCategoryByIdFailure(response) {
     return {
         type: GET_CATEGORY_BY_ID_FAILURE,
         payload: response
@@ -107,25 +118,32 @@ export function resetCurrentCategory() {
 
 // create category
 export function createCategory(params) {
-    return function (dispatch) {
-        const options = {
-            method: 'POST',
-            body: params
-        };
-        return fetchWrapper(`/api/categories`, options)
-            .then(response => dispatch(createCategorySuccess(response)))
-            .catch(error => dispatch(createCategoryFailure(error)));
+    return async (dispatch) => {
+        dispatch(createCategoryRequest());
+        try {
+            const response = await postFetch(`/api/categories`, params);
+            dispatch(createCategorySuccess(response));
+        } catch (error) {
+            dispatch(createCategoryFailure(error))
+        }
     }
 }
 
-export function createCategorySuccess(response) {
+function createCategoryRequest() {
+    return {
+        type: CREATE_CATEGORY_REQUEST,
+        payload: null
+    }
+}
+
+function createCategorySuccess(response) {
     return {
         type: CREATE_CATEGORY_SUCCESS,
         payload: response
     }
 }
 
-export function createCategoryFailure(response) {
+function createCategoryFailure(response) {
     return {
         type: CREATE_CATEGORY_FAILURE,
         payload: response
@@ -140,25 +158,33 @@ export function resetCreateCategory() {
 
 // update category
 export function updateCategory(id, params) {
-    return function (dispatch) {
-        const options = {
-            method: 'PUT',
-            body: params
-        };
-        return fetchWrapper(`/api/categories/${id}`, options)
-            .then(response => dispatch(updateCategorySuccess(response)))
-            .catch(error => dispatch(updateCategoryFailure(error)));
+    return async (dispatch) => {
+        dispatch(updateCategoryRequest());
+        try {
+            const response = await putFetch(`/api/categories/${id}`, params);
+            dispatch(updateCategorySuccess(response));
+        } catch (error) {
+            dispatch(updateCategoryFailure(error))
+        }
+
     }
 }
 
-export function updateCategorySuccess(response) {
+function updateCategoryRequest() {
+    return {
+        type: UPDATE_CATEGORY_REQUEST,
+        payload: null
+    }
+}
+
+function updateCategorySuccess(response) {
     return {
         type: UPDATE_CATEGORY_SUCCESS,
         payload: response
     }
 }
 
-export function updateCategoryFailure(response) {
+function updateCategoryFailure(response) {
     return {
         type: UPDATE_CATEGORY_FAILURE,
         payload: response
@@ -173,24 +199,33 @@ export function resetUpdateCategory() {
 
 // delete category
 export function deleteCategory(id) {
-    return function (dispatch) {
-        const options = {
-            method: 'DELETE',
-        };
-        return fetchWrapper(`/api/categories/${id}`, options)
-            .then(response => dispatch(deleteCategorySuccess(id)))
-            .catch(error => dispatch(deleteCategoryFailure(error)));
+    return async (dispatch) => {
+        dispatch(deleteCategoryRequest(id));
+        try {
+            const response = await deleteFetch(`/api/categories/${id}`)
+            dispatch(deleteCategorySuccess(id));
+        } catch (error) {
+            dispatch(deleteCategoryFailure(error))
+        }
+
     }
 }
 
-export function deleteCategorySuccess(id) {
+function deleteCategoryRequest(id) {
+    return {
+        type: DELETE_CATEGORY_REQUEST,
+        payload: id
+    }
+}
+
+function deleteCategorySuccess(id) {
     return {
         type: DELETE_CATEGORY_SUCCESS,
         payload: id
     }
 }
 
-export function deleteCategoryFailure(response) {
+function deleteCategoryFailure(response) {
     return {
         type: DELETE_CATEGORY_FAILURE,
         payload: response

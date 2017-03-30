@@ -28,7 +28,7 @@ export default function Category(state = INITIAL_STATE, action) {
         case types.RESET_CURRENT_CATEGORY:
             return { ...state, current: { data: null, error: null, isFetching: false } };
 
-        case types.CREATE_CATEGORY:
+        case types.CREATE_CATEGORY_REQUEST:
             return { ...state, created: { data: null, error: null, isFetching: true } };
         case types.CREATE_CATEGORY_SUCCESS:
             return { ...state, created: { data: action.payload.data, error: null, isFetching: false } };
@@ -37,7 +37,7 @@ export default function Category(state = INITIAL_STATE, action) {
         case types.RESET_CREATE_CATEGORY:
             return { ...state, created: { data: null, error: null, isFetching: false } };
 
-        case types.UPDATE_CATEGORY:
+        case types.UPDATE_CATEGORY_REQUEST:
             return { ...state, updated: { data: null, error: null, isFetching: true } };
         case types.UPDATE_CATEGORY_SUCCESS:
             return { ...state, updated: { data: action.payload.data, error: null, isFetching: false } };
@@ -46,8 +46,8 @@ export default function Category(state = INITIAL_STATE, action) {
         case types.RESET_UPDATE_CATEGORY:
             return { ...state, updated: { data: null, error: null, isFetching: false } };
 
-        case types.DELETE_CATEGORY:
-            return { ...state, deleted: { data: null, error: null, isFetching: true } };
+        case types.DELETE_CATEGORY_REQUEST:
+            return { ...state, deleted: { data: action.payload, error: null, isFetching: true } };
         case types.DELETE_CATEGORY_SUCCESS:
             const newData = state.list.data.result.filter(obj => obj.id !== action.payload);
             return {
@@ -55,14 +55,15 @@ export default function Category(state = INITIAL_STATE, action) {
                 list: {
                     data: {
                         result: newData,
-                        total: newData.length
+                        total: state.list.data.total
                     },
                     error: null,
                     isFetching: false
-                }
+                },
+                deleted: { data: action.payload, error: null, isFetching: false }
             }
         case types.DELETE_CATEGORY_FAILURE:
-            return { ...state, deleted: { data: null, error: action.payload.message, isFetching: false } };
+            return { ...state, deleted: { data: action.payload, error: action.payload.message, isFetching: false } };
         case types.RESET_DELETE_CATEGORY:
             return { ...state, deleted: { data: null, error: null, isFetching: false } };
 

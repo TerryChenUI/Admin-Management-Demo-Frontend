@@ -5,7 +5,8 @@ var webpackHotMiddleware = require('webpack-hot-middleware');
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+var _ = require('underscore');
 
 var config = require('./webpack.dev.config');
 
@@ -28,6 +29,10 @@ app.get("/api/categories", function (req, res) {
     var count = parseInt(req.query.pageCount);
     var start = page * count;
     var end = start + count;
+    var filterCategoryies = _.clone(getCategories);
+    if (req.query.name) {
+        filterCategoryies = getCategories.filter(t => { return t.name.includes(req.query.name)});
+    }
 
     var resData = {
         status: 200,
@@ -38,8 +43,8 @@ app.get("/api/categories", function (req, res) {
         }
     };
 
-    resData.data.result = getCategories.slice(start, end);
-    resData.data.total = getCategories.length;
+    resData.data.result = filterCategoryies.slice(start, end);
+    resData.data.total = filterCategoryies.length;
 
     res.send(resData);
 })

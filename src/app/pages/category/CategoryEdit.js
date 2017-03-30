@@ -2,9 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 
-import { getCategoryById, createCategory, updateCategory, resetCurrentCategory, resetCreateCategory, resetUpdateCategory } from '../../actions/Category';
 import CategoryForm from './CategoryForm';
-import notification from '../../rui/notification';
+import {
+    getCategoryById, resetCurrentCategory,
+    createCategory, resetCreateCategory,
+    updateCategory, resetUpdateCategory
+} from '../../actions/Category';
+import alertService from '../../services/AlertService';
 
 class CategoryEdit extends React.Component {
     constructor(props) {
@@ -12,9 +16,8 @@ class CategoryEdit extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.params.id) {
-            this.props.getCategoryById(this.props.params.id);
-        }
+        const id = this.props.params.id;
+        id && this.props.getCategoryById(id);
     }
 
     componentWillUnmount() {
@@ -23,47 +26,27 @@ class CategoryEdit extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.created.data || nextProps.created.error) {
-            if (nextProps.created.data) {
-                notification.success({
-                    message: 'Success',
-                    description: 'Create category successfully',
-                });
-                browserHistory.push(`/category/list`);
-            } else {
-                notification.error({
-                    message: 'Error',
-                    description: nextProps.error,
-                });
-            }
+            nextProps.created.data ? alertService.success('添加类别成功', null, '/category/list') : alertService.error('添加类别失败', nextProps.created.error);
         } else if (nextProps.updated.data || nextProps.updated.error) {
-            if (nextProps.updated.data) {
-                notification.success({
-                    message: 'Success',
-                    description: 'Update category successfully',
-                });
-                browserHistory.push(`/category/list`);
-            } else {
-                notification.error({
-                    message: 'Error',
-                    description: nextProps.error,
-                });
-            }
+            nextProps.updated.data ? alertService.success('更新类别成功', null, '/category/list') : alertService.error('更新类别失败', nextProps.updated.error);
         }
     }
 
     render() {
-        const { data, error, isFetching } = this.props.current;
-        const onSubmit = this.props.params.id ? this.props.updateCategory : this.props.createCategory;
+        const props = this.props;
+        const id = props.params.id;
+        const { data, error, isFetching } = props.current;
+        const onSubmit = id ? props.updateCategory : props.createCategory;
         return (
             <div>
-                <h2>category {this.props.params.id ? 'edit' : 'add'} page</h2>
+                <h2>category {id ? 'edit' : 'add'} page</h2>
                 <CategoryForm data={data} onSubmit={onSubmit} />
             </div>
         );
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
     return {
         current: state.category.current,
         created: state.category.created,
@@ -74,8 +57,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         getCategoryById: (id) => dispatch(getCategoryById(id)),
-        createCategory: (data) => dispatch(createCategory(data)),
-        updateCategory: (data) => dispatch(updateCategory(data.id, data)),
+        createCategory: (params) => dispatch(createCategory(params)),
+        updateCategory: (params) => dispatch(updateCategory(params.id, params)),
         resetMe: () => {
             dispatch(resetCurrentCategory());
             dispatch(resetCreateCategory());

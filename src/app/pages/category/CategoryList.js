@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import { getAllCategories, deleteCategory } from '../../actions/Category';
+import { getAllCategories, deleteCategory, resetDeleteCategory } from '../../actions/Category';
 import Table from '../../rui/table';
 import Popconfirm from '../../rui/popconfirm';
-import Dialog from '../../rui/modal'
+import alertService from '../../services/AlertService';
+import { defaultPageSize, defaultPageCount } from '../../constants';
 
 class CategoryList extends React.Component {
     constructor(props) {
@@ -13,21 +14,35 @@ class CategoryList extends React.Component {
             search: {
                 name: ''
             },
-            pageSize: 1,
-            pageCount: 5,
-            show: false
+            filter: null,
+            pageSize: defaultPageSize,
+            pageCount: defaultPageCount
         }
     }
 
     componentDidMount() {
-        this.props.getAllCategories(this.state.pageSize, this.state.pageCount);
+        this.getAllCategories(this.state.filter, this.state.pageSize, this.state.pageCount);
+    }
+
+    componentWillUnmount() {
+        this.props.resetMe();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if ((nextProps.deleted.data || nextProps.deleted.error) && !nextProps.deleted.isFetching) {
+            nextProps.deleted.error ? alertService.error('删除失败', nextProps.deleted.error) : alertService.success('删除成功');
+        }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return true;
     }
 
     onPageChange = (pageSize) => {
         this.setState({
             pageSize: pageSize
         });
-        this.props.getAllCategories(pageSize, this.state.pageCount);
+        this.getAllCategories(this.state.filter, pageSize, this.state.pageCount);
     }
 
     getPagination(total) {
@@ -47,16 +62,35 @@ class CategoryList extends React.Component {
         });
     }
 
-    search() {
-        console.log(this.state.search.name);
+    getAllCategories(filter, pageSize, pageCount) {
+        this.props.getAllCategories(filter, pageSize, pageCount);
     }
 
-    onConfirmDelete(e) {
+    search() {
+        const filter = {};
+        if (this.state.search.name) {
+            filter.name = this.state.search.name;
+        }
+        this.setState({ filter: filter, pageSize: defaultPageSize, pageCount: defaultPageCount });
+        this.getAllCategories(filter, defaultPageSize, defaultPageCount);
+    }
+
+    reset() {
+        this.setState({
+            search: {
+                name: ''
+            },
+            filter: null
+        });
+    }
+
+    onConfirmDelete(id) {
         this.props.deleteCategory(id);
     }
 
     render() {
         const { data, error, isFetching } = this.props.list;
+        const deleted = this.props.deleted;
         const pagination = data ? this.getPagination(data.total) : null;
         const columns = [
             {
@@ -81,9 +115,9 @@ class CategoryList extends React.Component {
                 render: (id) => (
                     <div>
                         <Link to={`/category/edit/${id}`} className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-pencil" aria-hidden="true"></span> 编辑</Link>
-                        <Popconfirm title="你确认要删除这条记录?" onConfirm={this.onConfirmDelete} okText="确定" cancelText="取消">
-                            <button type="button" className="btn btn-danger btn-xs">
-                                <span className="glyphicon glyphicon-trash" aria-hidden="true"></span> 删除
+                        <Popconfirm title="你确认要删除这条记录?" onConfirm={() => this.onConfirmDelete(id)} okText="确定" cancelText="取消">
+                            <button type="button" className="btn btn-danger btn-xs" disabled={id === deleted.data && deleted.isFetching}>
+                                <span className="glyphicon glyphicon-trash" aria-hidden="true"></span> {id === deleted.data && deleted.isFetching ? '正在删除' : '删除'}
                             </button>
                         </Popconfirm>
                     </div>
@@ -99,18 +133,13 @@ class CategoryList extends React.Component {
                         <span className="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加
                     </Link>
                 </h2>
-                <input type="button" value="demo1" className="demo" onClick={() => this.setState({ show: true })} />
-                <Dialog show={this.state.show} title="title" onOk={() => { console.log('ok'); this.setState({ show: false }) }} onCancel={() => { this.setState({ show: false }) }}>
-                    <p>看我随手一打就是标准十五字</p>
-                    <p>看我随手一打就是标准十五字</p>
-                    <p>看我随手一打就是标准十五字</p>
-                </Dialog>
                 <form className="form-inline search-form">
                     <div className="form-group">
                         <label htmlFor="name">类别</label>
                         <input type="text" className="form-control" id="name" value={this.state.search.name} onChange={(e) => this.handleNameChange(e)} />
                     </div>
                     <button type="button" className="btn btn-primary btn-sm" onClick={() => this.search()}>Search</button>
+                    <button type="button" className="btn btn-default btn-sm" onClick={() => this.reset()}>Reset</button>
                 </form>
                 {data ? <Table columns={columns} dataSource={data.result} pagination={pagination} loading={isFetching} /> : null}
             </div>
@@ -120,18 +149,16 @@ class CategoryList extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        list: state.category.list
+        list: state.category.list,
+        deleted: state.category.deleted
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        getAllCategories: (pageSize, pageCount) => {
-            dispatch(getAllCategories(pageSize, pageCount));
-        },
-        deleteCategory: (id) => {
-            dispatch(deleteCategory(id));
-        }
+        getAllCategories: (filter, pageSize, pageCount) => dispatch(getAllCategories(filter, pageSize, pageCount)),
+        deleteCategory: (id) => dispatch(deleteCategory(id)),
+        resetMe: () => dispatch(resetDeleteCategory())
     }
 }
 

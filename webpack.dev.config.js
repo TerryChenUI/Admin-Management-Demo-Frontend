@@ -6,6 +6,7 @@ module.exports = {
     devtool: 'inline-source-map',
     entry: [
         'webpack-hot-middleware/client?reload=true',
+        'babel-polyfill',
         './src/app'
     ],
     output: {

@@ -14,15 +14,43 @@ function parseJSON(response) {
     return response.json();
 }
 
-export default function fetchWrapper(url, options = { headers: {} }) {
-    options.headers = Object.assign({
+function fetchWrapper(url, options = {}) {
+    const headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
-    }, options.headers);
+    }
+    options.headers = options.headers ? Object.assign(headers, options.headers) : headers;
     if (typeof options.body !== 'string') {
         options.body = JSON.stringify(options.body);
     }
     return fetch(url, options)
         .then(checkStatus)
         .then(parseJSON);
+}
+
+export function getFetch(url) {
+    return fetchWrapper(url);
+}
+
+export function postFetch(url, params) {
+    const options = {
+        method: 'POST',
+        body: params
+    };
+    return fetchWrapper(url, options);
+}
+
+export function putFetch(url, params) {
+    const options = {
+        method: 'PUT',
+        body: params
+    };
+    return fetchWrapper(url, options);
+}
+
+export function deleteFetch(url) {
+    const options = {
+        method: 'DELETE'
+    };
+    return fetchWrapper(url, options);
 }

@@ -31,14 +31,14 @@ class ConfirmContainer extends React.Component {
         }
     }
 
-    onConfirm() {
+    onConfirm(e) {
         this.setVisible(false);
-        this.props.onConfirm && this.props.onConfirm();
+        this.props.onConfirm && this.props.onConfirm.call(this, e);
     }
 
-    onCancel() {
+    onCancel(e) {
         this.setVisible(false);
-        this.props.onCancel && this.props.onCancel();
+        this.props.onCancel && this.props.onCancel.call(this, e);
     }
 
     render() {
