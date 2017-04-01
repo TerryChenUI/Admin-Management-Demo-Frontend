@@ -1,0 +1,1 @@
+export const required = value => value ? undefined : '内容不能为空';

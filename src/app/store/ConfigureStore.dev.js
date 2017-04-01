@@ -8,16 +8,7 @@ import createLogger from 'redux-logger';
 import rootReducer from '../reducers';
 import DevTools from './DevTools';
 
-// const FetchMiddleware = createFetchMiddleware({
-//   afterFetch({ action, result }) {
-//     return result.json().then(data => {
-//       return Promise.resolve({
-//         action,
-//         result: data,
-//       });
-//     });
-//   },
-// });
+// import { callAPIMiddleware } from '../actions/CallAPIMiddleware';
 
 const finalCreateStore = compose(
   applyMiddleware(ThunkMiddleware, createLogger()),
@@ -29,6 +20,8 @@ const reducer = combineReducers(Object.assign({}, rootReducer, {
 }));
 
 export default function configureStore(initialState) {
+
+
   const store = finalCreateStore(reducer, initialState);
 
   if (module.hot) {

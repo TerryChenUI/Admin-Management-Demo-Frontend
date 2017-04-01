@@ -8,10 +8,18 @@ const INITIAL_STATE = {
     deleted: { data: null, error: null, isFetching: false }
 };
 
+function createReducer(initialState, handlers) {
+    return function reducer(state = initialState, action) {
+        if (handlers.hasOwnProperty(action.type)) {
+            return handlers[action.type](state, action);
+        } else {
+            return state;
+        }
+    }
+}
+
 export default function Category(state = INITIAL_STATE, action) {
     switch (action.type) {
-        case types.GET_ALL_CATEGORIES_REQUEST:
-            return { ...state, list: { data: state.list.data || null, error: null, isFetching: true } };
         case types.GET_ALL_CATEGORIES_SUCCESS:
             return { ...state, list: { data: action.payload.data, error: null, isFetching: false } };
         case types.GET_ALL_CATEGORIES_FAILURE:

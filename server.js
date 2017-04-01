@@ -1,4 +1,3 @@
-
 var webpack = require('webpack');
 var webpackDevMiddleware = require('webpack-dev-middleware');
 var webpackHotMiddleware = require('webpack-hot-middleware');
@@ -10,8 +9,7 @@ var _ = require('underscore');
 
 var config = require('./webpack.dev.config');
 
-var getCategories = require('./mock/get-categories.json');
-var getCategory = require('./mock/get-category.json');
+var allCategories = require('./mock/get-categories.json');
 
 var port = 3000;
 var app = express();
@@ -29,9 +27,9 @@ app.get("/api/categories", function (req, res) {
     var count = parseInt(req.query.pageCount);
     var start = page * count;
     var end = start + count;
-    var filterCategoryies = _.clone(getCategories);
+    var filterCategoryies = _.clone(allCategories);
     if (req.query.name) {
-        filterCategoryies = getCategories.filter(t => { return t.name.includes(req.query.name)});
+        filterCategoryies = allCategories.filter(t => { return t.name.includes(req.query.name)});
     }
 
     var resData = {
@@ -50,7 +48,7 @@ app.get("/api/categories", function (req, res) {
 })
 
 app.get("/api/categories/:id", function (req, res) {
-    const filterCategory = getCategories.find(function (t) { return t.id === req.params.id; });
+    const filterCategory = allCategories.find(function (t) { return t.id === req.params.id; });
     var resData = {
         status: 200,
         message: null,
@@ -63,9 +61,11 @@ app.post("/api/categories", function (req, res) {
     var data = {
         id: Date.now() + '',
         name: req.body.name,
+        description: req.body.description,
+        displayOrder: req.body.displayOrder,
         enabled: req.body.enabled
     };
-    getCategories = getCategories.concat(data);
+    allCategories = allCategories.concat(data);
 
     var resData = {
         status: 200,
@@ -77,8 +77,10 @@ app.post("/api/categories", function (req, res) {
 })
 
 app.put("/api/categories/:id", function (req, res) {
-    const filterCategory = getCategories.find(function (t) { return t.id === req.params.id; });
+    const filterCategory = allCategories.find(function (t) { return t.id === req.params.id; });
     filterCategory.name = req.body.name;
+    filterCategory.description = req.body.description;
+    filterCategory.displayOrder = req.body.displayOrder;
     filterCategory.enabled = req.body.enabled;
 
     var resData = {
@@ -91,7 +93,7 @@ app.put("/api/categories/:id", function (req, res) {
 })
 
 app.delete("/api/categories/:id", function (req, res) {
-    getCategories = getCategories.filter(function (t) { return t.id !== req.params.id; });
+    allCategories = allCategories.filter(function (t) { return t.id !== req.params.id; });
     res.status(200).send(true);
 })
 

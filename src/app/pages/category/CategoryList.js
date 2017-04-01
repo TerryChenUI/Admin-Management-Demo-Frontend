@@ -138,8 +138,8 @@ class CategoryList extends React.Component {
                         <label htmlFor="name">类别</label>
                         <input type="text" className="form-control" id="name" value={this.state.search.name} onChange={(e) => this.handleNameChange(e)} />
                     </div>
-                    <button type="button" className="btn btn-primary btn-sm" onClick={() => this.search()}>Search</button>
-                    <button type="button" className="btn btn-default btn-sm" onClick={() => this.reset()}>Reset</button>
+                    <button type="button" className="btn btn-primary btn-sm" onClick={() => this.search()}>查询</button>
+                    <button type="button" className="btn btn-default btn-sm" onClick={() => this.reset()}>重置</button>
                 </form>
                 {data ? <Table columns={columns} dataSource={data.result} pagination={pagination} loading={isFetching} /> : null}
             </div>

@@ -34,12 +34,12 @@ class CategoryEdit extends React.Component {
     render() {
         const props = this.props;
         const id = props.params.id;
-        const { data, error, isFetching } = props.current;
+        const data = props.current.data;
         const onSubmit = id ? props.updateCategory : props.createCategory;
         return (
             <div>
                 <h2>category {id ? 'edit' : 'add'} page</h2>
-                <CategoryForm data={data} onSubmit={onSubmit} />
+                <CategoryForm initialValues={data} onSubmit={onSubmit} />
             </div>
         );
     }
@@ -57,7 +57,9 @@ function mapDispatchToProps(dispatch) {
     return {
         getCategoryById: (id) => dispatch(getCategoryById(id)),
         createCategory: (params) => dispatch(createCategory(params)),
-        updateCategory: (params) => dispatch(updateCategory(params.id, params)),
+        updateCategory: (params) => {
+            dispatch(updateCategory(params.id, params))
+        },
         resetMe: () => {
             dispatch(resetCurrentCategory());
             dispatch(resetCreateCategory());
