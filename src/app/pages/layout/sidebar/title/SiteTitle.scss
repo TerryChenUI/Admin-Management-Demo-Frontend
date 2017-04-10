@@ -1,0 +1,41 @@
+.nav_title {
+  width: 230px;
+  float: left;
+  background: #2A3F54;
+  border-radius: 0;
+  height: 57px;
+  .site_title {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-weight: 400;
+    font-size: 22px;
+    width: 100%;
+    color: #ECF0F1 !important;
+    margin-left: 0 !important;
+    line-height: 59px;
+    display: block;
+    height: 55px;
+    margin: 0;
+    padding-left: 10px;
+    i {
+      border: 1px solid #EAEAEA;
+      padding: 5px 6px;
+      border-radius: 50%;
+    }
+    &:hover,
+    &:focus {
+      text-decoration: none
+    }
+  }
+}
+
+.nav-sm .navbar.nav_title {
+  width: 70px;
+  a span {
+    display: none;
+  }
+  a i {
+    font-size: 27px;
+    margin: 13px 0 0 3px;
+  }
+}

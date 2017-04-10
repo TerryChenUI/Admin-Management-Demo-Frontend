@@ -1,4 +1,10 @@
 import React from 'react';
+import SiteTitle from './title/SiteTitle';
+import Profile from './profile/Profile';
+import NavBar from './menu/NavBar';
+import FooterAction from './footer/FooterAction';
+
+import './sidebar.scss';
 
 class Sidebar extends React.Component {
     constructor(props) {
@@ -7,25 +13,14 @@ class Sidebar extends React.Component {
 
     render() {
         return (
-            <div className="col-sm-3 col-md-2 sidebar">
-                <ul className="nav nav-sidebar">
-                    <li className="active"><a href="#">Overview <span className="sr-only">(current)</span></a></li>
-                    <li><a href="#">Reports</a></li>
-                    <li><a href="#">Analytics</a></li>
-                    <li><a href="#">Export</a></li>
-                </ul>
-                <ul className="nav nav-sidebar">
-                    <li><a href="">Nav item</a></li>
-                    <li><a href="">Nav item again</a></li>
-                    <li><a href="">One more nav</a></li>
-                    <li><a href="">Another nav item</a></li>
-                    <li><a href="">More navigation</a></li>
-                </ul>
-                <ul className="nav nav-sidebar">
-                    <li><a href="">Nav item again</a></li>
-                    <li><a href="">One more nav</a></li>
-                    <li><a href="">Another nav item</a></li>
-                </ul>
+            <div className="col-md-3 left_col menu_fixed">
+                <div className="left_col scroll-view">
+                    <SiteTitle/>
+                    <div className="clearfix"/>
+                    <Profile/>
+                    <NavBar location={this.props.location}/>
+                    <FooterAction/>
+                </div>
             </div>
         );
     }

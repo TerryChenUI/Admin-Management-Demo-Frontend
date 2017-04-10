@@ -1,0 +1,15 @@
+footer {
+    background: #fff;
+    padding: 15px 20px;
+    display: block;
+}
+
+@media (min-width: 768px) {
+    footer {
+        margin-left: 230px;
+    }
+}
+
+.nav-sm footer {
+    margin-left: 70px;
+}

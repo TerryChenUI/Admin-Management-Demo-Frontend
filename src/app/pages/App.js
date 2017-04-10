@@ -4,6 +4,11 @@ import Sidebar from './layout/sidebar/Sidebar';
 import Header from './layout/header/Header';
 import Footer from './layout/footer/Footer';
 
+import './app.scss';
+import './form.scss';
+import './iconts-display.scss';
+import './button.scss';
+
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -12,14 +17,12 @@ class App extends React.Component {
     render() {
         return (
             <div className="container body">
-                <Header></Header>
-                <div className="container-fluid">
-                    <div className="row">
-                        <Sidebar></Sidebar>
-                        {this.props.children}
-                    </div>
+                <div className="main_container">
+                    <Sidebar location={this.props.location}></Sidebar>
+                    <Header></Header>
+                    {this.props.children}
+                    <Footer></Footer>
                 </div>
-                <Footer></Footer>
             </div>
         );
     }

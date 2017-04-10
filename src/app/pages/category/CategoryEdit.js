@@ -37,9 +37,21 @@ class CategoryEdit extends React.Component {
         const data = props.current.data;
         const onSubmit = id ? props.updateCategory : props.createCategory;
         return (
-            <div>
-                <h2>category {id ? 'edit' : 'add'} page</h2>
-                <CategoryForm initialValues={data} onSubmit={onSubmit} />
+            <div className="row">
+                <div className="col-md-12 col-sm-12 col-xs-12">
+                    <div className="x_panel">
+                        <div className="x_title">
+                            <h2>{id ? '编辑' : '新增'}类别</h2>
+                            <div className="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <p class="text-muted font-13 m-b-30">
+                                DataTables has most features enabled by default, so all you need to do to use it with your own tables is to call the construction function: <code>$().DataTable();</code>
+                            </p>
+                            <CategoryForm initialValues={data} onSubmit={onSubmit} />
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
@@ -57,9 +69,7 @@ function mapDispatchToProps(dispatch) {
     return {
         getCategoryById: (id) => dispatch(getCategoryById(id)),
         createCategory: (params) => dispatch(createCategory(params)),
-        updateCategory: (params) => {
-            dispatch(updateCategory(params.id, params))
-        },
+        updateCategory: (params) => dispatch(updateCategory(params.id, params)),
         resetMe: () => {
             dispatch(resetCurrentCategory());
             dispatch(resetCreateCategory());

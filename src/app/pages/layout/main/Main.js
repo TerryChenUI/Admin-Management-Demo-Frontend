@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 class Main extends React.Component {
     constructor(props) {
@@ -7,7 +8,7 @@ class Main extends React.Component {
 
     render() {
         return (
-             <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div className="right_col" role="main">
                 {this.props.children}
             </div>
         );

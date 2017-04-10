@@ -1,0 +1,27 @@
+.sidebar-footer {
+  bottom: 0px;
+  clear: both;
+  display: block;
+  padding: 5px 0 0 0;
+  position: fixed;
+  width: 230px;
+  background: #2A3F54;
+  a {
+    padding: 7px 0 3px;
+    text-align: center;
+    width: 25%;
+    font-size: 17px;
+    display: block;
+    float: left;
+    background: #172D44;
+    &:hover {
+      background: #425567;
+    }
+  }
+}
+
+.nav-sm {
+  .hidden-small {
+    visibility: hidden;
+  }
+}

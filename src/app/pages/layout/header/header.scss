@@ -1,0 +1,96 @@
+
+.top_nav {
+  .nav_menu {
+    float: left;
+    background: #EDEDED;
+    border-bottom: 1px solid #D9DEE4;
+    margin-bottom: 10px;
+    width: 100%;
+    position: relative;
+  }
+  .navbar-right {
+    margin: 0;
+    width: 70%;
+    float: right;
+    li {
+      display: inline-block;
+      float: right;
+      position: static;
+    }
+  }
+  .dropdown-menu li {
+    width: 100%;
+    a {
+      width: 100%;
+      padding: 12px 20px;
+    }
+  }
+  li a i {
+    font-size: 15px
+  }
+}
+
+.toggle {
+  float: left;
+  margin: 0;
+  padding-top: 16px;
+  width: 70px;
+  a {
+    padding: 15px 15px 0;
+    margin: 0;
+    cursor: pointer;
+    i {
+      font-size: 26px;
+    }
+  }
+}
+
+.user-profile img {
+  width: 29px;
+  height: 29px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.navbar-nav>li>a,
+.navbar-brand,
+.navbar-nav>li>a {
+  color: #fff !important;
+}
+
+.navbar-brand,
+.navbar-nav>li>a {
+  font-weight: 500;
+  color: #ECF0F1 !important;
+  margin-left: 0 !important;
+  line-height: 32px;
+}
+
+.nav.navbar-nav>li>a {
+  color: #515356 !important;
+}
+
+.nav-sm .main_container .top_nav {
+  display: block;
+  margin-left: 70px;
+  z-index: 2;
+}
+
+@media (min-width: 480px) {
+  .nav_menu {
+    position: static;
+  }
+}
+
+@media (min-width: 480px) {
+  .top_nav .navbar-right li {
+    position: relative;
+  }
+}
+
+@media (max-width: 991px) {
+  .nav-md .container.body .top_nav {
+    width: 100%;
+    margin: 0;
+  }
+}

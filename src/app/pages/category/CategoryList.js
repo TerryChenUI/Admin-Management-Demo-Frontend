@@ -126,22 +126,62 @@ class CategoryList extends React.Component {
         ];
 
         return (
-            <div>
-                <h2 className="sub-header">
-                    文章类别
-                    <Link to='/category/add' className='btn btn-success btn-sm'>
-                        <span className="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加
-                    </Link>
-                </h2>
-                <form className="form-inline search-form">
-                    <div className="form-group">
-                        <label htmlFor="name">类别</label>
-                        <input type="text" className="form-control" id="name" value={this.state.search.name} onChange={(e) => this.handleNameChange(e)} />
+            <div className="row">
+                <div className="col-md-12 col-sm-12 col-xs-12">
+                    <div className="x_panel">
+                        <div className="x_title">
+                            <h2>文章类别 <small><Link to='/category/add' className='btn btn-primary btn-xs'><span className="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加</Link></small></h2>
+                            <ul className="nav navbar-right panel_toolbox">
+                                <li><a className="collapse-link"><i className="fa fa-chevron-up"></i></a>
+                                </li>
+                                <li className="dropdown">
+                                    <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i className="fa fa-wrench"></i></a>
+                                    <ul className="dropdown-menu" role="menu">
+                                        <li><a href="#">Settings 1</a>
+                                        </li>
+                                        <li><a href="#">Settings 2</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li><a className="close-link"><i className="fa fa-close"></i></a>
+                                </li>
+                            </ul>
+                            <div className="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <p class="text-muted font-13 m-b-30">
+                                DataTables has most features enabled by default, so all you need to do to use it with your own tables is to call the construction function: <code>$().DataTable();</code>
+                            </p>
+                            <form className="form-inline search-form">
+                                <div className="form-group">
+                                    <label htmlFor="name">类别</label>
+                                    <input type="text" className="form-control" id="name" value={this.state.search.name} onChange={(e) => this.handleNameChange(e)} />
+                                </div>
+                                <button type="button" className="btn btn-primary btn-sm" onClick={() => this.search()}>查询</button>
+                                <button type="button" className="btn btn-default btn-sm" onClick={() => this.reset()}>重置</button>
+                            </form>
+                            {data ? <Table columns={columns} dataSource={data.result} pagination={pagination} loading={isFetching} /> : null}
+                        </div>
                     </div>
-                    <button type="button" className="btn btn-primary btn-sm" onClick={() => this.search()}>查询</button>
-                    <button type="button" className="btn btn-default btn-sm" onClick={() => this.reset()}>重置</button>
-                </form>
-                {data ? <Table columns={columns} dataSource={data.result} pagination={pagination} loading={isFetching} /> : null}
+                </div>
+                {/*<div className="page-title">
+                    <div className="title_left">
+                        <h3>文章类别
+                            <small><Link to='/category/add' className='btn btn-primary btn-xs'><span className="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加</Link></small>
+                        </h3>
+                    </div>
+
+                    <div className="title_right">
+                        <div className="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                            <div className="input-group">
+                                <input type="text" className="form-control" placeholder="Search for..." />
+                                <span className="input-group-btn">
+                                    <button className="btn btn-default" type="button">Go!</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>*/}
             </div>
         );
     }

@@ -1,4 +1,5 @@
 import React from 'react';
+import './Footer.scss';
 
 class Footer extends React.Component {
     constructor(props) {
@@ -9,7 +10,7 @@ class Footer extends React.Component {
         return (
             <footer>
                 <div className="pull-right">
-                    React Redux Crud Demo for bootstrap.
+                    Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
                 </div>
                 <div className="clearfix"></div>
             </footer>
