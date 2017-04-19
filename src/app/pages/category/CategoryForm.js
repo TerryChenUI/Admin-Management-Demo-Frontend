@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
+import { Link } from 'react-router';
 
 import { renderInputField, renderTextareaField, renderCheckboxField } from '../../components/Field';
 import { required } from '../../components/Validate';
@@ -15,7 +16,7 @@ const CategoryForm = props => {
             <Field type="checkbox" name="enabled" label="启用" component={renderCheckboxField} />
             <div className="form-group">
                 <div className="col-md-6 col-md-offset-3">
-                    <button type="button" className="btn btn-default">取消</button>
+                    <Link to={`/category/list`} className="btn btn-default">取消</Link>
                     <button type="submit" className="btn btn-primary" disabled={invalid || pristine || submitting}>{submitting ? '正在保存' : '保存'}</button>
                 </div>
             </div>

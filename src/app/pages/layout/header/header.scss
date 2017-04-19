@@ -76,6 +76,27 @@
   z-index: 2;
 }
 
+.main_container .top_nav {
+  display: block;
+  margin-left: 230px;
+}
+
+.top_nav .nav {
+  >li>a {
+    &:focus,
+    &:hover {
+      background: #D9DEE4;
+    }
+  }
+  .open>a {
+    background: #D9DEE4;
+    &:focus,
+    &:hover {
+      background: #D9DEE4;
+    }
+  }
+}
+
 @media (min-width: 480px) {
   .nav_menu {
     position: static;

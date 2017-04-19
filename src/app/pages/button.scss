@@ -1,24 +1,31 @@
-/* ***** buttons ********/
 .btn {
   border-radius: 3px;
 }
 
-a.btn-success,
-a.btn-primary,
-a.btn-warning,
-a.btn-danger {
-  color: #fff;
+button, .buttons, .btn, .modal-footer .btn + .btn {
+  margin-bottom: 5px;
+  margin-right: 5px;
+}
+
+.btn-group-vertical .btn, .btn-group .btn {
+  margin-bottom: 0;
+  margin-right: 0;
+}
+
+a {
+  &.btn-success, &.btn-primary, &.btn-warning, &.btn-danger {
+    color: #fff;
+  }
 }
 
 .btn-success {
   background: #26B99A;
   border: 1px solid #169F85;
+  &:hover, &:focus, &:active, &.active {
+    background: #169F85;
+  }
 }
 
-.btn-success:hover,
-.btn-success:focus,
-.btn-success:active,
-.btn-success.active,
 .open .dropdown-toggle.btn-success {
   background: #169F85;
 }
@@ -27,12 +34,13 @@ a.btn-danger {
   color: #E9EDEF;
   background-color: #4B5F71;
   border-color: #364B5F;
+  &:hover, &:focus, &:active, &.active {
+    color: #FFFFFF;
+    background-color: #394D5F;
+    border-color: #394D5F;
+  }
 }
 
-.btn-dark:hover,
-.btn-dark:focus,
-.btn-dark:active,
-.btn-dark.active,
 .open .dropdown-toggle.btn-dark {
   color: #FFFFFF;
   background-color: #394D5F;
@@ -60,34 +68,27 @@ a.btn-danger {
   border: 1px solid #ddd;
   background-color: #fafafa;
   font-size: 12px;
+  > {
+    .fa, .glyphicon, .ion {
+      font-size: 20px;
+      display: block;
+    }
+  }
+  &:hover {
+    background: #f4f4f4;
+    color: #444;
+    border-color: #aaa;
+  }
+  &:active, &:focus {
+    -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    -moz-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  }
+  > .badge {
+    position: absolute;
+    top: -3px;
+    right: -10px;
+    font-size: 10px;
+    font-weight: 400;
+  }
 }
-
-.btn.btn-app>.fa,
-.btn.btn-app>.glyphicon,
-.btn.btn-app>.ion {
-  font-size: 20px;
-  display: block;
-}
-
-.btn.btn-app:hover {
-  background: #f4f4f4;
-  color: #444;
-  border-color: #aaa;
-}
-
-.btn.btn-app:active,
-.btn.btn-app:focus {
-  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  -moz-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-}
-
-.btn.btn-app>.badge {
-  position: absolute;
-  top: -3px;
-  right: -10px;
-  font-size: 10px;
-  font-weight: 400;
-}
-
-/* ***** /buttons *******/

@@ -13,7 +13,7 @@ const renderErrorMessage = (touched, error) => {
 export const renderInputField = ({ input, label, type, placeholder, className, meta: { touched, error, warning } }) => (
     <div className="form-group">
         <label className="control-label col-md-3 col-sm-3 col-xs-12" htmlFor={input.name}>{label}</label>
-        <div className="col-md-6 col-sm-6 col-xs-12">
+        <div className="col-md-4 col-sm-4 col-xs-12">
             <input {...input} id={input.name} className={`${controlCls} ${className}`} placeholder={placeholder} type={type} />
         </div>
         {renderErrorMessage(touched, error)}
@@ -23,7 +23,7 @@ export const renderInputField = ({ input, label, type, placeholder, className, m
 export const renderTextareaField = ({ input, label, type, placeholder, className, meta: { touched, error, warning } }) => (
     <div className="form-group">
         <label className="control-label col-md-3 col-sm-3 col-xs-12" htmlFor={input.name}>{label}</label>
-        <div className="col-md-6 col-sm-6 col-xs-12">
+        <div className="col-md-4 col-sm-4 col-xs-12">
             <textarea {...input} id={input.name} className={`${controlCls} ${className}`} placeholder={placeholder} type={type} />
         </div>
         {renderErrorMessage(touched, error)}
@@ -33,7 +33,7 @@ export const renderTextareaField = ({ input, label, type, placeholder, className
 export const renderCheckboxField = ({ input, label, type, className, meta: { touched, error, warning } }) => (
     <div className="form-group">
         <label className="control-label col-md-3 col-sm-3 col-xs-12" htmlFor={input.name}>{label}</label>
-        <div className="col-md-6 col-sm-6 col-xs-12">
+        <div className="col-md-4 col-sm-4 col-xs-12">
             <div className="checkbox">
                 <label>
                     <input {...input} placeholder={label} className={className} type={type} /> {label}

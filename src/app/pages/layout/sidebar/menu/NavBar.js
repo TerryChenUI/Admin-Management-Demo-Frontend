@@ -1,113 +1,199 @@
 import React from 'react';
-// import './Menu.scss';
+import { Link } from 'react-router';
+import { browserHistory } from 'react-router';
+
+const section = [
+    {
+        name: '常用',
+        menus: [
+            {
+                name: '仪表盘',
+                path: '/',
+                icon: 'fa-home',
+                key: 'home'
+            },
+            {
+                name: '公告管理',
+                path: '/notice',
+                icon: 'fa-bar-chart-o',
+                key: 'notice'
+            },
+            {
+                name: '文章管理',
+                icon: 'fa-edit',
+                key: 'article',
+                subMenus: [
+                    {
+                        name: '所有文章',
+                        path: '/article',
+                        icon: 'fa-home',
+                        key: 'articleList'
+                    },
+                    {
+                        name: '发布文章',
+                        path: '/article/add',
+                        icon: 'fa-home',
+                        key: 'articleAdd'
+                    },
+                    {
+                        name: '分类目录',
+                        path: '/category/list',
+                        icon: 'fa-home',
+                        key: 'category'
+                    },
+                    {
+                        name: '文章标签',
+                        path: '/tag/list',
+                        icon: 'fa-home',
+                        key: 'tag'
+                    },
+                ]
+            },
+            {
+                name: 'Dashboard',
+                icon: 'fa-home',
+                key: 'dashboard',
+                subMenus: [
+                    {
+                        name: 'Dashboard1',
+                        path: '',
+                        icon: 'fa-home',
+                        key: 'home1'
+                    },
+                    {
+                        name: 'Dashboard2',
+                        path: '',
+                        icon: 'fa-home',
+                        key: 'home2',
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        name: '全局',
+        menus: [
+            {
+                name: '文章管理',
+                icon: 'fa-home',
+                key: 'article10',
+                subMenus: [
+                    {
+                        name: '所有文章',
+                        path: '/article2',
+                        icon: 'fa-home',
+                        key: 'article2'
+                    },
+                    {
+                        name: '发布文章',
+                        path: '/article2/add',
+                        icon: 'fa-home',
+                        key: 'article3'
+                    },
+                    {
+                        name: '分类目录',
+                        path: '/category2/list',
+                        icon: 'fa-home',
+                        key: 'article4'
+                    },
+                    {
+                        name: '文章标签',
+                        path: '/tag2/list',
+                        icon: 'fa-home',
+                        key: 'article5'
+                    },
+                ]
+            },
+        ]
+    }
+];
 
 export default class NavBar extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = this.setMenuState(this.props.location.pathname)
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState(this.setMenuState(nextProps.location.pathname));
+    }
+
+    setMenuState(path) {
+        const keys = {};
+        section.map(t => {
+            t.menus.map(m => {
+                if (m.subMenus) {
+                    m.subMenus.map(n => {
+                        if (n.path === path) {
+                            keys.currentKey = n.key;
+                            keys.openKey = m.key;
+                            return;
+                        }
+                    });
+                } else {
+                    if (m.path === path) {
+                        keys.currentKey = m.key;
+                        return;
+                    }
+                }
+            });
+        });
+        return keys;
+    }
+
+    onOpenChange(e, openKey) {
+        this.setState({
+            openKey: this.state.openKey == openKey ? "" : openKey
+        });
+    }
+
+    handleClick(e, path, currentKey, openKey) {
+        this.setState({
+            currentKey: currentKey,
+            openKey: openKey
+        });
+        browserHistory.push(path);
+    }
+
+    renderSubMenu(data, openKey) {
+        return data.map(t => {
+            return (
+                <li key={t.key} className={this.state.currentKey == t.key ? "active" : ""}><a href="javascript:void(0)" onClick={(e) => this.handleClick(e, t.path, t.key, openKey)}>{t.name}</a></li>
+            )
+        });
+    }
+
+    renderMenu(data) {
+        return data.map(t => {
+            return (
+                t.subMenus ?
+                    <li key={t.key} className={this.state.openKey == t.key ? "active" : ""} onClick={(e) => this.onOpenChange(e, t.key)}>
+                        <Link to={t.link}><i className={`fa ${t.icon}`}></i>{t.name} <span className={`fa fa-chevron-${this.state.openKey == t.key ? "down" : "up"}`}></span></Link>
+                        <ul className="nav child_menu" style={{ display: this.state.openKey == t.key ? "block" : "none" }}>
+                            {this.renderSubMenu(t.subMenus, t.key)}
+                        </ul>
+                    </li>
+                    : <li key={t.key} className={this.state.currentKey == t.key ? "active" : ""}><a href="javascript:void(0)" onClick={(e) => this.handleClick(e, t.path, t.key)}><i className={`fa ${t.icon}`}></i>{t.name}</a></li>
+            )
+        });
     }
 
     render() {
-
         return (
             <div className="sidebar-menu hidden-print">
-                <div className="menu_section">
-                    <h3>General</h3>
-                    <ul className="nav side-menu">
-                        <li className="active"><a><i className="fa fa-home"></i> Home <span className="fa fa-chevron-down"></span></a>
-                            <ul className="nav child_menu" style={{display: "block"}}>
-                                <li className="current-page"><a href="index.html">Dashboard</a></li>
-                                <li><a href="index2.html">Dashboard2</a></li>
-                                <li><a href="index3.html">Dashboard3</a></li>
-                            </ul>
-                        </li>
-                        <li><a><i className="fa fa-edit"></i> Forms <span className="fa fa-chevron-down"></span></a>
-                            <ul className="nav child_menu">
-                                <li><a href="form.html">General Form</a></li>
-                                <li><a href="form_advanced.html">Advanced Components</a></li>
-                                <li><a href="form_validation.html">Form Validation</a></li>
-                                <li><a href="form_wizards.html">Form Wizard</a></li>
-                                <li><a href="form_upload.html">Form Upload</a></li>
-                                <li><a href="form_buttons.html">Form Buttons</a></li>
-                            </ul>
-                        </li>
-                        <li><a><i className="fa fa-desktop"></i> UI Elements <span className="fa fa-chevron-down"></span></a>
-                            <ul className="nav child_menu">
-                                <li><a href="general_elements.html">General Elements</a></li>
-                                <li><a href="media_gallery.html">Media Gallery</a></li>
-                                <li><a href="typography.html">Typography</a></li>
-                                <li><a href="icons.html">Icons</a></li>
-                                <li><a href="glyphicons.html">Glyphicons</a></li>
-                                <li><a href="widgets.html">Widgets</a></li>
-                                <li><a href="invoice.html">Invoice</a></li>
-                                <li><a href="inbox.html">Inbox</a></li>
-                                <li><a href="calendar.html">Calendar</a></li>
-                            </ul>
-                        </li>
-                        <li><a><i className="fa fa-table"></i> Tables <span className="fa fa-chevron-down"></span></a>
-                            <ul className="nav child_menu">
-                                <li><a href="tables.html">Tables</a></li>
-                                <li><a href="tables_dynamic.html">Table Dynamic</a></li>
-                            </ul>
-                        </li>
-                        <li><a><i className="fa fa-bar-chart-o"></i> Data Presentation <span className="fa fa-chevron-down"></span></a>
-                            <ul className="nav child_menu">
-                                <li><a href="chartjs.html">Chart JS</a></li>
-                                <li><a href="chartjs2.html">Chart JS2</a></li>
-                                <li><a href="morisjs.html">Moris JS</a></li>
-                                <li><a href="echarts.html">ECharts</a></li>
-                                <li><a href="other_charts.html">Other Charts</a></li>
-                            </ul>
-                        </li>
-                        <li><a><i className="fa fa-clone"></i>Layouts <span className="fa fa-chevron-down"></span></a>
-                            <ul className="nav child_menu">
-                                <li><a href="fixed_sidebar.html">Fixed Sidebar</a></li>
-                                <li><a href="fixed_footer.html">Fixed Footer</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-                <div className="menu_section">
-                    <h3>Live On</h3>
-                    <ul className="nav side-menu">
-                        <li><a><i className="fa fa-bug"></i> Additional Pages <span className="fa fa-chevron-down"></span></a>
-                            <ul className="nav child_menu">
-                                <li><a href="e_commerce.html">E-commerce</a></li>
-                                <li><a href="projects.html">Projects</a></li>
-                                <li><a href="project_detail.html">Project Detail</a></li>
-                                <li><a href="contacts.html">Contacts</a></li>
-                                <li><a href="profile.html">Profile</a></li>
-                            </ul>
-                        </li>
-                        <li><a><i className="fa fa-windows"></i> Extras <span className="fa fa-chevron-down"></span></a>
-                            <ul className="nav child_menu">
-                                <li><a href="page_403.html">403 Error</a></li>
-                                <li><a href="page_404.html">404 Error</a></li>
-                                <li><a href="page_500.html">500 Error</a></li>
-                                <li><a href="plain_page.html">Plain Page</a></li>
-                                <li><a href="login.html">Login Page</a></li>
-                                <li><a href="pricing_tables.html">Pricing Tables</a></li>
-                            </ul>
-                        </li>
-                        <li><a><i className="fa fa-sitemap"></i> Multilevel Menu <span className="fa fa-chevron-down"></span></a>
-                            <ul className="nav child_menu">
-                                <li><a href="#level1_1">Level One</a>
-                                    <a>Level One<span className="fa fa-chevron-down"></span></a>
-                                    <ul className="nav child_menu">
-                                        <li className="sub_menu"><a href="level2.html">Level Two</a>
-                                        </li>
-                                        <li><a href="#level2_1">Level Two</a>
-                                        </li>
-                                        <li><a href="#level2_2">Level Two</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li><a href="#level1_2">Level One</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li><a href="javascript:void(0)"><i className="fa fa-laptop"></i> Landing Page <span className="label label-success pull-right">Coming Soon</span></a></li>
-                    </ul>
-                </div>
+                {
+                    section.map((t, index) => {
+                        return (
+                            <div key={index} className="menu_section">
+                                <h3>{t.name}</h3>
+                                <ul className="nav side-menu">
+                                    {this.renderMenu(t.menus)}
+                                </ul>
+                            </div>
+                        )
+                    })
+                }
             </div>
         );
     }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 
 import CategoryForm from './CategoryForm';
 import {
@@ -41,13 +42,13 @@ class CategoryEdit extends React.Component {
                 <div className="col-md-12 col-sm-12 col-xs-12">
                     <div className="x_panel">
                         <div className="x_title">
-                            <h2>{id ? '编辑' : '新增'}类别</h2>
+                            <h2>{id ? '编辑' : '新增'}分类 <small><Link to='/category/list'><span className="fa fa-angle-double-left" aria-hidden="true"></span> 返回列表</Link></small></h2>
                             <div className="clearfix"></div>
                         </div>
                         <div class="x_content">
-                            <p class="text-muted font-13 m-b-30">
+                            {/*<p class="text-muted font-13 m-b-30">
                                 DataTables has most features enabled by default, so all you need to do to use it with your own tables is to call the construction function: <code>$().DataTable();</code>
-                            </p>
+                            </p>*/}
                             <CategoryForm initialValues={data} onSubmit={onSubmit} />
                         </div>
                     </div>

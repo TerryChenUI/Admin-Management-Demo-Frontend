@@ -5,6 +5,7 @@ import Header from './layout/header/Header';
 import Footer from './layout/footer/Footer';
 
 import './app.scss';
+import './table.scss';
 import './form.scss';
 import './iconts-display.scss';
 import './button.scss';

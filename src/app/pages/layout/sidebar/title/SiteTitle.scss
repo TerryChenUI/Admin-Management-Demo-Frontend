@@ -4,6 +4,7 @@
   background: #2A3F54;
   border-radius: 0;
   height: 57px;
+  margin: 0;
   .site_title {
     text-overflow: ellipsis;
     overflow: hidden;
@@ -22,20 +23,21 @@
       padding: 5px 6px;
       border-radius: 50%;
     }
-    &:hover,
-    &:focus {
-      text-decoration: none
+    &:hover, &:focus {
+      text-decoration: none;
     }
   }
 }
 
 .nav-sm .navbar.nav_title {
   width: 70px;
-  a span {
-    display: none;
-  }
-  a i {
-    font-size: 27px;
-    margin: 13px 0 0 3px;
+  a {
+    span {
+      display: none;
+    }
+    i {
+      font-size: 27px;
+      margin: 13px 0 0 3px;
+    }
   }
 }
