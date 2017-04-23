@@ -1,13 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { getAllCategories, deleteCategory, resetDeleteCategory } from '../../actions/Category';
-import Table from '../../rui/table';
-import Popconfirm from '../../rui/popconfirm';
-import alertService from '../../services/AlertService';
-import { defaultPageSize, defaultPageCount } from '../../constants';
+import { getAllTags, deleteTag, resetDeleteTag } from '../../../actions/Tag';
+import Table from '../../../rui/table';
+import Popconfirm from '../../../rui/popconfirm';
+import alertService from '../../../services/AlertService';
+import { defaultPageSize, defaultPageCount } from '../../../constants';
 
-class CategoryList extends React.Component {
+class TagList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -21,7 +21,7 @@ class CategoryList extends React.Component {
     }
 
     componentDidMount() {
-        this.getAllCategories(this.state.filter, this.state.pageSize, this.state.pageCount);
+        this.getAllTags(this.state.filter, this.state.pageSize, this.state.pageCount);
     }
 
     componentWillUnmount() {
@@ -42,7 +42,7 @@ class CategoryList extends React.Component {
         this.setState({
             pageSize: pageSize
         });
-        this.getAllCategories(this.state.filter, pageSize, this.state.pageCount);
+        this.getAllTags(this.state.filter, pageSize, this.state.pageCount);
     }
 
     getPagination(total) {
@@ -62,8 +62,8 @@ class CategoryList extends React.Component {
         });
     }
 
-    getAllCategories(filter, pageSize, pageCount) {
-        this.props.getAllCategories(filter, pageSize, pageCount);
+    getAllTags(filter, pageSize, pageCount) {
+        this.props.getAllTags(filter, pageSize, pageCount);
     }
 
     search() {
@@ -72,7 +72,7 @@ class CategoryList extends React.Component {
             filter.name = this.state.search.name;
         }
         this.setState({ filter: filter, pageSize: defaultPageSize, pageCount: defaultPageCount });
-        this.getAllCategories(filter, defaultPageSize, defaultPageCount);
+        this.getAllTags(filter, defaultPageSize, defaultPageCount);
     }
 
     reset() {
@@ -85,7 +85,7 @@ class CategoryList extends React.Component {
     }
 
     onConfirmDelete(id) {
-        this.props.deleteCategory(id);
+        this.props.deleteTag(id);
     }
 
     render() {
@@ -94,9 +94,24 @@ class CategoryList extends React.Component {
         const pagination = data ? this.getPagination(data.total) : null;
         const columns = [
             {
-                title: '类别',
+                title: '标签',
                 key: 'name',
                 dataIndex: 'name'
+            },
+            {
+                title: '别名',
+                key: 'slug',
+                dataIndex: 'slug'
+            },
+            {
+                title: '描述',
+                key: 'description',
+                dataIndex: 'description'
+            },
+            {
+                title: '排序',
+                key: 'displayOrder',
+                dataIndex: 'displayOrder'
             },
             {
                 title: '状态',
@@ -114,7 +129,7 @@ class CategoryList extends React.Component {
                 dataIndex: 'id',
                 render: (id) => (
                     <div>
-                        <Link to={`/category/edit/${id}`} className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-pencil" aria-hidden="true"></span> 编辑</Link>
+                        <Link to={`/tag/edit/${id}`} className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-pencil" aria-hidden="true"></span> 编辑</Link>
                         <Popconfirm title="你确认要删除这条记录?" onConfirm={() => this.onConfirmDelete(id)} okText="确定" cancelText="取消">
                             <button type="button" className="btn btn-danger btn-xs" disabled={id === deleted.data && deleted.isFetching}>
                                 <span className="glyphicon glyphicon-trash" aria-hidden="true"></span> {id === deleted.data && deleted.isFetching ? '正在删除' : '删除'}
@@ -129,7 +144,7 @@ class CategoryList extends React.Component {
             <div>
                 <div className="page-title">
                     <div className="title_left">
-                        <h3>分类目录</h3>
+                        <h3>所有标签</h3>
                     </div>
 
                     <div className="title_right">
@@ -143,16 +158,13 @@ class CategoryList extends React.Component {
                     <div className="col-md-12 col-sm-12 col-xs-12">
                         <div className="x_panel">
                             <div className="x_title">
-                                <h2>所有分类 <small><Link to='/category/add' className='btn btn-primary btn-xs'><span className="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加</Link></small></h2>
+                                <h2>标签管理 <small><Link to='/tag/add' className='btn btn-primary btn-xs'><span className="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加</Link></small></h2>
                                 <div className="clearfix"></div>
                             </div>
                             <div className="x_content">
-                                {/*<p className="text-muted font-13 m-b-30">
-                                DataTables has most features enabled by default, so all you need to do to use it with your own tables is to call the construction function: <code>$().DataTable();</code>
-                            </p>*/}
                                 <form className="form-inline search-from">
                                     <div className="form-group">
-                                        <label htmlFor="name">类别</label>
+                                        <label htmlFor="name">标签</label>
                                         <input type="text" className="form-control" id="name" value={this.state.search.name} onChange={(e) => this.handleNameChange(e)} />
                                     </div>
                                     <div className="form-group">
@@ -173,20 +185,20 @@ class CategoryList extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        list: state.category.list,
-        deleted: state.category.deleted
+        list: state.tag.list,
+        deleted: state.tag.deleted
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        getAllCategories: (filter, pageSize, pageCount) => dispatch(getAllCategories(filter, pageSize, pageCount)),
-        deleteCategory: (id) => dispatch(deleteCategory(id)),
-        resetMe: () => dispatch(resetDeleteCategory())
+        getAllTags: (filter, pageSize, pageCount) => dispatch(getAllTags(filter, pageSize, pageCount)),
+        deleteTag: (id) => dispatch(deleteTag(id)),
+        resetMe: () => dispatch(resetDeleteTag())
     }
 }
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(CategoryList)
+)(TagList)

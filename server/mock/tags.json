@@ -1,0 +1,22 @@
+[
+    {
+        "id": "1",
+        "name": "Tag 1",
+        "slug": "Tag 1",
+        "description": "Tag 品牌",
+        "displayOrder": 1,
+        "enabled": true,
+        "create": "2016-07-21 14:17:56Z",
+        "update": "2016-07-22 22:30:22Z"
+    },
+    {
+        "id": "2",
+        "name": "Tag 2",
+        "slug": "Tag 2",
+        "description": "Tag 品牌",
+        "displayOrder": 2,
+        "enabled": false,
+        "create": "2016-06-21 14:17:56Z",
+        "update": "2016-06-22 22:30:22Z"
+    }
+]

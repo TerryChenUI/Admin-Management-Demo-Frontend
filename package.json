@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prebuild": "npm install --registry https://registry.npm.taobao.org",
-    "start": "cross-env supervisor -w server.js server.js",
+    "dev": "cross-env gulp nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -37,6 +37,8 @@
     "eslint-watch": "^3.0.0",
     "express": "^4.14.1",
     "file-loader": "^0.10.0",
+    "gulp": "^3.9.1",
+    "gulp-nodemon": "^2.2.1",
     "node-sass": "^4.5.1",
     "redux-composable-fetch": "^0.3.4",
     "sass-loader": "^6.0.2",

@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { Link } from 'react-router';
 
-import { renderInputField, renderTextareaField, renderCheckboxField } from '../../components/Field';
-import { required } from '../../components/Validate';
+import { renderInputField, renderTextareaField, renderCheckboxField } from '../../../components/Field';
+import { required } from '../../../components/Validate';
 
 const CategoryForm = props => {
     const { handleSubmit, invalid, pristine, reset, submitting, onSubmit } = props;

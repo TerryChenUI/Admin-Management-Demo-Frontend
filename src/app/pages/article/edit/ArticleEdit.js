@@ -2,22 +2,22 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 
-import CategoryForm from './CategoryForm';
+import ArticleForm from './ArticleForm';
 import {
-    getCategoryById, resetCurrentCategory,
-    createCategory, resetCreateCategory,
-    updateCategory, resetUpdateCategory
-} from '../../actions/Category';
-import alertService from '../../services/AlertService';
+    getArticleById, resetCurrentArticle,
+    createArticle, resetCreateArticle,
+    updateArticle, resetUpdateArticle
+} from '../../../actions/Article';
+import alertService from '../../../services/AlertService';
 
-class CategoryEdit extends React.Component {
+class ArticleEdit extends React.Component {
     constructor(props) {
         super(props);
     }
 
     componentDidMount() {
         const id = this.props.params.id;
-        id && this.props.getCategoryById(id);
+        id && this.props.getArticleById(id);
     }
 
     componentWillUnmount() {
@@ -26,9 +26,9 @@ class CategoryEdit extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.created.data || nextProps.created.error) {
-            nextProps.created.data ? alertService.success('添加类别成功', null, '/category/list') : alertService.error('添加类别失败', nextProps.created.error);
+            nextProps.created.data ? alertService.success('添加类别成功', null, '/article/list') : alertService.error('添加类别失败', nextProps.created.error);
         } else if (nextProps.updated.data || nextProps.updated.error) {
-            nextProps.updated.data ? alertService.success('更新类别成功', null, '/category/list') : alertService.error('更新类别失败', nextProps.updated.error);
+            nextProps.updated.data ? alertService.success('更新类别成功', null, '/article/list') : alertService.error('更新类别失败', nextProps.updated.error);
         }
     }
 
@@ -36,20 +36,20 @@ class CategoryEdit extends React.Component {
         const props = this.props;
         const id = props.params.id;
         const data = props.current.data;
-        const onSubmit = id ? props.updateCategory : props.createCategory;
+        const onSubmit = id ? props.updateArticle : props.createArticle;
         return (
             <div className="row">
                 <div className="col-md-12 col-sm-12 col-xs-12">
                     <div className="x_panel">
                         <div className="x_title">
-                            <h2>{id ? '编辑' : '新增'}分类 <small><Link to='/category/list'><span className="fa fa-angle-double-left" aria-hidden="true"></span> 返回列表</Link></small></h2>
+                            <h2>{id ? '编辑' : '新增'}文章 <small><Link to='/article/list'><span className="fa fa-angle-double-left" aria-hidden="true"></span> 返回列表</Link></small></h2>
                             <div className="clearfix"></div>
                         </div>
                         <div class="x_content">
                             {/*<p class="text-muted font-13 m-b-30">
                                 DataTables has most features enabled by default, so all you need to do to use it with your own tables is to call the construction function: <code>$().DataTable();</code>
                             </p>*/}
-                            <CategoryForm initialValues={data} onSubmit={onSubmit} />
+                            <ArticleForm initialValues={data} onSubmit={onSubmit} />
                         </div>
                     </div>
                 </div>
@@ -60,21 +60,21 @@ class CategoryEdit extends React.Component {
 
 function mapStateToProps(state, ownProps) {
     return {
-        current: state.category.current,
-        created: state.category.created,
-        updated: state.category.updated
+        current: state.article.current,
+        created: state.article.created,
+        updated: state.article.updated
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        getCategoryById: (id) => dispatch(getCategoryById(id)),
-        createCategory: (params) => dispatch(createCategory(params)),
-        updateCategory: (params) => dispatch(updateCategory(params.id, params)),
+        getArticleById: (id) => dispatch(getArticleById(id)),
+        createArticle: (params) => dispatch(createArticle(params)),
+        updateArticle: (params) => dispatch(updateArticle(params.id, params)),
         resetMe: () => {
-            dispatch(resetCurrentCategory());
-            dispatch(resetCreateCategory());
-            dispatch(resetUpdateCategory());
+            dispatch(resetCurrentArticle());
+            dispatch(resetCreateArticle());
+            dispatch(resetUpdateArticle());
         }
     }
 }
@@ -82,4 +82,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(CategoryEdit)
+)(ArticleEdit)

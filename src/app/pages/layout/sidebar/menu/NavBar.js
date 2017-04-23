@@ -7,7 +7,7 @@ const section = [
         name: '常用',
         menus: [
             {
-                name: '仪表盘',
+                name: '首页',
                 path: '/',
                 icon: 'fa-home',
                 key: 'home'
@@ -25,7 +25,7 @@ const section = [
                 subMenus: [
                     {
                         name: '所有文章',
-                        path: '/article',
+                        path: '/article/list',
                         icon: 'fa-home',
                         key: 'articleList'
                     },

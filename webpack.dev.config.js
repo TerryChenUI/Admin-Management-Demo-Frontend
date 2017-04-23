@@ -18,6 +18,11 @@ module.exports = {
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin()
     ],
+    // resolve: {
+    //     modules: [
+    //         path.resolve('./app')
+    //     ]
+    // },
     module: {
         loaders: [
             { test: /\.(js|jsx)$/, loaders: 'babel-loader', exclude: /node_modules/ },
