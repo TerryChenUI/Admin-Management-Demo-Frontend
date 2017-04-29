@@ -7,7 +7,9 @@
         "description": "description",
         "content": "content",
         "thumb": "thumb.jpg",
-        "state": 0, // -1回收站，0草稿，1已发布
+        "state": 0,
+        "author": "redux",
+        "source": "hupu",
         "meta": {
             "views": 111,
             "likes": 222,
@@ -15,7 +17,7 @@
         },
         "create": "2016-07-21 14:17:56Z",
         "update": "2016-07-22 22:30:22Z",
-        "tag": "1, 2, 3",
-        "category": "1, 2, 3"
+        "tags": "1, 2, 3",
+        "categories": "1, 2, 3"
     }
 ]

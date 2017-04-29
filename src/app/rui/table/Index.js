@@ -43,7 +43,7 @@ class Table extends React.Component {
                         columns.map(col => {
                             return (
                                 <td key={`${col.key}`}>
-                                    {col.render ? col.render(row[col.dataIndex]) : row[col.dataIndex]}
+                                    {col.render ? col.render(row[col.dataIndex], row) : row[col.dataIndex]}
                                 </td>
                             )
                         })

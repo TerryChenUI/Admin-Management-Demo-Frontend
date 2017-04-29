@@ -1,18 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
+import moment from 'moment';
 import { getAllTags, deleteTag, resetDeleteTag } from '../../../actions/Tag';
 import Table from '../../../rui/table';
 import Popconfirm from '../../../rui/popconfirm';
 import alertService from '../../../services/AlertService';
 import { defaultPageSize, defaultPageCount } from '../../../constants';
+import { momentFormat } from '../../../components/Util';
 
 class TagList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             search: {
-                name: ''
+                keyword: '',
+                enabled: '-1'
             },
             filter: null,
             pageSize: defaultPageSize,
@@ -54,12 +57,16 @@ class TagList extends React.Component {
         }
     }
 
-    handleNameChange(e) {
-        this.setState({
-            search: {
-                name: e.target.value
-            }
-        });
+    handleKeywordChange(e) {
+        const search = this.state.search;
+        search.keyword = e.target.value;
+        this.setState(search);
+    }
+
+    handleEnabledChange(e) {
+        const search = this.state.search;
+        search.enabled = e.target.value;
+        this.setState(search);
     }
 
     getAllTags(filter, pageSize, pageCount) {
@@ -68,8 +75,13 @@ class TagList extends React.Component {
 
     search() {
         const filter = {};
-        if (this.state.search.name) {
-            filter.name = this.state.search.name;
+        if (this.state.search.keyword) {
+            filter.keyword = this.state.search.keyword;
+        }
+        if (this.state.search.enabled !== '-1') {
+            filter.enabled = this.state.search.enabled === "1" ? true : false;
+        } else {
+            delete filter.enabled;
         }
         this.setState({ filter: filter, pageSize: defaultPageSize, pageCount: defaultPageCount });
         this.getAllTags(filter, defaultPageSize, defaultPageCount);
@@ -78,7 +90,8 @@ class TagList extends React.Component {
     reset() {
         this.setState({
             search: {
-                name: ''
+                keyword: '',
+                enabled: '-1'
             },
             filter: null
         });
@@ -111,15 +124,37 @@ class TagList extends React.Component {
             {
                 title: '排序',
                 key: 'displayOrder',
-                dataIndex: 'displayOrder'
+                dataIndex: 'displayOrder',
+                width: 80
             },
             {
                 title: '状态',
                 key: 'enabled',
                 dataIndex: 'enabled',
+                width: 80,
                 render: (enabled) => (
+                    <span className={`fa fa-${enabled ? 'check' : 'lock'}`} aria-hidden="true"></span>
+                ),
+            },
+            {
+                title: '创建时间',
+                key: 'create',
+                dataIndex: 'create',
+                width: 150,
+                render: (create) => (
                     <span>
-                        {enabled ? '启用' : '禁用'}
+                        {momentFormat(create)}
+                    </span>
+                ),
+            },
+            {
+                title: '更新时间',
+                key: 'update',
+                dataIndex: 'update',
+                width: 150,
+                render: (update) => (
+                    <span>
+                        {momentFormat(update)}
                     </span>
                 ),
             },
@@ -127,6 +162,7 @@ class TagList extends React.Component {
                 title: '操作',
                 key: 'action',
                 dataIndex: 'id',
+                width: 150,
                 render: (id) => (
                     <div>
                         <Link to={`/tag/edit/${id}`} className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-pencil" aria-hidden="true"></span> 编辑</Link>
@@ -144,13 +180,13 @@ class TagList extends React.Component {
             <div>
                 <div className="page-title">
                     <div className="title_left">
-                        <h3>所有标签</h3>
+                        <h3>文章标签</h3>
                     </div>
-
                     <div className="title_right">
-                        <div className="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                            test
-                        </div>
+                        <ol className="breadcrumb">
+                            <li>文章管理</li>
+                            <li className="active">文章标签</li>
+                        </ol>
                     </div>
                 </div>
                 <div className="clearfix"></div>
@@ -158,14 +194,22 @@ class TagList extends React.Component {
                     <div className="col-md-12 col-sm-12 col-xs-12">
                         <div className="x_panel">
                             <div className="x_title">
-                                <h2>标签管理 <small><Link to='/tag/add' className='btn btn-primary btn-xs'><span className="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加</Link></small></h2>
+                                <h2>所有标签 <small><Link to='/tag/add' className='btn btn-primary btn-xs'><span className="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加</Link></small></h2>
                                 <div className="clearfix"></div>
                             </div>
                             <div className="x_content">
                                 <form className="form-inline search-from">
                                     <div className="form-group">
                                         <label htmlFor="name">标签</label>
-                                        <input type="text" className="form-control" id="name" value={this.state.search.name} onChange={(e) => this.handleNameChange(e)} />
+                                        <input type="text" className="form-control" id="name" value={this.state.search.keyword} onChange={(e) => this.handleKeywordChange(e)} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="enabled">状态</label>
+                                        <select id="enabled" className="form-control" value={this.state.enabled} onChange={(e) => this.handleEnabledChange(e)}>
+                                            <option value="-1">--请选择--</option>
+                                            <option value="1">启用</option>
+                                            <option value="0">禁用</option>
+                                        </select>
                                     </div>
                                     <div className="form-group">
                                         <button type="button" className="btn btn-primary btn-sm" onClick={() => this.search()}>搜索</button>

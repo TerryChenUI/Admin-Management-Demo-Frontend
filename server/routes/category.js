@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const _ = require('underscore');
 
-const allCategories = require('../mock/categories.json');
+let allCategories = require('../mock/categories.json');
 
 router
     .get("/categories", function (req, res) {
@@ -24,7 +24,7 @@ router
             }
         };
 
-        resData.data.result = filterCategoryies.slice(start, end);
+        resData.data.result = [];
         resData.data.total = filterCategoryies.length;
 
         res.send(resData);

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prebuild": "npm install --registry https://registry.npm.taobao.org",
-    "dev": "cross-env gulp nodemon",
+    "dev": "gulp nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -52,6 +52,7 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "isomorphic-fetch": "^2.2.1",
+    "moment": "^2.18.1",
     "query-string": "^4.3.2",
     "rc-animate": "^2.3.1",
     "react": "^15.4.2",

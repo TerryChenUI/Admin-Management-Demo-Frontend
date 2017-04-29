@@ -1,3 +1,4 @@
+const chokidar = require('chokidar');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
@@ -23,12 +24,11 @@ app.use(express.static(path.join(__dirname, '../src')));
 // register routes
 util.registerRoutes(app);
 
-
-app.get('*', function (req, res) {
+app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../src', 'index.html'));
 });
 
-app.listen(port, function (err) {
+app.listen(port, (err) => {
     if (err) {
         console.log(err);
     } else {
