@@ -1,7 +1,7 @@
 import * as types from '../actions/Tag';
 
 const INITIAL_STATE = {
-    list: { data: null, error: null, isFetching: false },
+    list: { data: null, pagination: null, message: null, isFetching: false },
     current: { data: null, error: null, isFetching: false },
     created: { data: null, error: null, isFetching: false },
     updated: { data: null, error: null, isFetching: false },
@@ -21,36 +21,37 @@ function createReducer(initialState, handlers) {
 export default function Tag(state = INITIAL_STATE, action) {
     switch (action.type) {
         case types.GET_ALL_TAGS_SUCCESS:
-            return { ...state, list: { data: action.payload.data, error: null, isFetching: false } };
+            const { data, pagination } = action.payload.result;
+            return { ...state, list: { data, pagination, message: action.payload.message, isFetching: false } };
         case types.GET_ALL_TAGS_FAILURE:
-            return { ...state, list: { data: state.list.data || null, error: action.payload, isFetching: false } };
+            return { ...state, list: { data: state.list.data || null, error: action.payload.error, message: action.payload.message, isFetching: false } };
         case types.RESET_GET_ALL_TAGS:
-            return { ...state, list: { data: null, error: null, isFetching: false } };
+            return { ...state, list: { data: null, error: null, message: null, isFetching: false } };
 
         case types.GET_TAG_BY_ID_REQUEST:
             return { ...state, current: { data: null, error: null, isFetching: true } };
         case types.GET_TAG_BY_ID_SUCCESS:
-            return { ...state, current: { data: action.payload.data, error: null, isFetching: false } };
+            return { ...state, current: { data: action.payload.result, message: action.payload.message, isFetching: false } };
         case types.GET_TAG_BY_ID_FAILURE:
-            return { ...state, current: { data: null || null, error: action.payload, isFetching: false } };
+            return { ...state, current: { data: null, error: action.payload.error, message: action.payload.message, isFetching: false } };
         case types.RESET_CURRENT_TAG:
-            return { ...state, current: { data: null, error: null, isFetching: false } };
+            return { ...state, current: { data: null, error: null, message: null, isFetching: false } };
 
         case types.CREATE_TAG_REQUEST:
             return { ...state, created: { data: null, error: null, isFetching: true } };
         case types.CREATE_TAG_SUCCESS:
-            return { ...state, created: { data: action.payload.data, error: null, isFetching: false } };
+            return { ...state, created: { data: action.payload.result, message: action.payload.message, isFetching: false } };
         case types.CREATE_TAG_FAILURE:
-            return { ...state, created: { data: null, error: action.payload.message, isFetching: false } };
+            return { ...state, created: { data: null, error: action.payload.error, message: action.payload.message, isFetching: false } };
         case types.RESET_CREATE_TAG:
-            return { ...state, created: { data: null, error: null, isFetching: false } };
+            return { ...state, created: { data: null, error: null, message: null, isFetching: false } };
 
         case types.UPDATE_TAG_REQUEST:
             return { ...state, updated: { data: null, error: null, isFetching: true } };
         case types.UPDATE_TAG_SUCCESS:
-            return { ...state, updated: { data: action.payload.data, error: null, isFetching: false } };
+            return { ...state, updated: { data: action.payload.result, message: action.payload.message, isFetching: false } };
         case types.UPDATE_TAG_FAILURE:
-            return { ...state, updated: { data: null, error: action.payload.message, isFetching: false } };
+            return { ...state, updated: { data: null, error: action.payload.error, message: action.payload.message, isFetching: false } };
         case types.RESET_UPDATE_TAG:
             return { ...state, updated: { data: null, error: null, isFetching: false } };
 
@@ -61,19 +62,17 @@ export default function Tag(state = INITIAL_STATE, action) {
             return {
                 ...state,
                 list: {
-                    data: {
-                        result: newData,
-                        total: state.list.data.total
-                    },
+                    data: newData,
+                    pagination: state.list.pagination,
                     error: null,
                     isFetching: false
                 },
                 deleted: { data: action.payload, error: null, isFetching: false }
             }
         case types.DELETE_TAG_FAILURE:
-            return { ...state, deleted: { data: action.payload, error: action.payload.message, isFetching: false } };
+            return { ...state, deleted: { data: action.payload.result, error: action.payload.error, message: action.payload.message, isFetching: false } };
         case types.RESET_DELETE_TAG:
-            return { ...state, deleted: { data: null, error: null, isFetching: false } };
+            return { ...state, deleted: { data: null, error: null, message: null, isFetching: false } };
 
         default:
             return state

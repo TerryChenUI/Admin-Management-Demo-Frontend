@@ -68,7 +68,7 @@ export const resetDeleteTag = makeActionCreator(RESET_DELETE_TAG);
 //     };
 // }
 
-export function getAllTags(filter, pageSize, pageCount) {
+export function getAllTags(filter, currentPage, perPage) {
     return async (dispatch) => {
         dispatch(getAllTagsRequest());
         try {
@@ -76,7 +76,7 @@ export function getAllTags(filter, pageSize, pageCount) {
             filter && Object.keys(filter).map((key) => {
                 params.push(`${key}=${filter[key]}`);
             });
-            params = params.concat([`pageSize=${pageSize}`, `pageCount=${pageCount}`]);
+            params = params.concat([`currentPage=${currentPage}`, `perPage=${perPage}`]);
             const response = await getFetch(`/api/tags?${params.join('&')}`);
             dispatch(getAllTagsSuccess(response));
         } catch (error) {

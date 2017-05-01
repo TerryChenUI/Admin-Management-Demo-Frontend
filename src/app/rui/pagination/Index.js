@@ -6,14 +6,15 @@ class Pagination extends React.Component {
     }
 
     static defaultProps = {
-        pageSize: 1,
-        pageCount: 3,
-        total: 0
+        currentPage: 1,
+        perPage: 3,
+        total: 0,
+        totalPage: 0
     };
 
     static propTypes = {
-        pageSize: PropTypes.number,
-        pageCount: PropTypes.number,
+        currentPage: PropTypes.number,
+        perPage: PropTypes.number,
         total: PropTypes.number,
         onPageChange: PropTypes.func,
     };
@@ -22,7 +23,7 @@ class Pagination extends React.Component {
         const rows = [];
         for (let page = 1; page <= numberOfPage; page++) {
             rows.push(
-                <li key={page} className={this.props.pageSize === page ? 'active' : ''}>
+                <li key={page} className={this.props.currentPage === page ? 'active' : ''}>
                     <a href="javascript:void(0)" onClick={() => this.props.onChange(page)}>{page}</a>
                 </li>
             );
@@ -31,9 +32,9 @@ class Pagination extends React.Component {
     }
 
     render() {
-        const numberOfPage = Math.ceil(this.props.total / this.props.pageCount);
-        const isFirstPage = this.props.pageSize === 1;
-        const isLastPage = this.props.pageSize === numberOfPage;
+        const numberOfPage = this.props.totalPage;
+        const isFirstPage = this.props.currentPage === 1;
+        const isLastPage = this.props.currentPage === numberOfPage;
 
         return (
             <nav aria-label="navigation" className="text-center">

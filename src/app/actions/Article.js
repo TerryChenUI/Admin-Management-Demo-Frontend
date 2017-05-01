@@ -68,7 +68,7 @@ export const resetDeleteArticle = makeActionCreator(RESET_DELETE_ARTICLE);
 //     };
 // }
 
-export function getAllArticles(filter, pageSize, pageCount) {
+export function getAllArticles(filter, currentPage, perPage) {
     return async (dispatch) => {
         dispatch(getAllArticlesRequest());
         try {
@@ -76,7 +76,7 @@ export function getAllArticles(filter, pageSize, pageCount) {
             filter && Object.keys(filter).map((key) => {
                 params.push(`${key}=${filter[key]}`);
             });
-            params = params.concat([`pageSize=${pageSize}`, `pageCount=${pageCount}`]);
+            params = params.concat([`currentPage=${currentPage}`, `perPage=${perPage}`]);
             const response = await getFetch(`/api/articles?${params.join('&')}`);
             dispatch(getAllArticlesSuccess(response));
         } catch (error) {

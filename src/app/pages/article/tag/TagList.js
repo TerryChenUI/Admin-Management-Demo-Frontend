@@ -18,13 +18,13 @@ class TagList extends React.Component {
                 enabled: '-1'
             },
             filter: null,
-            pageSize: defaultPageSize,
-            pageCount: defaultPageCount
+            currentPage: defaultPageSize,
+            perPage: defaultPageCount
         }
     }
 
     componentDidMount() {
-        this.getAllTags(this.state.filter, this.state.pageSize, this.state.pageCount);
+        this.getAllTags(this.state.filter, this.state.currentPage, this.state.perPage);
     }
 
     componentWillUnmount() {
@@ -41,20 +41,11 @@ class TagList extends React.Component {
         return true;
     }
 
-    onPageChange = (pageSize) => {
+    onPageChange = (currentPage) => {
         this.setState({
-            pageSize: pageSize
+            currentPage: currentPage
         });
-        this.getAllTags(this.state.filter, pageSize, this.state.pageCount);
-    }
-
-    getPagination(total) {
-        return {
-            pageSize: this.state.pageSize,
-            pageCount: this.state.pageCount,
-            total: total,
-            onChange: this.onPageChange
-        }
+        this.getAllTags(this.state.filter, currentPage, this.state.perPage);
     }
 
     handleKeywordChange(e) {
@@ -69,8 +60,8 @@ class TagList extends React.Component {
         this.setState(search);
     }
 
-    getAllTags(filter, pageSize, pageCount) {
-        this.props.getAllTags(filter, pageSize, pageCount);
+    getAllTags(filter, currentPage, perPage) {
+        this.props.getAllTags(filter, currentPage, perPage);
     }
 
     search() {
@@ -83,7 +74,7 @@ class TagList extends React.Component {
         } else {
             delete filter.enabled;
         }
-        this.setState({ filter: filter, pageSize: defaultPageSize, pageCount: defaultPageCount });
+        this.setState({ filter: filter, currentPage: defaultPageSize, perPage: defaultPageCount });
         this.getAllTags(filter, defaultPageSize, defaultPageCount);
     }
 
@@ -102,9 +93,9 @@ class TagList extends React.Component {
     }
 
     render() {
-        const { data, error, isFetching } = this.props.list;
+        const { data, message, isFetching } = this.props.list;
+        const pagination = { ...this.props.list.pagination, onChange: this.onPageChange };
         const deleted = this.props.deleted;
-        const pagination = data ? this.getPagination(data.total) : null;
         const columns = [
             {
                 title: '标签',
@@ -216,7 +207,7 @@ class TagList extends React.Component {
                                         <button type="button" className="btn btn-default btn-sm" onClick={() => this.reset()}>重置</button>
                                     </div>
                                 </form>
-                                {data ? <Table columns={columns} dataSource={data.result} pagination={pagination} loading={isFetching} /> : null}
+                                {data ? <Table columns={columns} dataSource={data} pagination={pagination} loading={isFetching} /> : null}
                             </div>
                         </div>
                     </div>
@@ -236,7 +227,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getAllTags: (filter, pageSize, pageCount) => dispatch(getAllTags(filter, pageSize, pageCount)),
+        getAllTags: (filter, currentPage, perPage) => dispatch(getAllTags(filter, currentPage, perPage)),
         deleteTag: (id) => dispatch(deleteTag(id)),
         resetMe: () => dispatch(resetDeleteTag())
     }

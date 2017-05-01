@@ -26,9 +26,9 @@ class TagEdit extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.created.data || nextProps.created.error) {
-            nextProps.created.data ? alertService.success('添加标签成功', null, '/tag/list') : alertService.error('添加类别失败', nextProps.created.error);
+            nextProps.created.data ? alertService.success(nextProps.created.message, null, '/tag/list') : alertService.error(nextProps.created.message, nextProps.created.error);
         } else if (nextProps.updated.data || nextProps.updated.error) {
-            nextProps.updated.data ? alertService.success('更新标签成功', null, '/tag/list') : alertService.error('更新类别失败', nextProps.updated.error);
+            nextProps.updated.data ? alertService.success(nextProps.updated.message, null, '/tag/list') : alertService.error(nextProps.updated.message, nextProps.updated.error);
         }
     }
 
