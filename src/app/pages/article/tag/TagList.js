@@ -24,7 +24,8 @@ class TagList extends React.Component {
     }
 
     componentDidMount() {
-        this.getAllTags(this.state.filter, this.state.currentPage, this.state.perPage);
+        const { currentPage, perPage } = this.state;
+        this.props.getAllTags({ currentPage, perPage });
     }
 
     componentWillUnmount() {
@@ -32,50 +33,31 @@ class TagList extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if ((nextProps.deleted.data || nextProps.deleted.error) && !nextProps.deleted.isFetching) {
-            nextProps.deleted.error ? alertService.error('删除失败', nextProps.deleted.error) : alertService.success('删除成功');
-        }
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return true;
+        alertService.deleteNotify(nextProps.deleted);
     }
 
     onPageChange = (currentPage) => {
+        const { filter, perPage } = this.state;
         this.setState({
             currentPage: currentPage
         });
-        this.getAllTags(this.state.filter, currentPage, this.state.perPage);
+        this.props.getAllTags({ filter, currentPage, perPage });
     }
 
-    handleKeywordChange(e) {
+    handleChange(e) {
         const search = this.state.search;
-        search.keyword = e.target.value;
+        search[e.target.name] = e.target.value;
         this.setState(search);
-    }
-
-    handleEnabledChange(e) {
-        const search = this.state.search;
-        search.enabled = e.target.value;
-        this.setState(search);
-    }
-
-    getAllTags(filter, currentPage, perPage) {
-        this.props.getAllTags(filter, currentPage, perPage);
     }
 
     search() {
         const filter = {};
-        if (this.state.search.keyword) {
-            filter.keyword = this.state.search.keyword;
-        }
-        if (this.state.search.enabled !== '-1') {
-            filter.enabled = this.state.search.enabled === "1" ? true : false;
-        } else {
-            delete filter.enabled;
-        }
-        this.setState({ filter: filter, currentPage: defaultPageSize, perPage: defaultPageCount });
-        this.getAllTags(filter, defaultPageSize, defaultPageCount);
+        const { keyword, enabled } = this.state.search;
+        keyword ? filter.keyword = keyword : delete filter.keyword;
+        enabled !== '-1' ? filter.enabled = enabled === "1" : delete filter.enabled;
+
+        this.setState({ filter, currentPage: defaultPageSize, perPage: defaultPageCount });
+        this.props.getAllTags({ filter, currentPage: defaultPageSize, perPage: defaultPageCount });
     }
 
     reset() {
@@ -152,7 +134,7 @@ class TagList extends React.Component {
             {
                 title: '操作',
                 key: 'action',
-                dataIndex: 'id',
+                dataIndex: '_id',
                 width: 150,
                 render: (id) => (
                     <div>
@@ -191,12 +173,12 @@ class TagList extends React.Component {
                             <div className="x_content">
                                 <form className="form-inline search-from">
                                     <div className="form-group">
-                                        <label htmlFor="name">标签</label>
-                                        <input type="text" className="form-control" id="name" value={this.state.search.keyword} onChange={(e) => this.handleKeywordChange(e)} />
+                                        <label htmlFor="name">关键字</label>
+                                        <input type="text" className="form-control" id="name" name="keyword" placeholder="标签，别名，描述" value={this.state.search.keyword} onChange={(e) => this.handleChange(e)} />
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="enabled">状态</label>
-                                        <select id="enabled" className="form-control" value={this.state.enabled} onChange={(e) => this.handleEnabledChange(e)}>
+                                        <select id="enabled" className="form-control" name="enabled" value={this.state.enabled} onChange={(e) => this.handleChange(e)}>
                                             <option value="-1">--请选择--</option>
                                             <option value="1">启用</option>
                                             <option value="0">禁用</option>
@@ -227,7 +209,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getAllTags: (filter, currentPage, perPage) => dispatch(getAllTags(filter, currentPage, perPage)),
+        getAllTags: ({ filter = null, currentPage, perPage }) => {
+            dispatch(getAllTags(filter, currentPage, perPage))
+        },
         deleteTag: (id) => dispatch(deleteTag(id)),
         resetMe: () => dispatch(resetDeleteTag())
     }

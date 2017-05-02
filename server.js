@@ -16,10 +16,10 @@ app.use(webpackHotMiddleware(compiler));
 
 app.use(express.static(path.join(__dirname, 'src')));
 
-if(proxy) {
-  Object.keys(proxy).forEach(function(context) {
-    app.use(proxyMiddleware(context,proxy[context]));
-  });
+if (proxy) {
+    Object.keys(proxy).forEach((context) => {
+        app.use(proxyMiddleware(context, proxy[context]));
+    });
 }
 
 app.get('*', (req, res) => {

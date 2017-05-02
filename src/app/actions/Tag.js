@@ -55,19 +55,6 @@ const deleteTagSuccess = makeActionCreator(DELETE_TAG_SUCCESS);
 const deleteTagFailure = makeActionCreator(DELETE_TAG_FAILURE);
 export const resetDeleteTag = makeActionCreator(RESET_DELETE_TAG);
 
-// export function getAllTags(filter, pageSize, pageCount) {
-//     let params = [];
-//     filter && Object.keys(filter).map((key) => {
-//         params.push(`${key}=${filter[key]}`);
-//     });
-//     params = params.concat([`pageSize=${pageSize}`, `pageCount=${pageCount}`]);
-//     return {
-//         types: [GET_ALL_TAGS_REQUEST, GET_ALL_TAGS_SUCCESS, GET_TAG_BY_ID_FAILURE],
-//         callAPI: () => getFetch(`/api/tags?${params.join('&')}`),
-//         // payload: { data, message, status }
-//     };
-// }
-
 export function getAllTags(filter, currentPage, perPage) {
     return async (dispatch) => {
         dispatch(getAllTagsRequest());
@@ -76,9 +63,9 @@ export function getAllTags(filter, currentPage, perPage) {
             filter && Object.keys(filter).map((key) => {
                 params.push(`${key}=${filter[key]}`);
             });
-            params = params.concat([`currentPage=${currentPage}`, `perPage=${perPage}`]);
+            params = [...params, `currentPage=${currentPage}`, `perPage=${perPage}`];
             const response = await getFetch(`/api/tags?${params.join('&')}`);
-            dispatch(getAllTagsSuccess(response));
+            response.code ? dispatch(getAllTagsSuccess(response)) : dispatch(getAllTagsFailure(response));
         } catch (error) {
             dispatch(getAllTagsFailure(error.message));
         }
@@ -90,7 +77,7 @@ export function getTagById(id) {
         try {
             dispatch(getTagByIdRequest());
             const response = await getFetch(`/api/tags/${id}`);
-            dispatch(getTagByIdSuccess(response));
+            response.code ? dispatch(getTagByIdSuccess(response)) : dispatch(getTagByIdFailure(response));
         } catch (error) {
             dispatch(getTagByIdFailure(error.message));
         }
@@ -102,7 +89,7 @@ export function createTag(params) {
         dispatch(createTagRequest());
         try {
             const response = await postFetch(`/api/tags`, params);
-            dispatch(createTagSuccess(response));
+            response.code ? dispatch(createTagSuccess(response)) : dispatch(createTagFailure(response));
         } catch (error) {
             dispatch(createTagFailure(error.message))
         }
@@ -114,7 +101,7 @@ export function updateTag(id, params) {
         dispatch(updateTagRequest());
         try {
             const response = await putFetch(`/api/tags/${id}`, params);
-            dispatch(updateTagSuccess(response));
+            response.code ? dispatch(updateTagSuccess(response)) : dispatch(updateTagFailure(response));
         } catch (error) {
             dispatch(updateTagFailure(error.message))
         }
@@ -127,7 +114,7 @@ export function deleteTag(id) {
         dispatch(deleteTagRequest(id));
         try {
             const response = await deleteFetch(`/api/tags/${id}`)
-            dispatch(deleteTagSuccess(id));
+            response.code ? dispatch(deleteTagSuccess(response)) : dispatch(deleteTagFailure(response));
         } catch (error) {
             dispatch(deleteTagFailure(error.message))
         }

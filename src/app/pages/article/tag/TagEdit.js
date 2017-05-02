@@ -26,9 +26,9 @@ class TagEdit extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.created.data || nextProps.created.error) {
-            nextProps.created.data ? alertService.success(nextProps.created.message, null, '/tag/list') : alertService.error(nextProps.created.message, nextProps.created.error);
+            alertService.createNotify(nextProps.created, { redirectUrl: '/tag/list' });
         } else if (nextProps.updated.data || nextProps.updated.error) {
-            nextProps.updated.data ? alertService.success(nextProps.updated.message, null, '/tag/list') : alertService.error(nextProps.updated.message, nextProps.updated.error);
+            alertService.updateNotify(nextProps.updated, { redirectUrl: '/tag/list' });
         }
     }
 
@@ -81,7 +81,7 @@ function mapDispatchToProps(dispatch) {
     return {
         getTagById: (id) => dispatch(getTagById(id)),
         createTag: (params) => dispatch(createTag(params)),
-        updateTag: (params) => dispatch(updateTag(params.id, params)),
+        updateTag: (params) => dispatch(updateTag(params._id, params)),
         resetMe: () => {
             dispatch(resetCurrentTag());
             dispatch(resetCreateTag());
