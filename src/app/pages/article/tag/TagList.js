@@ -111,23 +111,12 @@ class TagList extends React.Component {
             },
             {
                 title: '创建时间',
-                key: 'create',
-                dataIndex: 'create',
+                key: 'create_time',
+                dataIndex: 'create_time',
                 width: 150,
-                render: (create) => (
+                render: (create_time) => (
                     <span>
-                        {momentFormat(create)}
-                    </span>
-                ),
-            },
-            {
-                title: '更新时间',
-                key: 'update',
-                dataIndex: 'update',
-                width: 150,
-                render: (update) => (
-                    <span>
-                        {momentFormat(update)}
+                        {momentFormat(create_time)}
                     </span>
                 ),
             },

@@ -15,10 +15,10 @@ const TagForm = props => {
             <Field type="number" name="displayOrder" label="排序" component={renderInputField} validate={required} required />
             <Field type="checkbox" name="enabled" label="启用" component={renderCheckboxField} />
             {
-                initialValues && initialValues.create && renderLabelField('创建时间', initialValues.create)
+                initialValues && initialValues.create_time && renderLabelField('创建时间', initialValues.create_time)
             }
             {
-                initialValues && initialValues.update && renderLabelField('最后更新时间', initialValues.update)
+                initialValues && initialValues.update_time && renderLabelField('最后更新时间', initialValues.update_time)
             }
             <div className="ln_solid"></div>
             <div className="form-group">
