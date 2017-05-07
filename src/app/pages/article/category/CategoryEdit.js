@@ -49,15 +49,29 @@ class CategoryEdit extends React.Component {
         const data = props.current.data;
         const onSubmit = id ? props.updateCategory : props.createCategory;
         return (
-            <div className="row">
-                <div className="col-md-12 col-sm-12 col-xs-12">
-                    <div className="x_panel">
-                        <div className="x_title">
-                            <h2>{id ? '编辑' : '新增'}分类 <small><Link to='/category/list'><span className="fa fa-angle-double-left" aria-hidden="true"></span> 返回列表</Link></small></h2>
-                            <div className="clearfix"></div>
-                        </div>
-                        <div className="x_content">
-                            <CategoryForm initialValues={data} onSubmit={onSubmit} availableCategories={this.state.availableCategories} />
+            <div>
+                <div className="page-title">
+                    <div className="title_left">
+                        <h3>分类目录</h3>
+                    </div>
+                    <div className="title_right">
+                        <ol className="breadcrumb">
+                            <li>文章管理</li>
+                            <li className="active">分类目录</li>
+                        </ol>
+                    </div>
+                    <div className="clearfix"></div>
+                </div>
+                <div className="row">
+                    <div className="col-md-12 col-sm-12 col-xs-12">
+                        <div className="x_panel">
+                            <div className="x_title">
+                                <h2>{id ? '编辑' : '新增'}分类</h2>
+                                <div className="clearfix"></div>
+                            </div>
+                            <div className="x_content">
+                                <CategoryForm initialValues={data} availableCategories={this.state.availableCategories} onSubmit={onSubmit} />
+                            </div>
                         </div>
                     </div>
                 </div>

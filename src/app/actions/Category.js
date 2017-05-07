@@ -126,7 +126,7 @@ export function deleteCategory(id) {
     return async (dispatch) => {
         dispatch(deleteCategoryRequest(id));
         try {
-            const response = await deleteFetch(`/api/categories/${id}`)
+            const response = await deleteFetch(`/api/categories/${id}`);
             response.code ? dispatch(deleteCategorySuccess(response)) : dispatch(deleteCategoryFailure(response));
         } catch (error) {
             dispatch(deleteCategoryFailure(error.message))

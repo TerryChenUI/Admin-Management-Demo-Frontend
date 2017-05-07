@@ -8,16 +8,26 @@ import {
     createArticle, resetCreateArticle,
     updateArticle, resetUpdateArticle
 } from '../../../actions/Article';
+import { getAllCategories } from '../../../actions/Category';
 import alertService from '../../../services/AlertService';
 
 class ArticleEdit extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            availableCategories: []
+        };
     }
 
     componentDidMount() {
         const id = this.props.params.id;
         id && this.props.getArticleById(id);
+
+         // get all categories
+        getAllCategories().then(data => {
+            const categories = data.map(m => { return { value: m._id, text: m.name } });
+            this.setState({ availableCategories: categories });
+        })
     }
 
     componentWillUnmount() {
@@ -26,9 +36,9 @@ class ArticleEdit extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.created.data || nextProps.created.error) {
-            nextProps.created.data ? alertService.success('添加类别成功', null, '/article/list') : alertService.error('添加类别失败', nextProps.created.error);
+            alertService.createNotify(nextProps.created, { redirectUrl: '/article/list' });
         } else if (nextProps.updated.data || nextProps.updated.error) {
-            nextProps.updated.data ? alertService.success('更新类别成功', null, '/article/list') : alertService.error('更新类别失败', nextProps.updated.error);
+            alertService.updateNotify(nextProps.updated, { redirectUrl: '/article/list' });
         }
     }
 
@@ -38,21 +48,20 @@ class ArticleEdit extends React.Component {
         const data = props.current.data;
         const onSubmit = id ? props.updateArticle : props.createArticle;
         return (
-            <div className="row">
-                <div className="col-md-12 col-sm-12 col-xs-12">
-                    <div className="x_panel">
-                        <div className="x_title">
-                            <h2>{id ? '编辑' : '新增'}文章 <small><Link to='/article/list'><span className="fa fa-angle-double-left" aria-hidden="true"></span> 返回列表</Link></small></h2>
-                            <div className="clearfix"></div>
-                        </div>
-                        <div class="x_content">
-                            {/*<p class="text-muted font-13 m-b-30">
-                                DataTables has most features enabled by default, so all you need to do to use it with your own tables is to call the construction function: <code>$().DataTable();</code>
-                            </p>*/}
-                            <ArticleForm initialValues={data} onSubmit={onSubmit} />
-                        </div>
+            <div>
+                <div className="page-title">
+                    <div className="title_left">
+                        <h3>发布文章</h3>
                     </div>
+                    <div className="title_right">
+                        <ol className="breadcrumb">
+                            <li>文章管理</li>
+                            <li className="active">发布文章</li>
+                        </ol>
+                    </div>
+                    <div className="clearfix"></div>
                 </div>
+                 <ArticleForm initialValues={data} availableCategories={this.state.availableCategories} onSubmit={onSubmit} />
             </div>
         );
     }

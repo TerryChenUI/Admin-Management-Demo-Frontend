@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import moment from 'moment';
 import { getCategories, getAllCategories, deleteCategory, resetDeleteCategory } from '../../../actions/Category';
 import Table from '../../../rui/table';
 import Popconfirm from '../../../rui/popconfirm';
@@ -165,8 +164,8 @@ class CategoryList extends React.Component {
                             <li className="active">分类目录</li>
                         </ol>
                     </div>
+                    <div className="clearfix"></div>
                 </div>
-                <div className="clearfix"></div>
                 <div className="row">
                     <div className="col-md-12 col-sm-12 col-xs-12">
                         <div className="x_panel">
@@ -219,7 +218,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getCategories: ({ filter = null, currentPage, perPage }) => dispatch(getCategories(filter, currentPage, perPage)),
+        getCategories: ({ currentPage, perPage, filter = null }) => dispatch(getCategories(filter, currentPage, perPage)),
         deleteCategory: (id) => dispatch(deleteCategory(id)),
         resetMe: () => dispatch(resetDeleteCategory())
     }

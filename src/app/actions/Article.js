@@ -3,13 +3,13 @@ import { getFetch, postFetch, putFetch, deleteFetch } from '../services/request'
 import { makeActionCreator } from './ActionCreator';
 
 // List articles
-export const GET_ALL_ARTICLES_REQUEST = 'GET_ALL_ARTICLES_REQUEST';
-export const GET_ALL_ARTICLES_SUCCESS = 'GET_ALL_ARTICLES_SUCCESS';
-export const GET_ALL_ARTICLES_FAILURE = 'GET_ALL_ARTICLES_FAILURE';
+export const GET_ARTICLES_REQUEST = 'GET_ARTICLES_REQUEST';
+export const GET_ARTICLES_SUCCESS = 'GET_ARTICLES_SUCCESS';
+export const GET_ARTICLES_FAILURE = 'GET_ARTICLES_FAILURE';
 
-const getAllArticlesRequest = makeActionCreator(GET_ALL_ARTICLES_REQUEST);
-const getAllArticlesSuccess = makeActionCreator(GET_ALL_ARTICLES_SUCCESS);
-const getAllArticlesFailure = makeActionCreator(GET_ALL_ARTICLES_FAILURE);
+const getArticlesRequest = makeActionCreator(GET_ARTICLES_REQUEST);
+const getArticlesSuccess = makeActionCreator(GET_ARTICLES_SUCCESS);
+const getArticlesFailure = makeActionCreator(GET_ARTICLES_FAILURE);
 
 // Get article by id
 export const GET_ARTICLE_BY_ID_REQUEST = 'GET_ARTICLE_BY_ID_REQUEST';
@@ -55,22 +55,9 @@ const deleteArticleSuccess = makeActionCreator(DELETE_ARTICLE_SUCCESS);
 const deleteArticleFailure = makeActionCreator(DELETE_ARTICLE_FAILURE);
 export const resetDeleteArticle = makeActionCreator(RESET_DELETE_ARTICLE);
 
-// export function getAllArticles(filter, pageSize, pageCount) {
-//     let params = [];
-//     filter && Object.keys(filter).map((key) => {
-//         params.push(`${key}=${filter[key]}`);
-//     });
-//     params = params.concat([`pageSize=${pageSize}`, `pageCount=${pageCount}`]);
-//     return {
-//         types: [GET_ALL_ARTICLES_REQUEST, GET_ALL_ARTICLES_SUCCESS, GET_ARTICLE_BY_ID_FAILURE],
-//         callAPI: () => getFetch(`/api/articles?${params.join('&')}`),
-//         // payload: { data, message, status }
-//     };
-// }
-
-export function getAllArticles(filter, currentPage, perPage) {
+export function getArticles(filter, currentPage, perPage) {
     return async (dispatch) => {
-        dispatch(getAllArticlesRequest());
+        dispatch(getArticlesRequest());
         try {
             let params = [];
             filter && Object.keys(filter).map((key) => {
@@ -78,9 +65,9 @@ export function getAllArticles(filter, currentPage, perPage) {
             });
             params = params.concat([`currentPage=${currentPage}`, `perPage=${perPage}`]);
             const response = await getFetch(`/api/articles?${params.join('&')}`);
-            dispatch(getAllArticlesSuccess(response));
+            response.code ? dispatch(getArticlesSuccess(response)) : dispatch(getArticlesFailure(response));
         } catch (error) {
-            dispatch(getAllArticlesFailure(error.message));
+            dispatch(getArticlesFailure(error.message));
         }
     }
 }
@@ -90,7 +77,7 @@ export function getArticleById(id) {
         try {
             dispatch(getArticleByIdRequest());
             const response = await getFetch(`/api/articles/${id}`);
-            dispatch(getArticleByIdSuccess(response));
+            response.code ? dispatch(getArticleByIdSuccess(response)) : dispatch(getArticleByIdFailure(response));
         } catch (error) {
             dispatch(getArticleByIdFailure(error.message));
         }
@@ -102,7 +89,7 @@ export function createArticle(params) {
         dispatch(createArticleRequest());
         try {
             const response = await postFetch(`/api/articles`, params);
-            dispatch(createArticleSuccess(response));
+            response.code ? dispatch(createArticleSuccess(response)) : dispatch(createArticleFailure(response));
         } catch (error) {
             dispatch(createArticleFailure(error.message))
         }
@@ -114,7 +101,7 @@ export function updateArticle(id, params) {
         dispatch(updateArticleRequest());
         try {
             const response = await putFetch(`/api/articles/${id}`, params);
-            dispatch(updateArticleSuccess(response));
+            response.code ? dispatch(updateArticleSuccess(response)) : dispatch(updateArticleFailure(response));
         } catch (error) {
             dispatch(updateArticleFailure(error.message))
         }
@@ -126,8 +113,8 @@ export function deleteArticle(id) {
     return async (dispatch) => {
         dispatch(deleteArticleRequest(id));
         try {
-            const response = await deleteFetch(`/api/articles/${id}`)
-            dispatch(deleteArticleSuccess(id));
+            const response = await deleteFetch(`/api/articles/${id}`);
+            response.code ? dispatch(deleteArticleSuccess(response)) : dispatch(deleteArticleFailure(response));
         } catch (error) {
             dispatch(deleteArticleFailure(error.message))
         }

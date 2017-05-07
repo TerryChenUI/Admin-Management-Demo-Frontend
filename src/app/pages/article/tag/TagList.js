@@ -150,8 +150,8 @@ class TagList extends React.Component {
                             <li className="active">文章标签</li>
                         </ol>
                     </div>
+                    <div className="clearfix"></div>
                 </div>
-                <div className="clearfix"></div>
                 <div className="row">
                     <div className="col-md-12 col-sm-12 col-xs-12">
                         <div className="x_panel">
@@ -198,7 +198,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getTags: ({ filter = null, currentPage, perPage }) => {
+        getTags: ({ currentPage, perPage, filter = null }) => {
             dispatch(getTags(filter, currentPage, perPage))
         },
         deleteTag: (id) => dispatch(deleteTag(id)),

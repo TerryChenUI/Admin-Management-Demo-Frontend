@@ -113,7 +113,7 @@ export function deleteTag(id) {
     return async (dispatch) => {
         dispatch(deleteTagRequest(id));
         try {
-            const response = await deleteFetch(`/api/tags/${id}`)
+            const response = await deleteFetch(`/api/tags/${id}`);
             response.code ? dispatch(deleteTagSuccess(response)) : dispatch(deleteTagFailure(response));
         } catch (error) {
             dispatch(deleteTagFailure(error.message))
