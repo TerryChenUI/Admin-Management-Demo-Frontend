@@ -15,7 +15,7 @@ const CategoryForm = props => {
             <Field type="select" name="pid" label="父分类" options={availableCategories} component={renderSelectField}/>
             <Field type="textarea" name="description" label="描述" component={renderTextareaField} />
             <Field type="number" name="displayOrder" label="排序" component={renderInputField} validate={required} />
-            <Field type="checkbox" name="enabled" label="启用" component={renderCheckboxField} />
+            <Field type="checkbox" name="visible" label="启用" component={renderCheckboxField} />
             {
                 initialValues && initialValues.create_time && renderLabelField('创建时间', initialValues.create_time)
             }

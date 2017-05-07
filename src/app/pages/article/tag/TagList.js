@@ -15,7 +15,7 @@ class TagList extends React.Component {
         this.state = {
             search: {
                 keyword: '',
-                enabled: '-1'
+                visible: '-1'
             },
             filter: null,
             currentPage: defaultPageSize,
@@ -52,9 +52,9 @@ class TagList extends React.Component {
 
     search() {
         const filter = {};
-        const { keyword, enabled } = this.state.search;
+        const { keyword, visible } = this.state.search;
         keyword ? filter.keyword = keyword : delete filter.keyword;
-        enabled !== '-1' ? filter.enabled = enabled === "1" : delete filter.enabled;
+        visible !== '-1' ? filter.visible = visible === "1" : delete filter.visible;
 
         this.setState({ filter, currentPage: defaultPageSize, perPage: defaultPageCount });
         this.props.getTags({ filter, currentPage: defaultPageSize, perPage: defaultPageCount });
@@ -64,7 +64,7 @@ class TagList extends React.Component {
         this.setState({
             search: {
                 keyword: '',
-                enabled: '-1'
+                visible: '-1'
             },
             filter: null
         });
@@ -102,11 +102,11 @@ class TagList extends React.Component {
             },
             {
                 title: '状态',
-                key: 'enabled',
-                dataIndex: 'enabled',
+                key: 'visible',
+                dataIndex: 'visible',
                 width: 80,
-                render: (enabled) => (
-                    <span className={`fa fa-${enabled ? 'check' : 'lock'}`} aria-hidden="true"></span>
+                render: (visible) => (
+                    <span className={`fa fa-${visible ? 'check' : 'lock'}`} aria-hidden="true"></span>
                 ),
             },
             {
@@ -166,8 +166,8 @@ class TagList extends React.Component {
                                         <input type="text" className="form-control" id="name" name="keyword" placeholder="标签，别名，描述" value={this.state.search.keyword} onChange={(e) => this.handleChange(e)} />
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="enabled">状态</label>
-                                        <select id="enabled" className="form-control" name="enabled" value={this.state.enabled} onChange={(e) => this.handleChange(e)}>
+                                        <label htmlFor="visible">状态</label>
+                                        <select id="visible" className="form-control" name="visible" value={this.state.visible} onChange={(e) => this.handleChange(e)}>
                                             <option value="-1">--请选择--</option>
                                             <option value="1">启用</option>
                                             <option value="0">禁用</option>

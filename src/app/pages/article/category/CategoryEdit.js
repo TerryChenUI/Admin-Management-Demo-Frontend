@@ -15,7 +15,7 @@ class CategoryEdit extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            availableCategories: [],
+            availableCategories: []
         };
     }
 
@@ -46,9 +46,7 @@ class CategoryEdit extends React.Component {
     render() {
         const props = this.props;
         const id = props.params.id;
-        // const stateData = this.state.data;
-        // const propsData = this.props.current.data;
-        const data = this.props.current.data;
+        const data = props.current.data;
         const onSubmit = id ? props.updateCategory : props.createCategory;
         return (
             <div className="row">

@@ -16,7 +16,7 @@ class CategoryList extends React.Component {
             search: {
                 keyword: '',
                 pid: '-1',
-                enabled: '-1'
+                visible: '-1'
             },
             availableCategories: [],
             filter: null,
@@ -60,9 +60,9 @@ class CategoryList extends React.Component {
 
     search() {
         const filter = {};
-        const { keyword, enabled, pid } = this.state.search;
+        const { keyword, visible, pid } = this.state.search;
         keyword ? filter.keyword = keyword : delete filter.keyword;
-        enabled !== '-1' ? filter.enabled = enabled === "1" : delete filter.enabled;
+        visible !== '-1' ? filter.visible = visible === "1" : delete filter.visible;
         pid != '-1' ? filter.pid = pid : delete filter.pid;
         this.setState({ filter, currentPage: defaultPageSize, perPage: defaultPageCount });
         this.props.getCategories({ filter, currentPage: defaultPageSize, perPage: defaultPageCount });
@@ -72,7 +72,7 @@ class CategoryList extends React.Component {
         this.setState({
             search: {
                 keyword: '',
-                enabled: '-1',
+                visible: '-1',
                 pid: '-1',
             },
             filter: null
@@ -117,11 +117,11 @@ class CategoryList extends React.Component {
             },
             {
                 title: '状态',
-                key: 'enabled',
-                dataIndex: 'enabled',
+                key: 'visible',
+                dataIndex: 'visible',
                 width: 80,
-                render: (enabled) => (
-                    <span className={`fa fa-${enabled ? 'check' : 'lock'}`} aria-hidden="true"></span>
+                render: (visible) => (
+                    <span className={`fa fa-${visible ? 'check' : 'lock'}`} aria-hidden="true"></span>
                 ),
             },
             {
@@ -181,15 +181,15 @@ class CategoryList extends React.Component {
                                         <input type="text" className="form-control" id="name" name="keyword" placeholder="分类，别名，描述" value={this.state.search.keyword} onChange={(e) => this.handleChange(e)} />
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="enabled">父分类</label>
+                                        <label htmlFor="visible">父分类</label>
                                         <select id="pid" className="form-control" name="pid" value={this.state.pid} onChange={(e) => this.handleChange(e)}>
                                             <option value="-1">--请选择--</option>
                                             {this.renderCategoryOption()}
                                         </select>
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="enabled">状态</label>
-                                        <select id="enabled" className="form-control" name="enabled" value={this.state.enabled} onChange={(e) => this.handleChange(e)}>
+                                        <label htmlFor="visible">状态</label>
+                                        <select id="visible" className="form-control" name="visible" value={this.state.visible} onChange={(e) => this.handleChange(e)}>
                                             <option value="-1">--请选择--</option>
                                             <option value="1">启用</option>
                                             <option value="0">禁用</option>

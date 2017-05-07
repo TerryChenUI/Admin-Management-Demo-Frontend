@@ -162,12 +162,9 @@ class ArticleList extends React.Component {
                                 <div className="clearfix"></div>
                             </div>
                             <div className="x_content">
-                                {/*<p className="text-muted font-13 m-b-30">
-                                DataTables has most features enabled by default, so all you need to do to use it with your own tables is to call the construction function: <code>$().DataTable();</code>
-                            </p>*/}
                                 <form className="form-inline search-from">
                                     <div className="form-group">
-                                        <label htmlFor="name">类别</label>
+                                        <label htmlFor="name">关键字</label>
                                         <input type="text" className="form-control" id="name" value={this.state.search.name} onChange={(e) => this.handleNameChange(e)} />
                                     </div>
                                     <div className="form-group">
