@@ -20,12 +20,12 @@ function createReducer(initialState, handlers) {
 
 export default function Tag(state = INITIAL_STATE, action) {
     switch (action.type) {
-        case types.GET_ALL_TAGS_SUCCESS:
+        case types.GET_TAGS_SUCCESS:
             const { data, pagination } = action.payload.result;
             return { ...state, list: { data, pagination, message: action.payload.message, isFetching: false } };
-        case types.GET_ALL_TAGS_FAILURE:
+        case types.GET_TAGS_FAILURE:
             return { ...state, list: { data: state.list.data || null, message: action.payload.message, error: action.payload.error, isFetching: false } };
-        case types.RESET_GET_ALL_TAGS:
+        case types.RESET_GET_TAGS:
             return { ...state, list: { data: null, pagination: null, message: null, error: null, isFetching: false } };
 
         case types.GET_TAG_BY_ID_REQUEST:

@@ -3,13 +3,13 @@ import { getFetch, postFetch, putFetch, deleteFetch } from '../services/request'
 import { makeActionCreator } from './ActionCreator';
 
 // List categories
-export const GET_ALL_CATEGORIES_REQUEST = 'GET_ALL_CATEGORIES_REQUEST';
-export const GET_ALL_CATEGORIES_SUCCESS = 'GET_ALL_CATEGORIES_SUCCESS';
-export const GET_ALL_CATEGORIES_FAILURE = 'GET_ALL_CATEGORIES_FAILURE';
+export const GET_CATEGORIES_REQUEST = 'GET_CATEGORIES_REQUEST';
+export const GET_CATEGORIES_SUCCESS = 'GET_CATEGORIES_SUCCESS';
+export const GET_CATEGORIES_FAILURE = 'GET_CATEGORIES_FAILURE';
 
-const getAllCategoriesRequest = makeActionCreator(GET_ALL_CATEGORIES_REQUEST);
-const getAllCategoriesSuccess = makeActionCreator(GET_ALL_CATEGORIES_SUCCESS);
-const getAllCategoriesFailure = makeActionCreator(GET_ALL_CATEGORIES_FAILURE);
+const getCategoriesRequest = makeActionCreator(GET_CATEGORIES_REQUEST);
+const getCategoriesSuccess = makeActionCreator(GET_CATEGORIES_SUCCESS);
+const getCategoriesFailure = makeActionCreator(GET_CATEGORIES_FAILURE);
 
 // Get category by id
 export const GET_CATEGORY_BY_ID_REQUEST = 'GET_CATEGORY_BY_ID_REQUEST';
@@ -55,34 +55,34 @@ const deleteCategorySuccess = makeActionCreator(DELETE_CATEGORY_SUCCESS);
 const deleteCategoryFailure = makeActionCreator(DELETE_CATEGORY_FAILURE);
 export const resetDeleteCategory = makeActionCreator(RESET_DELETE_CATEGORY);
 
-// export function getAllCategories(filter, pageSize, pageCount) {
-//     let params = [];
-//     filter && Object.keys(filter).map((key) => {
-//         params.push(`${key}=${filter[key]}`);
-//     });
-//     params = params.concat([`pageSize=${pageSize}`, `pageCount=${pageCount}`]);
-//     return {
-//         types: [GET_ALL_CATEGORIES_REQUEST, GET_ALL_CATEGORIES_SUCCESS, GET_CATEGORY_BY_ID_FAILURE],
-//         callAPI: () => getFetch(`/api/categories?${params.join('&')}`),
-//         // payload: { data, message, status }
-//     };
-// }
-
-export function getAllCategories(filter, pageSize, pageCount) {
+export function getCategories(filter, currentPage, perPage) {
     return async (dispatch) => {
-        dispatch(getAllCategoriesRequest());
+        dispatch(getCategoriesRequest());
         try {
             let params = [];
             filter && Object.keys(filter).map((key) => {
                 params.push(`${key}=${filter[key]}`);
             });
-            params = params.concat([`pageSize=${pageSize}`, `pageCount=${pageCount}`]);
+            params = [...params, `currentPage=${currentPage}`, `perPage=${perPage}`];
             const response = await getFetch(`/api/categories?${params.join('&')}`);
-            dispatch(getAllCategoriesSuccess(response));
+            response.code ? dispatch(getCategoriesSuccess(response)) : dispatch(getCategoriesFailure(response));
         } catch (error) {
-            dispatch(getAllCategoriesFailure(error.message));
+            dispatch(getCategoriesFailure(error.message));
         }
     }
+}
+
+export async function getAllCategories() {
+    const response = await getFetch(`/api/categories?currentPage=1&perPage=100`);
+    if (response.code) {
+        return response.result.data;
+    } else {
+        return [];
+    }
+    // try {
+    // } catch (error) {
+    //     console.log(error.message);
+    // }
 }
 
 export function getCategoryById(id) {
@@ -90,7 +90,7 @@ export function getCategoryById(id) {
         try {
             dispatch(getCategoryByIdRequest());
             const response = await getFetch(`/api/categories/${id}`);
-            dispatch(getCategoryByIdSuccess(response));
+            response.code ? dispatch(getCategoryByIdSuccess(response)) : dispatch(getCategoryByIdFailure(response));
         } catch (error) {
             dispatch(getCategoryByIdFailure(error.message));
         }
@@ -102,7 +102,7 @@ export function createCategory(params) {
         dispatch(createCategoryRequest());
         try {
             const response = await postFetch(`/api/categories`, params);
-            dispatch(createCategorySuccess(response));
+            response.code ? dispatch(createCategorySuccess(response)) : dispatch(createCategoryFailure(response));
         } catch (error) {
             dispatch(createCategoryFailure(error.message))
         }
@@ -114,7 +114,7 @@ export function updateCategory(id, params) {
         dispatch(updateCategoryRequest());
         try {
             const response = await putFetch(`/api/categories/${id}`, params);
-            dispatch(updateCategorySuccess(response));
+            response.code ? dispatch(updateCategorySuccess(response)) : dispatch(updateCategoryFailure(response));
         } catch (error) {
             dispatch(updateCategoryFailure(error.message))
         }
@@ -127,7 +127,7 @@ export function deleteCategory(id) {
         dispatch(deleteCategoryRequest(id));
         try {
             const response = await deleteFetch(`/api/categories/${id}`)
-            dispatch(deleteCategorySuccess(id));
+            response.code ? dispatch(deleteCategorySuccess(response)) : dispatch(deleteCategoryFailure(response));
         } catch (error) {
             dispatch(deleteCategoryFailure(error.message))
         }

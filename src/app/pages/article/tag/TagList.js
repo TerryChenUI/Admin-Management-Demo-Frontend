@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import moment from 'moment';
-import { getAllTags, deleteTag, resetDeleteTag } from '../../../actions/Tag';
+import { getTags, deleteTag, resetDeleteTag } from '../../../actions/Tag';
 import Table from '../../../rui/table';
 import Popconfirm from '../../../rui/popconfirm';
 import alertService from '../../../services/AlertService';
@@ -25,7 +25,7 @@ class TagList extends React.Component {
 
     componentDidMount() {
         const { currentPage, perPage } = this.state;
-        this.props.getAllTags({ currentPage, perPage });
+        this.props.getTags({ currentPage, perPage });
     }
 
     componentWillUnmount() {
@@ -41,7 +41,7 @@ class TagList extends React.Component {
         this.setState({
             currentPage: currentPage
         });
-        this.props.getAllTags({ filter, currentPage, perPage });
+        this.props.getTags({ filter, currentPage, perPage });
     }
 
     handleChange(e) {
@@ -57,7 +57,7 @@ class TagList extends React.Component {
         enabled !== '-1' ? filter.enabled = enabled === "1" : delete filter.enabled;
 
         this.setState({ filter, currentPage: defaultPageSize, perPage: defaultPageCount });
-        this.props.getAllTags({ filter, currentPage: defaultPageSize, perPage: defaultPageCount });
+        this.props.getTags({ filter, currentPage: defaultPageSize, perPage: defaultPageCount });
     }
 
     reset() {
@@ -198,8 +198,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getAllTags: ({ filter = null, currentPage, perPage }) => {
-            dispatch(getAllTags(filter, currentPage, perPage))
+        getTags: ({ filter = null, currentPage, perPage }) => {
+            dispatch(getTags(filter, currentPage, perPage))
         },
         deleteTag: (id) => dispatch(deleteTag(id)),
         resetMe: () => dispatch(resetDeleteTag())

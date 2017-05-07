@@ -3,13 +3,13 @@ import { getFetch, postFetch, putFetch, deleteFetch } from '../services/request'
 import { makeActionCreator } from './ActionCreator';
 
 // List tags
-export const GET_ALL_TAGS_REQUEST = 'GET_ALL_TAGS_REQUEST';
-export const GET_ALL_TAGS_SUCCESS = 'GET_ALL_TAGS_SUCCESS';
-export const GET_ALL_TAGS_FAILURE = 'GET_ALL_TAGS_FAILURE';
+export const GET_TAGS_REQUEST = 'GET_TAGS_REQUEST';
+export const GET_TAGS_SUCCESS = 'GET_TAGS_SUCCESS';
+export const GET_TAGS_FAILURE = 'GET_TAGS_FAILURE';
 
-const getAllTagsRequest = makeActionCreator(GET_ALL_TAGS_REQUEST);
-const getAllTagsSuccess = makeActionCreator(GET_ALL_TAGS_SUCCESS);
-const getAllTagsFailure = makeActionCreator(GET_ALL_TAGS_FAILURE);
+const getTagsRequest = makeActionCreator(GET_TAGS_REQUEST);
+const getTagsSuccess = makeActionCreator(GET_TAGS_SUCCESS);
+const getTagsFailure = makeActionCreator(GET_TAGS_FAILURE);
 
 // Get tag by id
 export const GET_TAG_BY_ID_REQUEST = 'GET_TAG_BY_ID_REQUEST';
@@ -55,9 +55,9 @@ const deleteTagSuccess = makeActionCreator(DELETE_TAG_SUCCESS);
 const deleteTagFailure = makeActionCreator(DELETE_TAG_FAILURE);
 export const resetDeleteTag = makeActionCreator(RESET_DELETE_TAG);
 
-export function getAllTags(filter, currentPage, perPage) {
+export function getTags(filter, currentPage, perPage) {
     return async (dispatch) => {
-        dispatch(getAllTagsRequest());
+        dispatch(getTagsRequest());
         try {
             let params = [];
             filter && Object.keys(filter).map((key) => {
@@ -65,9 +65,9 @@ export function getAllTags(filter, currentPage, perPage) {
             });
             params = [...params, `currentPage=${currentPage}`, `perPage=${perPage}`];
             const response = await getFetch(`/api/tags?${params.join('&')}`);
-            response.code ? dispatch(getAllTagsSuccess(response)) : dispatch(getAllTagsFailure(response));
+            response.code ? dispatch(getTagsSuccess(response)) : dispatch(getTagsFailure(response));
         } catch (error) {
-            dispatch(getAllTagsFailure(error.message));
+            dispatch(getTagsFailure(error.message));
         }
     }
 }

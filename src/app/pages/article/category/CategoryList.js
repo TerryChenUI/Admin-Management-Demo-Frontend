@@ -1,27 +1,39 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { getAllCategories, deleteCategory, resetDeleteCategory } from '../../../actions/Category';
+import moment from 'moment';
+import { getCategories, getAllCategories, deleteCategory, resetDeleteCategory } from '../../../actions/Category';
 import Table from '../../../rui/table';
 import Popconfirm from '../../../rui/popconfirm';
 import alertService from '../../../services/AlertService';
 import { defaultPageSize, defaultPageCount } from '../../../constants';
+import { momentFormat } from '../../../components/Util';
 
 class CategoryList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             search: {
-                name: ''
+                keyword: '',
+                pid: '-1',
+                enabled: '-1'
             },
+            availableCategories: [],
             filter: null,
-            pageSize: defaultPageSize,
-            pageCount: defaultPageCount
+            currentPage: defaultPageSize,
+            perPage: defaultPageCount
         }
     }
 
     componentDidMount() {
-        this.getAllCategories(this.state.filter, this.state.pageSize, this.state.pageCount);
+        const { currentPage, perPage } = this.state;
+        this.props.getCategories({ currentPage, perPage });
+
+        // get parents categories
+        getAllCategories().then(data => {
+            const parentCategories = data.filter(t => !t.pid);
+            this.setState({ availableCategories: parentCategories });
+        })
     }
 
     componentWillUnmount() {
@@ -29,56 +41,39 @@ class CategoryList extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if ((nextProps.deleted.data || nextProps.deleted.error) && !nextProps.deleted.isFetching) {
-            nextProps.deleted.error ? alertService.error('删除失败', nextProps.deleted.error) : alertService.success('删除成功');
-        }
+        alertService.deleteNotify(nextProps.deleted);
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return true;
-    }
-
-    onPageChange = (pageSize) => {
+    onPageChange = (currentPage) => {
+        const { filter, perPage } = this.state;
         this.setState({
-            pageSize: pageSize
+            currentPage: currentPage
         });
-        this.getAllCategories(this.state.filter, pageSize, this.state.pageCount);
+        this.props.getCategories({ filter, currentPage, perPage });
     }
 
-    getPagination(total) {
-        return {
-            pageSize: this.state.pageSize,
-            pageCount: this.state.pageCount,
-            total: total,
-            onChange: this.onPageChange
-        }
-    }
-
-    handleNameChange(e) {
-        this.setState({
-            search: {
-                name: e.target.value
-            }
-        });
-    }
-
-    getAllCategories(filter, pageSize, pageCount) {
-        this.props.getAllCategories(filter, pageSize, pageCount);
+    handleChange(e) {
+        const search = this.state.search;
+        search[e.target.name] = e.target.value;
+        this.setState(search);
     }
 
     search() {
         const filter = {};
-        if (this.state.search.name) {
-            filter.name = this.state.search.name;
-        }
-        this.setState({ filter: filter, pageSize: defaultPageSize, pageCount: defaultPageCount });
-        this.getAllCategories(filter, defaultPageSize, defaultPageCount);
+        const { keyword, enabled, pid } = this.state.search;
+        keyword ? filter.keyword = keyword : delete filter.keyword;
+        enabled !== '-1' ? filter.enabled = enabled === "1" : delete filter.enabled;
+        pid != '-1' ? filter.pid = pid : delete filter.pid;
+        this.setState({ filter, currentPage: defaultPageSize, perPage: defaultPageCount });
+        this.props.getCategories({ filter, currentPage: defaultPageSize, perPage: defaultPageCount });
     }
 
     reset() {
         this.setState({
             search: {
-                name: ''
+                keyword: '',
+                enabled: '-1',
+                pid: '-1',
             },
             filter: null
         });
@@ -88,13 +83,19 @@ class CategoryList extends React.Component {
         this.props.deleteCategory(id);
     }
 
+    renderCategoryOption() {
+        return this.state.availableCategories.map((category) => {
+            return <option key={category._id} value={category._id}>{category.name}</option>
+        })
+    }
+
     render() {
-        const { data, error, isFetching } = this.props.list;
+        const { data, message, isFetching } = this.props.list;
+        const pagination = { ...this.props.list.pagination, onChange: this.onPageChange };
         const deleted = this.props.deleted;
-        const pagination = data ? this.getPagination(data.total) : null;
         const columns = [
             {
-                title: '类别',
+                title: '分类',
                 key: 'name',
                 dataIndex: 'name'
             },
@@ -111,22 +112,34 @@ class CategoryList extends React.Component {
             {
                 title: '排序',
                 key: 'displayOrder',
-                dataIndex: 'displayOrder'
+                dataIndex: 'displayOrder',
+                width: 80
             },
             {
                 title: '状态',
                 key: 'enabled',
                 dataIndex: 'enabled',
+                width: 80,
                 render: (enabled) => (
+                    <span className={`fa fa-${enabled ? 'check' : 'lock'}`} aria-hidden="true"></span>
+                ),
+            },
+            {
+                title: '创建时间',
+                key: 'create_time',
+                dataIndex: 'create_time',
+                width: 150,
+                render: (create_time) => (
                     <span>
-                        {enabled ? '启用' : '禁用'}
+                        {momentFormat(create_time)}
                     </span>
                 ),
             },
             {
                 title: '操作',
                 key: 'action',
-                dataIndex: 'id',
+                dataIndex: '_id',
+                width: 150,
                 render: (id) => (
                     <div>
                         <Link to={`/category/edit/${id}`} className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-pencil" aria-hidden="true"></span> 编辑</Link>
@@ -146,11 +159,11 @@ class CategoryList extends React.Component {
                     <div className="title_left">
                         <h3>分类目录</h3>
                     </div>
-
                     <div className="title_right">
-                        <div className="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                            test
-                        </div>
+                        <ol className="breadcrumb">
+                            <li>文章管理</li>
+                            <li className="active">分类目录</li>
+                        </ol>
                     </div>
                 </div>
                 <div className="clearfix"></div>
@@ -158,30 +171,41 @@ class CategoryList extends React.Component {
                     <div className="col-md-12 col-sm-12 col-xs-12">
                         <div className="x_panel">
                             <div className="x_title">
-                                <h2>分类管理 <small><Link to='/category/add' className='btn btn-primary btn-xs'><span className="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加</Link></small></h2>
+                                <h2>所有分类 <small><Link to='/category/add' className='btn btn-primary btn-xs'><span className="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加</Link></small></h2>
                                 <div className="clearfix"></div>
                             </div>
                             <div className="x_content">
-                                {/*<p className="text-muted font-13 m-b-30">
-                                DataTables has most features enabled by default, so all you need to do to use it with your own tables is to call the construction function: <code>$().DataTable();</code>
-                            </p>*/}
                                 <form className="form-inline search-from">
                                     <div className="form-group">
-                                        <label htmlFor="name">类别</label>
-                                        <input type="text" className="form-control" id="name" value={this.state.search.name} onChange={(e) => this.handleNameChange(e)} />
+                                        <label htmlFor="name">关键字</label>
+                                        <input type="text" className="form-control" id="name" name="keyword" placeholder="分类，别名，描述" value={this.state.search.keyword} onChange={(e) => this.handleChange(e)} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="enabled">父分类</label>
+                                        <select id="pid" className="form-control" name="pid" value={this.state.pid} onChange={(e) => this.handleChange(e)}>
+                                            <option value="-1">--请选择--</option>
+                                            {this.renderCategoryOption()}
+                                        </select>
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="enabled">状态</label>
+                                        <select id="enabled" className="form-control" name="enabled" value={this.state.enabled} onChange={(e) => this.handleChange(e)}>
+                                            <option value="-1">--请选择--</option>
+                                            <option value="1">启用</option>
+                                            <option value="0">禁用</option>
+                                        </select>
                                     </div>
                                     <div className="form-group">
                                         <button type="button" className="btn btn-primary btn-sm" onClick={() => this.search()}>搜索</button>
                                         <button type="button" className="btn btn-default btn-sm" onClick={() => this.reset()}>重置</button>
                                     </div>
                                 </form>
-                                {data ? <Table columns={columns} dataSource={data.result} pagination={pagination} loading={isFetching} /> : null}
+                                {data ? <Table columns={columns} dataSource={data} pagination={pagination} loading={isFetching} /> : null}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         );
     }
 }
@@ -195,7 +219,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getAllCategories: (filter, pageSize, pageCount) => dispatch(getAllCategories(filter, pageSize, pageCount)),
+        getCategories: ({ filter = null, currentPage, perPage }) => dispatch(getCategories(filter, currentPage, perPage)),
         deleteCategory: (id) => dispatch(deleteCategory(id)),
         resetMe: () => dispatch(resetDeleteCategory())
     }

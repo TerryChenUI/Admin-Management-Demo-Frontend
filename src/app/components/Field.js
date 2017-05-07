@@ -41,6 +41,26 @@ export const renderInputField = ({ input, label, type, placeholder, required, cl
     );
 }
 
+export const renderSelectField = ({ input, label, type, className, options, meta: { touched, error, warning } }) => {
+    return (
+        <div className={getFormGroupCls(touched, error)}>
+            <label className={labelCls} htmlFor={input.name}>{label}</label>
+            <div className={wrapperCls}>
+                <select {...input} id={input.name} className={controlCls}>
+                    <option value="-1">--请选择--</option>
+                    {
+                        options.map(option =>
+                            <option value={option.value} key={option.value}>{option.text}</option>
+                        )
+                    }
+                </select>
+            </div>
+            {renderErrorMessage(touched, error)}
+        </div>
+    );
+}
+
+
 export const renderTextareaField = ({ input, label, type, placeholder, className, meta: { touched, error, warning } }) => {
     return (
         <div className={getFormGroupCls(touched, error)}>
