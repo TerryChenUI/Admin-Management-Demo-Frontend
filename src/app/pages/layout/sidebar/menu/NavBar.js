@@ -31,7 +31,7 @@ const section = [
                     },
                     {
                         name: '发布文章',
-                        path: '/article/add',
+                        path: '/article/edit',
                         icon: 'fa-home',
                         key: 'articleAdd'
                     },

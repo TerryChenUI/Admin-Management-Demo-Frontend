@@ -9,11 +9,11 @@ const TagForm = props => {
     const { handleSubmit, invalid, pristine, reset, submitting, onSubmit, initialValues } = props;
     return (
         <form className="form-horizontal" onSubmit={handleSubmit(onSubmit)}>
-            <Field type="text" name="name" label="标签" component={renderInputField} validate={required} required />
-            <Field type="text" name="slug" label="别名" component={renderInputField} validate={required} required />
-            <Field type="textarea" name="description" label="描述" component={renderTextareaField} />
-            <Field type="number" name="displayOrder" label="排序" component={renderInputField} validate={required} required />
-            <Field type="checkbox" name="visible" label="启用" component={renderCheckboxField} />
+            <Field type="text" name="name" label="标签" placeholder="标签名称" component={renderInputField} validate={required} required />
+            <Field type="text" name="slug" label="别名" placeholder="在URL中使用的别称，建议小写，字母、数字、连字符（-）" component={renderInputField} validate={required} required />
+            <Field type="textarea" name="description" label="描述" placeholder="标签描述" component={renderTextareaField} />
+            <Field type="number" name="displayOrder" label="排序" placeholder="标签显示的顺序" component={renderInputField} validate={required} required />
+            <Field type="checkbox" name="visible" label="启用" placeholder="标签是否可见" component={renderCheckboxField} />
             {
                 initialValues && initialValues.create_time && renderLabelField('创建时间', initialValues.create_time)
             }

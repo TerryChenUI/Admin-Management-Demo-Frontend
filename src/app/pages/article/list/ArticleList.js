@@ -77,8 +77,8 @@ class ArticleList extends React.Component {
         const columns = [
             {
                 title: '标题',
-                key: 'keyword',
-                dataIndex: 'keyword'
+                key: 'title',
+                dataIndex: 'title'
             },
             {
                 title: '简介',
@@ -91,7 +91,9 @@ class ArticleList extends React.Component {
                 dataIndex: 'state',
                 render: (state) => (
                     <span>
-                        {state ? '启用' : '禁用'}
+                        { 
+                            state === -1 ? '回收站' : state ? '已发布': '草稿'
+                        }
                     </span>
                 ),
             },
@@ -109,7 +111,7 @@ class ArticleList extends React.Component {
             {
                 title: '操作',
                 key: 'action',
-                dataIndex: 'id',
+                dataIndex: '_id',
                 render: (id) => (
                     <div>
                         <Link to={`/article/edit/${id}`} className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-pencil" aria-hidden="true"></span> 编辑</Link>
@@ -141,7 +143,7 @@ class ArticleList extends React.Component {
                     <div className="col-md-12 col-sm-12 col-xs-12">
                         <div className="x_panel">
                             <div className="x_title">
-                                <h2>文章列表 <small><Link to='/article/add' className='btn btn-primary btn-xs'><span className="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加</Link></small></h2>
+                                <h2>文章列表 <small><Link to='/article/edit' className='btn btn-primary btn-xs'><span className="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加</Link></small></h2>
                                 <div className="clearfix"></div>
                             </div>
                             <div className="x_content">

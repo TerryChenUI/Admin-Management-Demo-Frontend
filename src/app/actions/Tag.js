@@ -72,6 +72,20 @@ export function getTags(filter, currentPage, perPage) {
     }
 }
 
+export async function getAllTags() {
+    try {
+        const response = await getFetch(`/api/tags?currentPage=1&perPage=100`);
+        if (response.code) {
+            return response.result.data;
+        } else {
+            return [];
+        }
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+
 export function getTagById(id) {
     return async (dispatch) => {
         try {

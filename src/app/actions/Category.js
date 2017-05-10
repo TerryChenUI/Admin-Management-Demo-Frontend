@@ -73,16 +73,17 @@ export function getCategories(filter, currentPage, perPage) {
 }
 
 export async function getAllCategories() {
-    const response = await getFetch(`/api/categories?currentPage=1&perPage=100`);
-    if (response.code) {
-        return response.result.data;
-    } else {
-        return [];
+    try {
+        const response = await getFetch(`/api/categories?currentPage=1&perPage=100`);
+        if (response.code) {
+            return response.result.data;
+        } else {
+            return [];
+        }
     }
-    // try {
-    // } catch (error) {
-    //     console.log(error.message);
-    // }
+    catch (error) {
+        console.log(error);
+    }
 }
 
 export function getCategoryById(id) {

@@ -2,14 +2,13 @@ import React from 'react';
 import classNames from 'classnames';
 import { momentFormat } from './Util';
 
-const labelCls = "control-label col-md-3 col-sm-3 col-xs-12";
-const wrapperCls = "col-md-4 col-sm-4 col-xs-12";
-const controlCls = "form-control";
+const defaultLabelCls = "col-md-3 col-sm-3 col-xs-12";
+const defaultWrapperCls = "col-md-4 col-sm-4 col-xs-12";
 
 const renderErrorMessage = (touched, error) => {
     if (touched && error) {
         return (
-            <div className="col-md-4 col-sm-4 col-xs-12"><span className="invalid-message">{error}</span></div>
+            <div className="col-md-2 col-sm-2 col-xs-12"><span className="invalid-message">{error}</span></div>
         );
     }
 }
@@ -29,25 +28,25 @@ export const renderLabelField = (label, value) => {
     )
 }
 
-export const renderInputField = ({ input, label, type, placeholder, required, className, meta: { touched, error, warning } }) => {
+export const renderInputField = ({ input, label, labelCls, wrapperCls, type, placeholder, required = false, meta: { touched, error, warning } }) => {
     return (
         <div className={getFormGroupCls(touched, error)}>
-            <label className={labelCls} htmlFor={input.name} required>{label}</label>
-            <div className={wrapperCls}>
-                <input {...input} id={input.name} className={controlCls} placeholder={placeholder} type={type} />
+            <label className={`control-label ${labelCls ? labelCls : defaultLabelCls}`} htmlFor={input.name} required={required}>{label}</label>
+            <div className={wrapperCls ? wrapperCls : defaultWrapperCls}>
+                <input {...input} id={input.name} title={placeholder} className="form-control" placeholder={placeholder} type={type} />
             </div>
             {renderErrorMessage(touched, error)}
         </div>
     );
 }
 
-export const renderSelectField = ({ input, label, type, className, options, meta: { touched, error, warning } }) => {
+export const renderSelectField = ({ input, label, labelCls, wrapperCls, type, options, required = false, meta: { touched, error, warning } }) => {
     return (
         <div className={getFormGroupCls(touched, error)}>
-            <label className={labelCls} htmlFor={input.name}>{label}</label>
-            <div className={wrapperCls}>
-                <select {...input} id={input.name} className={controlCls}>
-                    <option value="-1">--请选择--</option>
+            <label className={`control-label ${labelCls ? labelCls : defaultLabelCls}`} htmlFor={input.name} required={required}>{label}</label>
+            <div className={wrapperCls ? wrapperCls : defaultWrapperCls}>
+                <select {...input} id={input.name} className="form-control">
+                    <option value="-1">--无--</option>
                     {
                         options.map(option =>
                             <option value={option.value} key={option.value}>{option.text}</option>
@@ -61,23 +60,23 @@ export const renderSelectField = ({ input, label, type, className, options, meta
 }
 
 
-export const renderTextareaField = ({ input, label, type, placeholder, className, meta: { touched, error, warning } }) => {
+export const renderTextareaField = ({ input, label, labelCls, wrapperCls, type, placeholder, required = false, meta: { touched, error, warning } }) => {
     return (
         <div className={getFormGroupCls(touched, error)}>
-            <label className={labelCls} htmlFor={input.name}>{label}</label>
-            <div className={wrapperCls}>
-                <textarea {...input} id={input.name} className={controlCls} placeholder={placeholder} type={type} rows="3" />
+            <label className={`control-label ${labelCls ? labelCls : defaultLabelCls}`} htmlFor={input.name} required={required}>{label}</label>
+            <div className={wrapperCls ? wrapperCls : defaultWrapperCls}>
+                <textarea {...input} id={input.name} title={placeholder} className="form-control" placeholder={placeholder} type={type} rows="3" />
             </div>
             {renderErrorMessage(touched, error)}
         </div>
     );
 }
 
-export const renderCheckboxField = ({ input, label, type, className, meta: { touched, error, warning } }) => {
+export const renderCheckboxField = ({ input, label, labelCls, wrapperCls, type, className, required = false, meta: { touched, error, warning } }) => {
     return (
         <div className={getFormGroupCls(touched, error)}>
-            <label className={labelCls} htmlFor={input.name}>{label}</label>
-            <div className={wrapperCls}>
+            <label className={`control-label ${labelCls ? labelCls : defaultLabelCls}`} htmlFor={input.name} required={required}>{label}</label>
+            <div className={wrapperCls ? wrapperCls : defaultWrapperCls}>
                 <div className="checkbox">
                     <label>
                         <input {...input} placeholder={label} type={type} />
