@@ -40,7 +40,7 @@ const ArticleForm = props => {
                                     {
                                         availableCategories.map(option =>
                                             <div key={option.value}>
-                                                <input type="checkbox" name="categories" key={option.value} value={option.text} /> {option.text}
+                                                <Field name={option.value} id={option.value} component="input" type="checkbox"/> {option.text}
                                             </div>
                                         )
                                     }
@@ -52,7 +52,7 @@ const ArticleForm = props => {
                                     {
                                         availableTags.map(option =>
                                             <div key={option.value}>
-                                                <input type="checkbox" name="tags" key={option.value} value={option.text} /> {option.text}
+                                                <Field name={option.value} id={option.value} component="input" type="checkbox"/> {option.text}
                                             </div>
                                         )
                                     }
@@ -61,11 +61,11 @@ const ArticleForm = props => {
                             <div className="form-group">
                                 <label className="control-label col-md-3 col-sm-3 col-xs-12">发布状态</label>
                                 <div className="col-md-9 col-sm-9 col-xs-12">
-                                    <select id="state" name="state" className="form-control">
+                                    <Field id="state" name="state" className="form-control" component="select">
                                         <option value="0">存为草稿</option>
                                         <option value="1">直接发布</option>
                                         <option value="-1">已删除</option>
-                                    </select>
+                                    </Field>
                                 </div>
                             </div>
                         </div>

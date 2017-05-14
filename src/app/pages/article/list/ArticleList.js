@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { getArticles, deleteArticle, resetDeleteArticle } from '../../../actions/Article';
+import { getAllCategories } from '../../../actions/Category';
+import { getAllTags } from '../../../actions/Tag';
 import Table from '../../../rui/table';
 import Popconfirm from '../../../rui/popconfirm';
 import alertService from '../../../services/AlertService';
@@ -15,6 +17,9 @@ class ArticleList extends React.Component {
             search: {
                 keyword: '',
             },
+            state: "-2",
+            availableCategories: [],
+            availableTags: [],
             filter: null,
             currentPage: defaultPageSize,
             perPage: defaultPageCount
@@ -24,6 +29,16 @@ class ArticleList extends React.Component {
     componentDidMount() {
         const { currentPage, perPage } = this.state;
         this.props.getArticles({ currentPage, perPage });
+
+        // get all categories
+        getAllCategories().then(data => {
+            this.setState({ availableCategories: data });
+        })
+
+        // get all tags
+        getAllTags().then(data => {
+            this.setState({ availableTags: data });
+        })
     }
 
     componentWillUnmount() {
@@ -91,8 +106,8 @@ class ArticleList extends React.Component {
                 dataIndex: 'state',
                 render: (state) => (
                     <span>
-                        { 
-                            state === -1 ? '回收站' : state ? '已发布': '草稿'
+                        {
+                            state === -1 ? '回收站' : state ? '已发布' : '草稿'
                         }
                     </span>
                 ),
@@ -150,7 +165,39 @@ class ArticleList extends React.Component {
                                 <form className="form-inline search-from">
                                     <div className="form-group">
                                         <label htmlFor="keyword">关键字</label>
-                                        <input type="text" className="form-control" id="keyword" placeholder="标题，简介，内容"  value={this.state.search.keyword} onChange={(e) => this.handleChange(e)} />
+                                        <input type="text" className="form-control" id="keyword" placeholder="标题，简介，内容" value={this.state.search.keyword} onChange={(e) => this.handleChange(e)} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="keyword">状态</label>
+                                        <select id="state" name="state" className="form-control" value={this.state.state} onChange={(e) => this.handleChange(e)}>
+                                            <option value="-2">--请选择--</option>
+                                            <option value="0">草稿</option>
+                                            <option value="1">已发布</option>
+                                            <option value="-1">已删除</option>
+                                        </select>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label htmlFor="visible">分类</label>
+                                        <select id="pid" className="form-control" name="category" value={this.state.category} onChange={(e) => this.handleChange(e)}>
+                                            <option value="-1">--请选择--</option>
+                                            {
+                                                this.state.availableCategories.map((category) => {
+                                                    return <option key={category._id} value={category._id}>{category.name}</option>
+                                                })
+                                            }
+                                        </select>
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="visible">标签</label>
+                                        <select id="pid" className="form-control" name="tag" value={this.state.tag} onChange={(e) => this.handleChange(e)}>
+                                            <option value="-1">--请选择--</option>
+                                            {
+                                                this.state.availableTags.map((tag) => {
+                                                    return <option key={tag._id} value={tag._id}>{tag.name}</option>
+                                                })
+                                            }
+                                        </select>
                                     </div>
                                     <div className="form-group">
                                         <button type="button" className="btn btn-primary btn-sm" onClick={() => this.search()}>搜索</button>
