@@ -1,0 +1,50 @@
+body {
+  height: 100%;
+  overflow-y: hidden;
+  background: #f4f4f4;
+}
+
+.layout {
+  position: relative;
+}
+
+.main {
+  margin-left: 224px;
+  height: 100vh;
+  overflow: auto;
+  transition: all 0.3s ease-out;
+}
+
+.container {
+  margin: 24px;
+  .conntent {
+    min-height: calc(100vh - 190px);
+    position: relative;
+  }
+  .content-wrapper {
+    min-height: calc(100vh - 190px);
+    background: #fff;
+    height: 500px;
+    padding: 12px 24px 24px 24px;
+    box-shadow: 4px 4px 20px 0 rgba(0, 0, 0, 0.01);
+  }
+}
+
+.page-title {
+  padding: 0;
+  margin: 0 0 12px 0;
+}
+
+.ant-table .ant-table-thead>tr>th {
+  text-align: center;
+}
+
+.ant-table .ant-table-tbody>tr>td {
+  text-align: center;
+}
+
+.ant-table-pagination {
+  float: none;
+  display: table;
+  margin: 16px auto;
+}

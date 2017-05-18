@@ -1,0 +1,38 @@
+.sider-menu {
+  background: #FFF;
+  width: 224px;
+  height: 100vh;
+  position: absolute;
+  overflow: visible;
+  padding-bottom: 24px;
+  transition: all 0.3s ease-out;
+  box-shadow: 4px 4px 20px 0 rgba(0, 0, 0, 0.01);
+  color: #999;
+  .logo {
+    text-align: center;
+    height: 40px;
+    line-height: 40px;
+    cursor: pointer;
+    margin: 28px 0;
+    transition: all 0.3s ease-out;
+    overflow: hidden;
+    img {
+      width: 40px;
+      margin-right: 8px;
+      transition: all 0.3s ease-out;
+    }
+    span {
+      vertical-align: text-bottom;
+      font-size: 16px;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+  }
+  .ant-menu-inline {
+    border: none;
+    overflow-x: hidden;
+    border-right: none;
+    box-shadow: none;
+    transition: all 0.3s ease-out;
+  }
+}

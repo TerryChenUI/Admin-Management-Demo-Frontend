@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const proxyMiddleware = require('http-proxy-middleware');
-const proxy = require('./proxy.dev');
+const proxy = require('./proxy');
 const config = require('./webpack.dev.config');
 
 const port = 3000;

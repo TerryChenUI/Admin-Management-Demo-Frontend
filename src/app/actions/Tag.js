@@ -55,7 +55,7 @@ const deleteTagSuccess = makeActionCreator(DELETE_TAG_SUCCESS);
 const deleteTagFailure = makeActionCreator(DELETE_TAG_FAILURE);
 export const resetDeleteTag = makeActionCreator(RESET_DELETE_TAG);
 
-export function getTags(filter, currentPage, perPage) {
+export function getTags(filter, current, pageSize) {
     return async (dispatch) => {
         dispatch(getTagsRequest());
         try {
@@ -63,7 +63,7 @@ export function getTags(filter, currentPage, perPage) {
             filter && Object.keys(filter).map((key) => {
                 params.push(`${key}=${filter[key]}`);
             });
-            params = [...params, `currentPage=${currentPage}`, `perPage=${perPage}`];
+            params = [...params, `currentPage=${current}`, `perPage=${pageSize}`];
             const response = await getFetch(`/api/tags?${params.join('&')}`);
             response.code ? dispatch(getTagsSuccess(response)) : dispatch(getTagsFailure(response));
         } catch (error) {

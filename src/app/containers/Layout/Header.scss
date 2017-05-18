@@ -1,0 +1,26 @@
+$headerHeight: 50px;
+.header {
+  box-shadow: 4px 4px 40px 0 rgba(0, 0, 0, 0.05);
+  position: relative;
+  height: $headerHeight;
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  .button {
+    width: $headerHeight;
+    height: $headerHeight;
+    line-height: $headerHeight;
+    text-align: center;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s ease-out;
+  }
+  .right-wrapper {
+    display: flex;
+    padding-right: 16px;
+    .ant-menu-horizontal {
+      border: none;
+      line-height: $headerHeight;
+    }
+  }
+}
