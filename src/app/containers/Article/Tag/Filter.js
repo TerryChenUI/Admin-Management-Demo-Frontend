@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import moment from 'moment';
-
 import { Form, Button, Row, Col, Input, Select } from 'antd';
 
 const Option = Select.Option;
@@ -16,11 +15,6 @@ class TagFilter extends React.Component {
         e.preventDefault();
         const data = this.props.form.getFieldsValue();
         this.props.onSearch(e, data);
-        // this.props.form.validateFields((err, values) => {
-        //     if (!err) {
-        //         console.log('Received values of form: ', values);
-        //     }
-        // });
     }
 
     handleReset() {
@@ -37,27 +31,27 @@ class TagFilter extends React.Component {
         };
         return (
             <Row gutter={24}>
-                <Col xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 8 }} xl={{ span: 4 }} style={{ marginBottom: 16 }}>
+                <Col xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 6 }} xl={{ span: 4 }} style={{ marginBottom: 16 }}>
                     {
                         getFieldDecorator('keyword')(
                             <Input placeholder="标签，别名，关键字" />
                         )
                     }
                 </Col>
-                <Col xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 8 }} xl={{ span: 4 }} style={{ marginBottom: 16 }} >
+                <Col xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 6 }} xl={{ span: 4 }} style={{ marginBottom: 16 }} >
                     {
                         getFieldDecorator('visible', { initialValue: '-1' })(
                             <Select style={{ width: '100%' }}>
                                 <Option value="-1">--状态--</Option>
-                                <Option value="1">启用</Option>
-                                <Option value="0">禁用</Option>
+                                <Option value="1">可见</Option>
+                                <Option value="0">隐藏</Option>
                             </Select>
                         )
                     }
                 </Col>
-                <Col xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 8 }} xl={{ span: 4 }} style={{ marginBottom: 16 }}>
+                <Col className="form-action" xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 8 }} xl={{ span: 4 }} style={{ marginBottom: 16 }}>
                     <Button type="primary" onClick={(e) => this.handleSubmit(e)}>搜索</Button>
-                    <Button style={{ marginLeft: 8 }} onClick={() => this.handleReset()}>重置</Button>
+                    <Button onClick={() => this.handleReset()}>重置</Button>
                 </Col>
             </Row>
         )

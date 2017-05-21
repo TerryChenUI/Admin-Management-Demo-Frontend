@@ -24,15 +24,22 @@ body {
   .content-wrapper {
     min-height: calc(100vh - 190px);
     background: #fff;
-    height: 500px;
     padding: 12px 24px 24px 24px;
     box-shadow: 4px 4px 20px 0 rgba(0, 0, 0, 0.01);
   }
 }
 
 .page-title {
-  padding: 0;
-  margin: 0 0 12px 0;
+  overflow: hidden;
+  margin: 0 0 15px 0;
+  h2 {
+    float: left;
+  }
+  a {
+    display: block;
+    float: left;
+    margin: 3px 0 0 20px;
+  }
 }
 
 .ant-table .ant-table-thead>tr>th {
@@ -47,4 +54,8 @@ body {
   float: none;
   display: table;
   margin: 16px auto;
+}
+
+.form-action button {
+  margin: 0 5px;
 }

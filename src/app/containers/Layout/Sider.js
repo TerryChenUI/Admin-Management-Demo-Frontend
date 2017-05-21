@@ -1,7 +1,8 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { Menu, Icon } from 'antd'
-import './Sider.scss'
+import React from 'react';
+import { connect } from 'react-redux';
+import { Menu, Icon } from 'antd';
+import { Link } from 'react-router';
+import './Sider.scss';
 
 const SubMenu = Menu.SubMenu;
 
@@ -12,7 +13,7 @@ class Sider extends React.Component {
 
     state = {
         current: '1',
-        openKeys: [],
+        openKeys: []
     }
 
     handleClick = (e) => {
@@ -39,6 +40,7 @@ class Sider extends React.Component {
         };
         return map[key] || [];
     }
+
     render() {
         return (
             <aside className="sider-menu">
