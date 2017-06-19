@@ -21,7 +21,8 @@ module.exports = {
         loaders: [
             { test: /\.(js|jsx)$/, loaders: 'babel-loader', exclude: /node_modules/ },
             { test: /\.css?$/, loaders: ['style-loader', 'css-loader'] },
-            { test: /\.scss$/, loaders: ['style-loader', 'css-loader?sourceMap', 'sass-loader?sourceMap'] },
+            { test: /\.scss$/, loaders: ['style-loader', 'css-loader', 'sass-loader?sourceMap'] },
+            { test: /\.less$/, loaders: ['style-loader', 'css-loader?modules&localIdentName=[local]__[hash:base64:5]', 'less-loader'] },
             { test: /\.(png|jpg)$/, loader: 'url-loader?limit=25000' },
             { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file-loader' },
             { test: /\.(woff|woff2)$/, loader: 'url-loader?prefix=font/&limit=5000' },

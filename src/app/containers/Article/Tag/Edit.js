@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import TagForm from './Form';
@@ -62,7 +63,7 @@ class TagEdit extends React.Component {
         const data = props.current.data;
         const onSubmit = id ? props.updateTag : props.createTag;
         return (
-            <div className="content-wrapper">
+            <div className="content-inner">
                 <div className="page-title">
                     <h2>{id ? '编辑' : '新增'}标签</h2>
                 </div>

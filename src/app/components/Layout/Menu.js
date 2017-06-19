@@ -1,21 +1,21 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Menu, Icon } from 'antd'
-import { Link } from 'dva/router'
-import { arrayToTree, queryArray } from '../../utils'
-import pathToRegexp from 'path-to-regexp'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Menu, Icon } from 'antd';
+import { Link } from 'react-router';
+import { arrayToTree, queryArray } from '../../utils';
+import pathToRegexp from 'path-to-regexp';
 
 const Menus = ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys, changeOpenKeys, menu }) => {
   // 生成树状
-  const menuTree = arrayToTree(menu.filter(_ => _.mpid !== -1), 'id', 'mpid')
-  const levelMap = {}
+  const menuTree = arrayToTree(menu.filter(_ => _.mpid !== -1), 'id', 'mpid');
+  const levelMap = {};
 
   // 递归生成菜单
   const getMenus = (menuTreeN, siderFoldN) => {
     return menuTreeN.map(item => {
       if (item.children) {
         if (item.mpid) {
-          levelMap[item.id] = item.mpid
+          levelMap[item.id] = item.mpid;
         }
         return (
           <Menu.SubMenu
@@ -39,37 +39,37 @@ const Menus = ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys
       )
     })
   }
-  const menuItems = getMenus(menuTree, siderFold)
+  const menuItems = getMenus(menuTree, siderFold);
 
   // 保持选中
   const getAncestorKeys = (key) => {
-    let map = {}
+    let map = {};
     const getParent = (index) => {
-      const result = [String(levelMap[index])]
+      const result = [String(levelMap[index])];
       if (levelMap[result[0]]) {
-        result.unshift(getParent(result[0])[0])
+        result.unshift(getParent(result[0])[0]);
       }
-      return result
+      return result;
     }
     for (let index in levelMap) {
       if ({}.hasOwnProperty.call(levelMap, index)) {
-        map[index] = getParent(index)
+        map[index] = getParent(index);
       }
     }
-    return map[key] || []
+    return map[key] || [];
   }
 
   const onOpenChange = (openKeys) => {
-    const latestOpenKey = openKeys.find(key => !(navOpenKeys.indexOf(key) > -1))
-    const latestCloseKey = navOpenKeys.find(key => !(openKeys.indexOf(key) > -1))
-    let nextOpenKeys = []
+    const latestOpenKey = openKeys.find(key => !(navOpenKeys.indexOf(key) > -1));
+    const latestCloseKey = navOpenKeys.find(key => !(openKeys.indexOf(key) > -1));
+    let nextOpenKeys = [];
     if (latestOpenKey) {
-      nextOpenKeys = getAncestorKeys(latestOpenKey).concat(latestOpenKey)
+      nextOpenKeys = getAncestorKeys(latestOpenKey).concat(latestOpenKey);
     }
     if (latestCloseKey) {
-      nextOpenKeys = getAncestorKeys(latestCloseKey)
+      nextOpenKeys = getAncestorKeys(latestCloseKey);
     }
-    changeOpenKeys(nextOpenKeys)
+    changeOpenKeys(nextOpenKeys);
   }
 
   let menuProps = !siderFold ? {
@@ -79,27 +79,27 @@ const Menus = ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys
 
 
   // 寻找选中路由
-  let currentMenu
-  let defaultSelectedKeys
+  let currentMenu;
+  let defaultSelectedKeys;
   for (let item of menu) {
     if (item.router && pathToRegexp(item.router).exec(location.pathname)) {
-      currentMenu = item
-      break
+      currentMenu = item;
+      break;
     }
   }
   const getPathArray = (array, current, pid, id) => {
-    let result = [String(current[id])]
+    let result = [String(current[id])];
     const getPath = (item) => {
       if (item && item[pid]) {
-        result.unshift(String(item[pid]))
-        getPath(queryArray(array, item[pid], id))
+        result.unshift(String(item[pid]));
+        getPath(queryArray(array, item[pid], id));
       }
     }
-    getPath(current)
-    return result
+    getPath(current);
+    return result;
   }
   if (currentMenu) {
-    defaultSelectedKeys = getPathArray(menu, currentMenu, 'mpid', 'id')
+    defaultSelectedKeys = getPathArray(menu, currentMenu, 'mpid', 'id');
   }
 
   return (
@@ -124,6 +124,6 @@ Menus.propTypes = {
   handleClickNavMenu: PropTypes.func,
   navOpenKeys: PropTypes.array,
   changeOpenKeys: PropTypes.func,
-}
+};
 
-export default Menus
+export default Menus;

@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, IndexRoute } from 'react-router';
 
 import App from './containers/App';
-import Main from './containers/Layout/Main';
+// import Main from './containers/Layout/Main';
 import Index from './containers/Index/';
 
 // import ArticleList from './containers/article/list/ArticleList';

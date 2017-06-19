@@ -1,17 +1,16 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Menu, Icon, Popover } from 'antd'
-import styles from './Header.less'
-import Menus from './Menu'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Menu, Icon, Popover } from 'antd';
+import styles from './Header.less';
+import Menus from './Menu';
 
-const SubMenu = Menu.SubMenu
+const SubMenu = Menu.SubMenu;
 
 const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVisible, location, switchMenuPopover, navOpenKeys, changeOpenKeys, menu }) => {
-  let handleClickMenu = e => e.key === 'logout' && logout()
+  let handleClickMenu = e => e.key === 'logout' && logout();
   const menusProps = {
     menu,
     siderFold: false,
-    darkTheme: false,
     isNavbar,
     handleClickNavMenu: switchMenuPopover,
     location,
@@ -36,8 +35,7 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVis
         <Menu mode="horizontal" onClick={handleClickMenu}>
           <SubMenu style={{
             float: 'right',
-          }} title={< span > <Icon type="user" />
-            {user.username} < /span>}
+          }} title={<span> <Icon type="user" />{user.username} </span>}
           >
             <Menu.Item key="logout">
               Sign out

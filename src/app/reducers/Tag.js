@@ -8,16 +8,6 @@ const INITIAL_STATE = {
     deleted: { data: null, message: null, error: null, isFetching: false }
 };
 
-function createReducer(initialState, handlers) {
-    return function reducer(state = initialState, action) {
-        if (handlers.hasOwnProperty(action.type)) {
-            return handlers[action.type](state, action);
-        } else {
-            return state;
-        }
-    }
-}
-
 export default function Tag(state = INITIAL_STATE, action) {
     switch (action.type) {
         case types.GET_TAGS_SUCCESS:

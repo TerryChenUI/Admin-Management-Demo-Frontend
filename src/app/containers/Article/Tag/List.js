@@ -1,10 +1,17 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { Link } from 'react-router'
-import { Table, Icon, Button, Popconfirm } from 'antd'
-import { getTags, deleteTag, resetDeleteTag } from '../../../actions/Tag'
+import React from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router';
+import { Table, Icon, Button, Popconfirm, notification } from 'antd';
+import { 
+    getTagsRequest, 
+    getTags, 
+    getTagsSuccess, 
+    getTagsFail, 
+    deleteTag, 
+    resetDeleteTag 
+} from '../../../actions/Tag';
 
-import moment from 'moment'
+import moment from 'moment';
 import TagFilter from './Filter';
 
 class TagList extends React.Component {
@@ -31,7 +38,7 @@ class TagList extends React.Component {
         this.props.resetMe();
     }
 
-    onSearch = (e, values) => {
+    onSearch = (values) => {
         const { current, pageSize } = this.state.pagination;
         this.props.getTags({ filter: values, current, pageSize });
     }
@@ -114,13 +121,12 @@ class TagList extends React.Component {
         ]
 
         return (
-            <div className="content-wrapper">
+            <div className="content-inner">
                 <div className="page-title">
                     <h2>文章标签</h2>
                     <Link to='/tag/add'><Button type="primary" size="small" icon="plus">新增</Button></Link>
                 </div>
-
-                <TagFilter filter={this.props.filter} onSearch={(e, values) => this.onSearch(e, values)} onReset={this.onReset} />
+                <TagFilter filter={this.props.filter} onSearch={this.onSearch} onReset={this.onReset} />
                 <Table
                     dataSource={data}
                     columns={columns}
@@ -135,6 +141,7 @@ class TagList extends React.Component {
     }
 }
 
+
 function mapStateToProps(state) {
     return {
         list: state.tag.list,
@@ -145,6 +152,18 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         getTags: ({ current, pageSize, filter = null }) => {
+            // dispatch(getTagsRequest());
+            // try {
+            //     let params = [];
+            //     filter && Object.keys(filter).map((key) => {
+            //         params.push(`${key}=${filter[key]}`);
+            //     });
+            //     params = [...params, `currentPage=${current}`, `perPage=${pageSize}`];
+            //     await getFetch(`/api/tags?${params.join('&')}`);
+            //     response.code ? dispatch(getTagsSuccess(response)) : dispatch(getTagsFailure(response));
+            // } catch (error) {
+            //    dispatch(getTagsFailure(error.message));
+            // }
             dispatch(getTags(filter, current, pageSize))
         },
         deleteTag: (id) => dispatch(deleteTag(id)),

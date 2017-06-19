@@ -12,11 +12,13 @@ class Search extends React.Component {
   handleSearch = () => {
     const data = {
       keyword: ReactDOM.findDOMNode(this.refs.searchInput).value,
-    }
+    };
     if (this.props.select) {
-      data.field = this.state.selectValue
+      data.field = this.state.selectValue;
     }
-    if (this.props.onSearch) this.props.onSearch(data)
+    if (this.props.onSearch) {
+      this.props.onSearch(data);
+    }
   }
   handleInputChange = e => {
     this.setState({
@@ -37,7 +39,7 @@ class Search extends React.Component {
     })
     this.handleSearch()
   }
-  render () {
+  render() {
     const { size, select, selectOptions, selectProps, style, keyword } = this.props
     const { clearVisible } = this.state
     return (
@@ -64,4 +66,4 @@ Search.propTypes = {
   keyword: PropTypes.string,
 }
 
-export default Search
+export default Search;
