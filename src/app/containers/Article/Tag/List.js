@@ -67,7 +67,7 @@ class TagList extends React.Component {
     }
 
     render() {
-        const { data, message, isFetching } = this.props.list;
+        const { data, message, error, isLoading } = this.props.list;
         const pagination = { ...this.props.list.pagination, ...this.state.pagination };
 
         const columns = [
@@ -132,7 +132,7 @@ class TagList extends React.Component {
                     columns={columns}
                     pagination={pagination}
                     onChange={this.onPageChange}
-                    loading={isFetching}
+                    loading={isLoading}
                     rowKey={record => record._id}
                     bordered
                     simple />

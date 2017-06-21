@@ -1,3 +1,5 @@
+import { createAction, createActions } from 'redux-actions';
+
 export const SWITCH_SIDER = 'app/switchSider';
 export const SWITCH_THEME = 'app/switchTheme';
 export const SWITCH_MENU_POPOVER = 'app/switchMenuPopover';
