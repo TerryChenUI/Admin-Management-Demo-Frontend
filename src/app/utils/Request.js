@@ -25,6 +25,7 @@ function checkStatus(response) {
 }
 
 function checkCode(response, data) {
+    // data.code = 0;
     if (data.code) {
         return data;
     }

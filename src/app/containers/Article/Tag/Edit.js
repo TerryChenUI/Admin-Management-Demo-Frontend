@@ -2,14 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import TagForm from './Form';
-import {
-    getTagById, resetCurrentTag,
-    createTag, resetCreateTag,
-    updateTag, resetUpdateTag
-} from '../../../actions/Tag';
 import { browserHistory } from 'react-router';
-import { notification } from 'antd';
+import { notification, Spin } from 'antd';
+
+import { TagAction } from '../../../actions';
+import { TagService } from '../../../services';
+
+import TagForm from './form';
 
 class TagEdit extends React.Component {
     constructor(props) {
@@ -25,55 +24,25 @@ class TagEdit extends React.Component {
         this.props.resetMe();
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.created.data || nextProps.created.error) {
-            if (nextProps.created.data) {
-                notification['success']({
-                    message: nextProps.created.message,
-                    description: nextProps.created.error,
-                });
-                browserHistory.push('/tag/list')
-            } else {
-                notification['error']({
-                    message: nextProps.created.message,
-                    description: nextProps.created.error,
-                    duration: null
-                });
-            }
-        } else if (nextProps.updated.data || nextProps.updated.error) {
-            if (nextProps.updated.data) {
-                notification['success']({
-                    message: nextProps.updated.message,
-                    description: nextProps.updated.error,
-                });
-                browserHistory.push('/tag/list')
-            } else {
-                notification['error']({
-                    message: nextProps.updated.message,
-                    description: nextProps.updated.error,
-                    duration: null
-                });
-            }
-        }
-    }
-
     render() {
         const props = this.props;
         const id = props.params.id;
-        const data = props.current.data;
+        const { data, loading } = props.current;
         const onSubmit = id ? props.updateTag : props.createTag;
         return (
             <div className="content-inner">
                 <div className="page-title">
                     <h2>{id ? '编辑' : '新增'}标签</h2>
                 </div>
-                <TagForm initialValue={data} onSubmit={onSubmit} />
+                <Spin spinning={loading} delay={500} >
+                    <TagForm initialValue={data} onSubmit={onSubmit} />
+                </Spin>
             </div>
         );
     }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
     return {
         current: state.tag.current,
         created: state.tag.created,
@@ -83,17 +52,55 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getTagById: (id) => dispatch(getTagById(id)),
-        createTag: (params) => {
-            dispatch(createTag(params))
+        getTagById: async (id) => {
+            dispatch(TagAction.getTagByIdRequest());
+            try {
+                const response = await TagService.getById(id);
+                dispatch(TagAction.getTagByIdSuccess(response));
+            } catch (error) {
+                dispatch(TagAction.getTagByIdFailure(error.response));
+            }
         },
-        updateTag: (params) => {
-            dispatch(updateTag(params._id, params))
+        createTag: async (params) => {
+            dispatch(TagAction.createTagRequest());
+            try {
+                const response = await TagService.create(params);
+                dispatch(TagAction.createTagSuccess(response));
+                notification['success']({
+                    message: response.message
+                });
+                browserHistory.push('/tags');
+            } catch (error) {
+                dispatch(TagAction.createTagFailure(error.response));
+                notification['error']({
+                    message: error.response.message,
+                    description: error.response.error,
+                    duration: null
+                });
+            }
+        },
+        updateTag: async (params) => {
+            dispatch(TagAction.updateTagRequest());
+            try {
+                const response = await TagService.update(params);
+                dispatch(TagAction.updateTagSuccess(response));
+                notification['success']({
+                    message: response.message
+                });
+                browserHistory.push('/tags');
+            } catch (error) {
+                dispatch(TagAction.updateTagFailure(error.response));
+                notification['error']({
+                    message: error.response.message,
+                    description: error.response.error,
+                    duration: null
+                });
+            }
         },
         resetMe: () => {
-            dispatch(resetCurrentTag());
-            dispatch(resetCreateTag());
-            dispatch(resetUpdateTag());
+            dispatch(TagAction.resetCurrentTag());
+            dispatch(TagAction.resetCreateTag());
+            dispatch(TagAction.resetUpdateTag());
         }
     }
 }

@@ -41,13 +41,14 @@ module.exports = [
     mpid: 4,
     name: '文章标签',
     icon: 'search',
-    router: '/tag/list',
-  },
-  {
-    id: 441,
-    mpid: -1,
-    bpid: 44,
-    name: '编辑标签',
-    router: '/tag/edit',
+    router: '/tags',
   }
+  // ,
+  // {
+  //   id: 441,
+  //   mpid: -1,
+  //   bpid: 44,
+  //   name: '编辑标签',
+  //   router: '/tags/edit',
+  // }
 ]

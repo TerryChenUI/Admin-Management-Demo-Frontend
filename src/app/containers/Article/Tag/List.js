@@ -2,17 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { Table, Icon, Button, Popconfirm, notification } from 'antd';
-import { 
-    getTagsRequest, 
-    getTags, 
-    getTagsSuccess, 
-    getTagsFail, 
-    deleteTag, 
-    resetDeleteTag 
-} from '../../../actions/Tag';
+import { TagAction } from '../../../actions';
+import { TagService } from '../../../services';
 
 import moment from 'moment';
-import TagFilter from './Filter';
+import TagSearch from './search';
 
 class TagList extends React.Component {
     constructor(props) {
@@ -32,10 +26,6 @@ class TagList extends React.Component {
     componentDidMount() {
         const { current, pageSize } = this.state.pagination;
         this.props.getTags({ current, pageSize });
-    }
-
-    componentWillUnmount() {
-        this.props.resetMe();
     }
 
     onSearch = (values) => {
@@ -67,7 +57,7 @@ class TagList extends React.Component {
     }
 
     render() {
-        const { data, message, error, isLoading } = this.props.list;
+        const { data, message, error, loading } = this.props.list;
         const pagination = { ...this.props.list.pagination, ...this.state.pagination };
 
         const columns = [
@@ -111,8 +101,8 @@ class TagList extends React.Component {
                 width: 160,
                 render: (id, record, index) => (
                     <span>
-                        <Link to={`/tag/edit/${id}`} style={{ marginRight: 10 }}><Button type="primary" size="small" icon="edit">编辑</Button></Link>
-                        <Popconfirm title="你确认要删除这条记录?" onConfirm={() => this.onConfirmDelete(text)} okText="确定" cancelText="取消">
+                        <Link to={`/tags/${id}`} style={{ marginRight: 10 }}><Button type="primary" size="small" icon="edit">编辑</Button></Link>
+                        <Popconfirm title="你确认要删除这条记录?" onConfirm={() => this.onConfirmDelete(id)} okText="确定" cancelText="取消">
                             <Button type="danger" size="small" icon="delete">删除</Button>
                         </Popconfirm>
                     </span>
@@ -124,15 +114,15 @@ class TagList extends React.Component {
             <div className="content-inner">
                 <div className="page-title">
                     <h2>文章标签</h2>
-                    <Link to='/tag/add'><Button type="primary" size="small" icon="plus">新增</Button></Link>
+                    <Link to='/tags/add'><Button type="primary" size="small" icon="plus">新增</Button></Link>
                 </div>
-                <TagFilter filter={this.props.filter} onSearch={this.onSearch} onReset={this.onReset} />
+                <TagSearch filter={this.props.filter} onSearch={this.onSearch} onReset={this.onReset} />
                 <Table
                     dataSource={data}
                     columns={columns}
                     pagination={pagination}
                     onChange={this.onPageChange}
-                    loading={isLoading}
+                    loading={loading}
                     rowKey={record => record._id}
                     bordered
                     simple />
@@ -151,23 +141,35 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getTags: ({ current, pageSize, filter = null }) => {
-            // dispatch(getTagsRequest());
-            // try {
-            //     let params = [];
-            //     filter && Object.keys(filter).map((key) => {
-            //         params.push(`${key}=${filter[key]}`);
-            //     });
-            //     params = [...params, `currentPage=${current}`, `perPage=${pageSize}`];
-            //     await getFetch(`/api/tags?${params.join('&')}`);
-            //     response.code ? dispatch(getTagsSuccess(response)) : dispatch(getTagsFailure(response));
-            // } catch (error) {
-            //    dispatch(getTagsFailure(error.message));
-            // }
-            dispatch(getTags(filter, current, pageSize))
+        getTags: async ({ current, pageSize, filter }) => {
+            dispatch(TagAction.getTagsRequest());
+            try {
+                const response = await TagService.loadList({ current, pageSize, filter });
+                dispatch(TagAction.getTagsSuccess(response));
+            } catch (error) {
+                dispatch(TagAction.getTagsFailure(error.response));
+                notification['error']({
+                    message: error.response.message,
+                    description: error.response.error,
+                    duration: null
+                });
+            }
         },
-        deleteTag: (id) => dispatch(deleteTag(id)),
-        resetMe: () => dispatch(resetDeleteTag())
+        deleteTag: async (id) => {
+            dispatch(TagAction.deleteTagRequest(id));
+            try {
+                const response = await TagService.remove(id);
+                dispatch(TagAction.deleteTagSuccess(response));
+            } catch (error) {
+                dispatch(TagAction.deleteTagFailure(error.response));
+                notification['error']({
+                    message: error.response.message,
+                    description: error.response.error,
+                    duration: null
+                });
+            }
+        },
+        resetMe: () => dispatch(TagAction.resetDeleteTag())
     }
 }
 

@@ -5,7 +5,7 @@ import { Form, Button, Row, Col, Input, Select } from 'antd';
 
 const Option = Select.Option;
 
-class TagFilter extends React.Component {
+class TagSearch extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -63,10 +63,10 @@ class TagFilter extends React.Component {
     }
 }
 
-TagFilter.propTypes = {
+TagSearch.propTypes = {
     filter: PropTypes.object,
     onSearch: PropTypes.func,
     onReset: PropTypes.func
 }
 
-export default Form.create()(TagFilter);
+export default Form.create()(TagSearch);

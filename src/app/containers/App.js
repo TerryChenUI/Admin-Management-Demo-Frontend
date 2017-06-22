@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 
-import { AppAction } from '../actions';
 import { Layout } from '../components';
+import { AppAction } from '../actions';
 import { menu } from '../utils';
 
 import 'antd/dist/antd.css';
 import '../themes/index.less';
-import './App.scss';
+import './app.scss';
 
 const { Header, Bread, Footer, Sider, styles } = Layout;
 let tid;

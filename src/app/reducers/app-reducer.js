@@ -1,4 +1,4 @@
-import * as types from '../actions/App';
+import { AppAction } from '../actions';
 
 const INITIAL_STATE = {
     user: { id: '1', username: 'admin' },
@@ -11,17 +11,17 @@ const INITIAL_STATE = {
 
 export default function App(state = INITIAL_STATE, action) {
     switch (action.type) {
-        case types.SWITCH_SIDER:
+        case AppAction.SWITCH_SIDER:
             localStorage.setItem('siderFold', !state.siderFold);
             return { ...state, siderFold: !state.siderFold };
-        case types.SWITCH_THEME:
+        case AppAction.SWITCH_THEME:
             localStorage.setItem('darkTheme', !state.darkTheme);
             return { ...state, darkTheme: !state.darkTheme };
-        case types.SWITCH_MENU_POPOVER:
+        case AppAction.SWITCH_MENU_POPOVER:
             return { ...state, menuPopoverVisible: !state.menuPopoverVisible };
-        case types.HANDLE_NAV_OPENKEYS:
+        case AppAction.HANDLE_NAV_OPENKEYS:
             return { ...state, navOpenKeys: action.payload };
-        case types.HANDLE_NAVBAR:
+        case AppAction.HANDLE_NAVBAR:
             const isNavbar = document.body.clientWidth < 769
             return { ...state, isNavbar: isNavbar };
         default:

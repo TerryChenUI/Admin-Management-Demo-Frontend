@@ -140,7 +140,7 @@ class TagForm extends React.Component {
                     </FormItem>
                 }
                 <FormItem className="form-action" {...tailFormItemLayout}>
-                    <Link to='/tag/list'><Button size="large">取消</Button></Link>
+                    <Link to='/tags'><Button size="large">取消</Button></Link>
                     <Button type="primary" htmlType="submit" size="large">保存</Button>
                 </FormItem>
             </Form>
