@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { Table, Icon, Button, Popconfirm, notification } from 'antd';
+import { Table, Icon, Button, Popconfirm } from 'antd';
+
+import TagSearch from './search';
 import { TagAction } from '../../../actions';
 import { TagService } from '../../../services';
-
-import moment from 'moment';
-import TagSearch from './search';
+import { notify, time } from '../../../utils';
 
 class TagList extends React.Component {
     constructor(props) {
@@ -92,7 +92,7 @@ class TagList extends React.Component {
                 dataIndex: 'create_time',
                 width: 150,
                 render: (text, record, index) => (
-                    moment(text).format("YYYY-MM-DD HH:mm:ss")
+                    time.convert(text)
                 )
             }, {
                 title: '操作',
@@ -148,11 +148,7 @@ function mapDispatchToProps(dispatch) {
                 dispatch(TagAction.getTagsSuccess(response));
             } catch (error) {
                 dispatch(TagAction.getTagsFailure(error.response));
-                notification['error']({
-                    message: error.response.message,
-                    description: error.response.error,
-                    duration: null
-                });
+                notify.error(error.response.message, error.response.error);
             }
         },
         deleteTag: async (id) => {
@@ -160,13 +156,10 @@ function mapDispatchToProps(dispatch) {
             try {
                 const response = await TagService.remove(id);
                 dispatch(TagAction.deleteTagSuccess(response));
+                notify.success(response.message);
             } catch (error) {
                 dispatch(TagAction.deleteTagFailure(error.response));
-                notification['error']({
-                    message: error.response.message,
-                    description: error.response.error,
-                    duration: null
-                });
+                notify.error(error.response.message, error.response.error);
             }
         },
         resetMe: () => dispatch(TagAction.resetDeleteTag())

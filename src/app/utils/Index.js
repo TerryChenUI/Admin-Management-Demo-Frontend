@@ -1,5 +1,7 @@
 import config from './config';
 import request from './request';
+import * as notify from './notify';
+import * as time from './time';
 import menu from './menu';
 import classnames from 'classnames';
 // import { color } from './theme';
@@ -103,9 +105,11 @@ module.exports = {
   config,
   menu,
   request,
+  notify,
+  time,
   // color,
   classnames,
   queryURL,
   queryArray,
-  arrayToTree,
+  arrayToTree
 }

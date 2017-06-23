@@ -18,10 +18,11 @@ export default async function request(url, options = {}) {
 }
 
 function checkStatus(response) {
-    if (response.status >= 200 && response.status < 300) {
+    if (response.status === 200 || response.status === 401) {
         return response;
+    } else {
+        throwError(response);
     }
-    throwError(response);
 }
 
 function checkCode(response, data) {
@@ -38,33 +39,6 @@ function parseJSON(response) {
 
 function throwError(response, data) {
     const error = new Error(response.statusText || response.status);
-    error.response = data || response;
+    error.response = { message: data.message, error: data.error.message } || { message: error.message };
     throw error;
 }
-
-// export function getFetch(url) {
-//     return fetchWrapper(url);
-// }
-
-// export function postFetch(url, params) {
-//     const options = {
-//         method: 'POST',
-//         body: params
-//     };
-//     return fetchWrapper(url, options);
-// }
-
-// export function putFetch(url, params) {
-//     const options = {
-//         method: 'PUT',
-//         body: params
-//     };
-//     return fetchWrapper(url, options);
-// }
-
-// export function deleteFetch(url) {
-//     const options = {
-//         method: 'DELETE'
-//     };
-//     return fetchWrapper(url, options);
-// }

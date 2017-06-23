@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
 import { browserHistory } from 'react-router';
-import { notification, Spin } from 'antd';
+import { Spin } from 'antd';
 
+import { notify } from '../../../utils';
 import { TagAction } from '../../../actions';
 import { TagService } from '../../../services';
 
@@ -66,17 +66,11 @@ function mapDispatchToProps(dispatch) {
             try {
                 const response = await TagService.create(params);
                 dispatch(TagAction.createTagSuccess(response));
-                notification['success']({
-                    message: response.message
-                });
+                notify.success(response.message);
                 browserHistory.push('/tags');
             } catch (error) {
                 dispatch(TagAction.createTagFailure(error.response));
-                notification['error']({
-                    message: error.response.message,
-                    description: error.response.error,
-                    duration: null
-                });
+                notify.error(error.response.message, error.response.error);
             }
         },
         updateTag: async (params) => {
@@ -84,17 +78,11 @@ function mapDispatchToProps(dispatch) {
             try {
                 const response = await TagService.update(params);
                 dispatch(TagAction.updateTagSuccess(response));
-                notification['success']({
-                    message: response.message
-                });
+                notify.success(response.message);
                 browserHistory.push('/tags');
             } catch (error) {
                 dispatch(TagAction.updateTagFailure(error.response));
-                notification['error']({
-                    message: error.response.message,
-                    description: error.response.error,
-                    duration: null
-                });
+                notify.error(error.response.message, error.response.error);
             }
         },
         resetMe: () => {

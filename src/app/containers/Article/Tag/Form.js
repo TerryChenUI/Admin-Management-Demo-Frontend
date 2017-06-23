@@ -1,7 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-import moment from 'moment';
+
 import { Form, Button, Row, Col, Input, Checkbox, InputNumber } from 'antd';
+import { time } from '../../../utils';
+
 const FormItem = Form.Item;
 
 class TagForm extends React.Component {
@@ -33,27 +36,23 @@ class TagForm extends React.Component {
         const formItemLayout = {
             labelCol: {
                 xs: { span: 24 },
-                sm: { span: 6 },
-                md: { span: 6 },
+                sm: { span: 4 },
+                md: { span: 4 },
                 xl: { span: 4 }
             },
             wrapperCol: {
                 xs: { span: 24 },
-                sm: { span: 12 },
-                md: { span: 8 },
-                xl: { span: 4 }
+                sm: { span: 18 },
+                md: { span: 12 },
+                xl: { span: 8 }
             },
         };
         const tailFormItemLayout = {
             wrapperCol: {
-                xs: {
-                    span: 24,
-                    offset: 0,
-                },
-                sm: {
-                    span: 14,
-                    offset: 6,
-                },
+                xs: { span: 24 },
+                sm: { span: 24 },
+                md: { span: 16 },
+                xl: { span: 12 }
             },
         };
         return (
@@ -125,7 +124,7 @@ class TagForm extends React.Component {
                         label="创建时间"
                     >
                         <span className="ant-form-text">
-                            {moment(initialValue.create_time).format("YYYY-MM-DD HH:mm:ss")}
+                            {time.convert(initialValue.create_time)}
                         </span>
                     </FormItem>
                 }
@@ -135,7 +134,7 @@ class TagForm extends React.Component {
                         label="更新时间"
                     >
                         <span className="ant-form-text">
-                            {moment(initialValue.update_time).format("YYYY-MM-DD HH:mm:ss")}
+                            {time.convert(initialValue.update_time)}
                         </span>
                     </FormItem>
                 }
