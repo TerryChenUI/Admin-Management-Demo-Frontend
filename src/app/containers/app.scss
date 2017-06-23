@@ -1,0 +1,20 @@
+.page-title {
+  overflow: hidden;
+  margin: 0 0 15px 0;
+  h2 {
+    float: left;
+  }
+  a {
+    display: block;
+    float: left;
+    margin: 3px 0 0 20px;
+  }
+}
+
+.ant-form-horizontal .form-action {
+  text-align: center;
+}
+
+.form-action button {
+  margin: 0 5px;
+}
