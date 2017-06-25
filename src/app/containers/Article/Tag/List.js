@@ -19,7 +19,8 @@ class TagList extends React.Component {
             pagination: {
                 current: 1,
                 pageSize: 5
-            }
+            },
+            deletingIds: []
         }
     }
 
@@ -43,22 +44,29 @@ class TagList extends React.Component {
     }
 
     onPageChange = (pagination, filters, sorter) => {
-        const pager = { ...this.state.pagination };
+        const pageConfig = { ...this.state.pagination };
         const filter = this.state.filter;
-        pager.current = pagination.current
+        pageConfig.current = pagination.current
         this.setState({
-            pagination: pager
+            pagination: pageConfig
         });
         this.props.getTags({ filter, current: pagination.current, pageSize: pagination.pageSize });
     }
 
     onConfirmDelete(id) {
+        const deletingIds = [...this.state.deletingIds, id]
+        this.setState({ deletingIds });
         this.props.deleteTag(id);
     }
 
+    isDeleting(id) {
+        return this.state.deletingIds.indexOf(id) > -1;
+    }
+
     render() {
-        const { data, message, error, loading } = this.props.list;
-        const pagination = { ...this.props.list.pagination, ...this.state.pagination };
+        const { list, loading } = this.props;
+        const { data, pagination } = list;
+        const pageConfig = { ...pagination, ...this.state.pagination };
 
         const columns = [
             {
@@ -103,7 +111,7 @@ class TagList extends React.Component {
                     <span>
                         <Link to={`/tags/${id}`} style={{ marginRight: 10 }}><Button type="primary" size="small" icon="edit">编辑</Button></Link>
                         <Popconfirm title="你确认要删除这条记录?" onConfirm={() => this.onConfirmDelete(id)} okText="确定" cancelText="取消">
-                            <Button type="danger" size="small" icon="delete">删除</Button>
+                            <Button type="danger" size="small" icon="delete" loading={this.isDeleting(id)}>删除</Button>
                         </Popconfirm>
                     </span>
                 )
@@ -120,7 +128,7 @@ class TagList extends React.Component {
                 <Table
                     dataSource={data}
                     columns={columns}
-                    pagination={pagination}
+                    pagination={pageConfig}
                     onChange={this.onPageChange}
                     loading={loading}
                     rowKey={record => record._id}
@@ -135,34 +143,28 @@ class TagList extends React.Component {
 function mapStateToProps(state) {
     return {
         list: state.tag.list,
-        deleted: state.tag.deleted
-    }
+        loading: state.tag.loading
+    };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        getTags: async ({ current, pageSize, filter }) => {
+        getTags: ({ current, pageSize, filter }) => {
             dispatch(TagAction.getTagsRequest());
-            try {
-                const response = await TagService.loadList({ current, pageSize, filter });
-                dispatch(TagAction.getTagsSuccess(response));
-            } catch (error) {
-                dispatch(TagAction.getTagsFailure(error.response));
+            TagService.loadList({ current, pageSize, filter }).then((response) => {
+                dispatch(TagAction.getTags(response.result));
+            }, (error) => {
                 notify.error(error.response.message, error.response.error);
-            }
+            });
         },
-        deleteTag: async (id) => {
-            dispatch(TagAction.deleteTagRequest(id));
-            try {
-                const response = await TagService.remove(id);
-                dispatch(TagAction.deleteTagSuccess(response));
+        deleteTag: (id) => {
+            TagService.remove(id).then((response) => {
+                dispatch(TagAction.deleteTag(response.result));
                 notify.success(response.message);
-            } catch (error) {
-                dispatch(TagAction.deleteTagFailure(error.response));
+            }, (error) => {
                 notify.error(error.response.message, error.response.error);
-            }
-        },
-        resetMe: () => dispatch(TagAction.resetDeleteTag())
+            });
+        }
     }
 }
 

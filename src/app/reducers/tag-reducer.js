@@ -1,89 +1,56 @@
 import { TagAction } from '../actions';
 import { handleActions } from 'redux-actions';
 
-const requestStatus = {
-    pagination: null,
-    error: null,
-    loading: false
-}
-
 const INITIAL_STATE = {
-    list: { data: null, pagination: null, message: null, error: null, loading: false },
-    current: { data: null, message: null, error: null, loading: false },
-    created: { data: null, message: null, error: null, loading: false },
-    updated: { data: null, message: null, error: null, loading: false },
-    deleted: { data: null, message: null, error: null, loading: false }
+    list: { data: [], pagination: null },
+    selected: { data: null },
+    loading: false
 };
 
-// const reducer = handleActions({
-//     [TagAction.GET_TAGS_REQUEST]: (state, action) => ({
-//         ...state, list: { data: null, pagination: null, message: null, error: null, loading: true }
-//     }),
-//     DECREMENT: (state, action) => ({
-//         counter: state.counter - action.payload
-//     })
-// }, state = INITIAL_STATE);
-
-export default function Tag(state = INITIAL_STATE, action) {
-    switch (action.type) {
-        case TagAction.GET_TAGS_REQUEST:
-            return { ...state, list: { data: null, pagination: null, message: null, error: null, loading: true } };
-        case TagAction.GET_TAGS_SUCCESS:
-            const { data, pagination } = action.payload.result;
-            return { ...state, list: { data, pagination, message: action.payload.message, loading: false } };
-        case TagAction.GET_TAGS_FAILURE:
-            return { ...state, list: { data: state.list.data || null, message: action.payload.message, error: action.payload.error, loading: false } };
-        case TagAction.RESET_GET_TAGS:
-            return { ...state, list: { data: null, pagination: null, message: null, error: null, loading: false } };
-
-        case TagAction.GET_TAG_BY_ID_REQUEST:
-            return { ...state, current: { data: null, message: null, error: null, loading: true } };
-        case TagAction.GET_TAG_BY_ID_SUCCESS:
-            return { ...state, current: { data: action.payload.result, message: action.payload.message, loading: false } };
-        case TagAction.GET_TAG_BY_ID_FAILURE:
-            return { ...state, current: { data: null, message: action.payload.message, error: action.payload.error, loading: false } };
-        case TagAction.RESET_CURRENT_TAG:
-            return { ...state, current: { data: null, message: null, error: null, loading: false } };
-
-        case TagAction.CREATE_TAG_REQUEST:
-            return { ...state, created: { data: null, message: null, error: null, loading: true } };
-        case TagAction.CREATE_TAG_SUCCESS:
-            return { ...state, created: { data: action.payload.result, message: action.payload.message, loading: false } };
-        case TagAction.CREATE_TAG_FAILURE:
-            return { ...state, created: { data: null, message: action.payload.message, error: action.payload.error, loading: false } };
-        case TagAction.RESET_CREATE_TAG:
-            return { ...state, created: { data: null, message: null, error: null, loading: false } };
-
-        case TagAction.UPDATE_TAG_REQUEST:
-            return { ...state, updated: { data: null, message: null, error: null, loading: true } };
-        case TagAction.UPDATE_TAG_SUCCESS:
-            return { ...state, updated: { data: action.payload.result, message: action.payload.message, loading: false } };
-        case TagAction.UPDATE_TAG_FAILURE:
-            return { ...state, updated: { data: null, message: action.payload.message, error: action.payload.error, loading: false } };
-        case TagAction.RESET_UPDATE_TAG:
-            return { ...state, updated: { data: null, message: null, error: null, loading: false } };
-
-        case TagAction.DELETE_TAG_REQUEST:
-            return { ...state, deleted: { data: action.payload, message: null, error: null, loading: true } };
-        case TagAction.DELETE_TAG_SUCCESS:
-            const { result, message } = action.payload;
-            const newData = state.list.data.filter(t => t._id !== result._id);
-            return {
-                ...state,
-                list: {
-                    data: newData,
-                    pagination: state.list.pagination,
-                    message: null,
-                    loading: false
-                },
-                deleted: { data: result, message: message, loading: false }
-            }
-        case TagAction.DELETE_TAG_FAILURE:
-            return { ...state, deleted: { data: null, error: action.payload.error, message: action.payload.message, loading: false } };
-        case TagAction.RESET_DELETE_TAG:
-            return { ...state, deleted: { data: null, message: null, error: null, loading: false } };
-
-        default:
-            return state
+const createTag = (state, action) => {
+    const createdData = action.payload;
+    const createdList = [...state.list.data]
+    const additionalIndex = createdList.findIndex(t => t._id === createdData._id);
+    if (additionalIndex === -1) {
+        createdList.push(createdData);
     }
-}
+    return { ...state, list: { data: createdList, pagination: state.list.pagination } };
+};
+
+const updateTag = (state, action) => {
+    const updatedData = action.payload;
+    const updatedList = [...state.list.data]
+    const additionalIndex = updatedList.findIndex(t => t._id === updatedData._id);
+    if (additionalIndex > -1) {
+        updatedList[additionalIndex] = updatedData;
+    }
+    return { ...state, list: { data: updatedList, pagination: state.list.pagination } };
+};
+
+const deleteTag = (state, action) => {
+    const deletedData = state.list.data.filter(t => t._id !== action.payload._id);
+    return {
+        ...state,
+        list: { data: deletedData, pagination: state.list.pagination }
+    }
+};
+
+const reducer = handleActions({
+    [TagAction.GET_TAGS_REQUEST]: (state, action) => ({
+        ...state, loading: true
+    }),
+    [TagAction.GET_TAGS]: (state, action) => ({
+        ...state, list: { ...action.payload }, loading: false
+    }),
+    [TagAction.GET_TAG_BY_ID_REQUEST]: (state, action) => ({
+        ...state, selected: { data: null }, loading: true
+    }),
+    [TagAction.GET_TAG_BY_ID]: (state, action) => ({
+        ...state, selected: { ...action.payload }, loading: false
+    }),
+    [TagAction.CREATE_TAG]: (state, action) => createTag(state, action),
+    [TagAction.UPDATE_TAG]: (state, action) => updateTag(state, action),
+    [TagAction.DELETE_TAG]: (state, action) => deleteTag(state, action)
+}, INITIAL_STATE);
+
+module.exports = reducer;

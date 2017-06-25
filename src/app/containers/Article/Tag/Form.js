@@ -10,6 +10,10 @@ const FormItem = Form.Item;
 class TagForm extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            loading: false
+        };
     }
 
     handleSubmit = (e) => {
@@ -20,6 +24,7 @@ class TagForm extends React.Component {
                 if (this.props.initialValue) {
                     data._id = this.props.initialValue._id;
                 }
+                this.setState({ loading: true });
                 this.props.onSubmit(data);
             }
         });
@@ -140,12 +145,11 @@ class TagForm extends React.Component {
                 }
                 <FormItem className="form-action" {...tailFormItemLayout}>
                     <Link to='/tags'><Button size="large">取消</Button></Link>
-                    <Button type="primary" htmlType="submit" size="large">保存</Button>
+                    <Button type="primary" htmlType="submit" size="large" loading={this.state.loading}>保存</Button>
                 </FormItem>
             </Form>
         );
     }
-
 }
 
 export default Form.create()(TagForm);

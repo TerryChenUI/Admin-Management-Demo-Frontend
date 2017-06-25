@@ -17,78 +17,61 @@ class TagEdit extends React.Component {
 
     componentDidMount() {
         const id = this.props.params.id;
-        id && this.props.getTagById(id);
-    }
-
-    componentWillUnmount() {
-        this.props.resetMe();
+        if (id) {
+            this.props.getTagById(id);
+        }
     }
 
     render() {
-        const props = this.props;
-        const id = props.params.id;
-        const { data, loading } = props.current;
-        const onSubmit = id ? props.updateTag : props.createTag;
+        const { selected, loading, params, createTag, updateTag } = this.props;
+        const onSubmit = params.id ? updateTag : createTag;
         return (
             <div className="content-inner">
                 <div className="page-title">
-                    <h2>{id ? '编辑' : '新增'}标签</h2>
+                    <h2>{params.id ? '编辑' : '新增'}标签</h2>
                 </div>
                 <Spin spinning={loading} delay={500} >
-                    <TagForm initialValue={data} onSubmit={onSubmit} />
+                    <TagForm initialValue={selected} onSubmit={onSubmit} />
                 </Spin>
             </div>
         );
     }
 }
 
-function mapStateToProps(state) {
-    return {
-        current: state.tag.current,
-        created: state.tag.created,
-        updated: state.tag.updated
-    }
+function mapStateToProps(state, ownState) {
+    return ownState.params.id ? {
+        selected: state.tag.selected,
+        loading: state.tag.loading
+    } : { loading: false };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        getTagById: async (id) => {
+        getTagById: (id) => {
             dispatch(TagAction.getTagByIdRequest());
-            try {
-                const response = await TagService.getById(id);
-                dispatch(TagAction.getTagByIdSuccess(response));
-            } catch (error) {
-                dispatch(TagAction.getTagByIdFailure(error.response));
-            }
+            TagService.getById(id).then((response) => {
+                dispatch(TagAction.getTagById(response.result));
+            }, (error) => {
+                notify.error(error.response.message, error.response.error);
+            });
         },
-        createTag: async (params) => {
-            dispatch(TagAction.createTagRequest());
-            try {
-                const response = await TagService.create(params);
-                dispatch(TagAction.createTagSuccess(response));
+        createTag: (params) => {
+            TagService.create(params).then((response) => {
+                dispatch(TagAction.createTag(response.result));
                 notify.success(response.message);
                 browserHistory.push('/tags');
-            } catch (error) {
-                dispatch(TagAction.createTagFailure(error.response));
+            }, (error) => {
                 notify.error(error.response.message, error.response.error);
-            }
+            });
         },
-        updateTag: async (params) => {
-            dispatch(TagAction.updateTagRequest());
-            try {
-                const response = await TagService.update(params);
-                dispatch(TagAction.updateTagSuccess(response));
+        updateTag: (params) => {
+            const response = TagService.update(params).then((response) => {
+                dispatch(TagAction.updateTag(response.result));
                 notify.success(response.message);
                 browserHistory.push('/tags');
-            } catch (error) {
-                dispatch(TagAction.updateTagFailure(error.response));
-                notify.error(error.response.message, error.response.error);
-            }
-        },
-        resetMe: () => {
-            dispatch(TagAction.resetCurrentTag());
-            dispatch(TagAction.resetCreateTag());
-            dispatch(TagAction.resetUpdateTag());
+            }, (error) => {
+                notify.error(error.response.message, error.response.error)
+            });
         }
     }
 }
