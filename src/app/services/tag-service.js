@@ -1,6 +1,6 @@
-import { request } from '../utils';
+import { request, config } from '../utils';
 
-const api = '/api/tags';
+const api = `${config.site.apiPrefix}tags`;
 
 export async function loadList({ filter = null, current, pageSize }) {
     let params = [];
@@ -20,7 +20,7 @@ export async function getById(id) {
 }
 
 export async function create(params) {
-    return await request(`/api/tags`, {
+    return await request(api, {
         method: 'POST',
         body: params
     });
@@ -28,7 +28,7 @@ export async function create(params) {
 
 export async function update(params) {
     const { _id, ...body } = params;
-    return await request(`/api/tags/${_id}`, {
+    return await request(`${api}/${_id}`, {
         method: 'PUT',
         body: body
     });

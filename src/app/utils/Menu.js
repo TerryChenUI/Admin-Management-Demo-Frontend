@@ -1,7 +1,7 @@
 module.exports = [
   {
     id: 1,
-    icon: 'laptop',
+    icon: 'home',
     name: '首页',
     router: '/'
   },
@@ -9,14 +9,14 @@ module.exports = [
     id: 4,
     bpid: 1,
     name: '文章管理',
-    icon: 'camera-o'
+    icon: 'bars'
   },
   {
     id: 41,
     bpid: 4,
     mpid: 4,
     name: '所有文章',
-    icon: 'heart-o',
+    icon: 'book',
     router: '/articles'
   },
   {
@@ -24,7 +24,7 @@ module.exports = [
     bpid: 4,
     mpid: 4,
     name: '发布文章',
-    icon: 'database',
+    icon: 'edit',
     router: '/article/edit'
   },
   {
@@ -40,7 +40,7 @@ module.exports = [
     bpid: 4,
     mpid: 4,
     name: '文章标签',
-    icon: 'search',
+    icon: 'tags',
     router: '/tags'
   },
   {

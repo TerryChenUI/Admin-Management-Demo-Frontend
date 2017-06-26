@@ -3,23 +3,23 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { Table, Icon, Button, Popconfirm } from 'antd';
 
-import TagSearch from './search';
 import { TagAction } from '../../../actions';
 import { TagService } from '../../../services';
-import { notify, time } from '../../../utils';
+import { notify, time, config } from '../../../utils';
+
+import TagSearch from './search';
+
+const defaultValue = {
+    keyword: '',
+    visible: '-1'
+};
 
 class TagList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            filter: {
-                keyword: '',
-                visible: '-1'
-            },
-            pagination: {
-                current: 1,
-                pageSize: 5
-            },
+            filter: { ...defaultValue },
+            pagination: { ...config.pager },
             deletingIds: []
         }
     }
@@ -36,10 +36,7 @@ class TagList extends React.Component {
 
     onReset = () => {
         this.setState({
-            filter: {
-                keyword: '',
-                visible: '-1'
-            }
+            filter: { ...defaultValue }
         });
     }
 
@@ -72,11 +69,13 @@ class TagList extends React.Component {
             {
                 title: '标签',
                 dataIndex: 'name',
-                key: 'name'
+                key: 'name',
+                width: 120
             }, {
                 title: '别名',
                 dataIndex: 'slug',
-                key: 'slug'
+                key: 'slug',
+                width: 120
             }, {
                 title: '描述',
                 dataIndex: 'description',
@@ -171,4 +170,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(TagList)
+)(TagList);

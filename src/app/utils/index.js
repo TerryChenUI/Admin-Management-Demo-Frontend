@@ -1,5 +1,5 @@
-import config from './config';
 import request from './request';
+import * as config from './config';
 import * as notify from './notify';
 import * as time from './time';
 import menu from './menu';

@@ -17,8 +17,8 @@ const Sider = ({ siderFold, darkTheme, location, switchTheme, navOpenKeys, chang
   return (
     <div>
       <div className={styles.logo}>
-        <img alt={'logo'} src={config.logo} />
-        {siderFold ? '' : <span>{config.name}</span>}
+        <img alt={'logo'} src={config.site.logo} />
+        {siderFold ? '' : <span>{config.site.name}</span>}
       </div>
       <Menus {...menusProps} />
       {!siderFold ? <div className={styles.switchtheme}>

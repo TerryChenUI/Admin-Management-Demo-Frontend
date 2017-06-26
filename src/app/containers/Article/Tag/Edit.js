@@ -73,10 +73,13 @@ function mapDispatchToProps(dispatch) {
                 notify.error(error.response.message, error.response.error)
             });
         }
+        // ,checkExist: (slug) => {
+        //     return TagService.checkExist(slug);
+        // }
     }
 }
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(TagEdit)
+)(TagEdit);

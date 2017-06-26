@@ -39,6 +39,6 @@ function parseJSON(response) {
 
 function throwError(response, data) {
     const error = new Error(response.statusText || response.status);
-    error.response = { message: data.message, error: data.error.message } || { message: error.message };
+    error.response = data ? { message: data.message, error: data.error.message } : { message: error.message };
     throw error;
 }

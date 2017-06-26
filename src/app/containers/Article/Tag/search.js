@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Form, Button, Row, Col, Input, Select } from 'antd';
+import { config } from '../../../utils';
 
 const Option = Select.Option;
 
@@ -28,22 +29,17 @@ class TagSearch extends React.Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const searchItemLayout = {
-            xs: { span: 24 }, sm: { span: 19 }, md: { span: 6 }, xl: { span: 4 }, style: { marginBottom: 16 }
-        };
-        const searchActionLayout = {
-            xs: { span: 24 }, sm: { span: 12 }, md: { span: 8 }, xl: { span: 4 }, style: { marginBottom: 16 }
-        };
+        const { itemLayout, actionLayout } = config.searchForm;
         return (
             <Row gutter={24}>
-                <Col {...searchItemLayout}>
+                <Col {...itemLayout}>
                     {
                         getFieldDecorator('keyword')(
                             <Input placeholder="标签，别名，关键字" />
                         )
                     }
                 </Col>
-                <Col {...searchItemLayout}>
+                <Col {...itemLayout}>
                     {
                         getFieldDecorator('visible', { initialValue: '-1' })(
                             <Select style={{ width: '100%' }}>
@@ -54,7 +50,7 @@ class TagSearch extends React.Component {
                         )
                     }
                 </Col>
-                <Col className="form-action" {...searchActionLayout}>
+                <Col className="form-action" {...actionLayout}>
                     <Button type="primary" onClick={this.handleSubmit}>搜索</Button>
                     <Button onClick={this.handleReset}>重置</Button>
                 </Col>

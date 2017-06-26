@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 
-import { Form, Button, Row, Col, Input, Checkbox, InputNumber } from 'antd';
-import { time } from '../../../utils';
+import { Form, Button, Input, Switch, InputNumber } from 'antd';
+import { time, config } from '../../../utils';
 
 const FormItem = Form.Item;
+let tid = null;
 
 class TagForm extends React.Component {
     constructor(props) {
@@ -14,6 +15,27 @@ class TagForm extends React.Component {
         this.state = {
             loading: false
         };
+    }
+
+    checkExist = (rule, value, callback) => {
+        const { form, initialValue } = this.props;
+        callback();
+        // if (value === "" || (initialValue && value === initialValue.slug)) {
+        //     clearTimeout(tid);
+        //     callback();
+        // }
+        // if (value !== "") {
+        //     tid = setTimeout(() => {
+                
+        //     }, 500);
+        // }
+        // if (value !== initialValue.slug && value !== '') {
+        //     TagService.checkExist(value).then((response) => {
+        //         response.result ? callback('slug已存在') : callback();
+        //     }, (error) => {
+        //         callback(error.response.message)
+        //     });
+        // }
     }
 
     handleSubmit = (e) => {
@@ -30,36 +52,10 @@ class TagForm extends React.Component {
         });
     }
 
-    handleReset() {
-        this.props.form.resetFields();
-        this.props.onReset();
-    }
-
     render() {
         const { getFieldDecorator } = this.props.form;
         const { initialValue } = this.props;
-        const formItemLayout = {
-            labelCol: {
-                xs: { span: 24 },
-                sm: { span: 4 },
-                md: { span: 4 },
-                xl: { span: 4 }
-            },
-            wrapperCol: {
-                xs: { span: 24 },
-                sm: { span: 18 },
-                md: { span: 12 },
-                xl: { span: 8 }
-            },
-        };
-        const tailFormItemLayout = {
-            wrapperCol: {
-                xs: { span: 24 },
-                sm: { span: 24 },
-                md: { span: 16 },
-                xl: { span: 12 }
-            },
-        };
+        const { formItemLayout, tailFormItemLayout } = config.editForm;
         return (
             <Form onSubmit={this.handleSubmit}>
                 <FormItem
@@ -82,6 +78,8 @@ class TagForm extends React.Component {
                     {getFieldDecorator('slug', {
                         rules: [{
                             required: true, message: '必填'
+                        }, {
+                            validator: this.checkExist,
                         }],
                         initialValue: initialValue && initialValue.slug
                     })(
@@ -119,7 +117,7 @@ class TagForm extends React.Component {
                         valuePropName: 'checked',
                         initialValue: initialValue ? initialValue.visible : false
                     })(
-                        <Checkbox></Checkbox>
+                        <Switch />
                         )}
                 </FormItem>
 
