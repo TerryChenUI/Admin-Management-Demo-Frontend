@@ -29,21 +29,21 @@ class TagSearch extends React.Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         const searchItemLayout = {
-            xs: { span: 5 }, sm: { span: 19 }, md: { span: 6 }, xl: { span: 4 }
+            xs: { span: 24 }, sm: { span: 19 }, md: { span: 6 }, xl: { span: 4 }, style: { marginBottom: 16 }
         };
         const searchActionLayout = {
-            xs: { span: 24 }, sm: { span: 12 }, md: { span: 8 }, xl: { span: 4 }
+            xs: { span: 24 }, sm: { span: 12 }, md: { span: 8 }, xl: { span: 4 }, style: { marginBottom: 16 }
         };
         return (
             <Row gutter={24}>
-                <Col xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 6 }} xl={{ span: 4 }} style={{ marginBottom: 16 }}>
+                <Col {...searchItemLayout}>
                     {
                         getFieldDecorator('keyword')(
                             <Input placeholder="标签，别名，关键字" />
                         )
                     }
                 </Col>
-                <Col xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 6 }} xl={{ span: 4 }} style={{ marginBottom: 16 }} >
+                <Col {...searchItemLayout}>
                     {
                         getFieldDecorator('visible', { initialValue: '-1' })(
                             <Select style={{ width: '100%' }}>
@@ -54,7 +54,7 @@ class TagSearch extends React.Component {
                         )
                     }
                 </Col>
-                <Col className="form-action" xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 8 }} xl={{ span: 4 }} style={{ marginBottom: 16 }}>
+                <Col className="form-action" {...searchActionLayout}>
                     <Button type="primary" onClick={this.handleSubmit}>搜索</Button>
                     <Button onClick={this.handleReset}>重置</Button>
                 </Col>

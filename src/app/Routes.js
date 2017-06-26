@@ -21,8 +21,7 @@ const routes =
             <Route path="category/list" component={CategoryList} />
             <Route path="category/(add)(edit)(/:id)" component={CategoryEdit} />*/}
             <Route path="tags" component={TagList} />
-            <Route path="tags/add" component={TagEdit} />
-            <Route path="tags/:id" component={TagEdit} />
+            <Route path="tags/(add)(:id)" component={TagEdit} />
         {/*</Route>*/}
     </Route>;
 

@@ -28,7 +28,7 @@ class TagEdit extends React.Component {
         return (
             <div className="content-inner">
                 <div className="page-title">
-                    <h2>{params.id ? '编辑' : '新增'}标签</h2>
+                    <h2>{params.id ? '编辑' : '添加'}标签</h2>
                 </div>
                 <Spin spinning={loading} delay={500} >
                     <TagForm initialValue={selected} onSubmit={onSubmit} />

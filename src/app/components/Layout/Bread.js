@@ -22,7 +22,7 @@ const Bread = ({ menu }) => {
     if (item.bpid) {
       getPathArray(queryArray(menu, item.bpid, 'id'));
     }
-  }
+  };
 
   if (!current) {
     pathArray.push(menu[0]);
@@ -50,7 +50,7 @@ const Bread = ({ menu }) => {
           : content}
       </Breadcrumb.Item>
     )
-  })
+  });
 
   return (
     <div className={styles.bread}>
@@ -62,7 +62,7 @@ const Bread = ({ menu }) => {
 }
 
 Bread.propTypes = {
-  menu: PropTypes.array,
+  menu: PropTypes.array
 };
 
 export default Bread;

@@ -3,13 +3,13 @@ module.exports = [
     id: 1,
     icon: 'laptop',
     name: '首页',
-    router: '/',
+    router: '/'
   },
   {
     id: 4,
     bpid: 1,
     name: '文章管理',
-    icon: 'camera-o',
+    icon: 'camera-o'
   },
   {
     id: 41,
@@ -17,7 +17,7 @@ module.exports = [
     mpid: 4,
     name: '所有文章',
     icon: 'heart-o',
-    router: '/article/list',
+    router: '/articles'
   },
   {
     id: 42,
@@ -25,7 +25,7 @@ module.exports = [
     mpid: 4,
     name: '发布文章',
     icon: 'database',
-    router: '/article/edit',
+    router: '/article/edit'
   },
   {
     id: 43,
@@ -33,7 +33,7 @@ module.exports = [
     mpid: 4,
     name: '分类目录',
     icon: 'bars',
-    router: '/category/list',
+    router: '/categories'
   },
   {
     id: 44,
@@ -41,14 +41,20 @@ module.exports = [
     mpid: 4,
     name: '文章标签',
     icon: 'search',
-    router: '/tags',
+    router: '/tags'
+  },
+  {
+    id: 441,
+    mpid: -1,
+    bpid: 44,
+    name: '添加标签',
+    router: '/tags/add'
+  },
+  {
+    id: 442,
+    mpid: -1,
+    bpid: 44,
+    name: '编辑标签',
+    router: '/tags/:id(\\w+)'
   }
-  // ,
-  // {
-  //   id: 441,
-  //   mpid: -1,
-  //   bpid: 44,
-  //   name: '编辑标签',
-  //   router: '/tags/edit',
-  // }
 ]
