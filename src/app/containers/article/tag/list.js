@@ -6,19 +6,16 @@ import { Table, Icon, Button, Popconfirm } from 'antd';
 import { TagAction } from '../../../actions';
 import { TagService } from '../../../services';
 import { notify, time, config } from '../../../utils';
-
 import TagSearch from './search';
-
-const defaultValue = {
-    keyword: '',
-    visible: '-1'
-};
 
 class TagList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            filter: { ...defaultValue },
+            filter: {
+                keyword: '',
+                visible: '-1'
+            },
             pagination: { ...config.pager },
             deletingIds: []
         }
@@ -31,22 +28,15 @@ class TagList extends React.Component {
 
     onSearch = (values) => {
         const { current, pageSize } = this.state.pagination;
+        this.setState({ filter: values });
         this.props.getTags({ filter: values, current, pageSize });
     }
 
-    onReset = () => {
-        this.setState({
-            filter: { ...defaultValue }
-        });
-    }
-
-    onPageChange = (pagination, filters, sorter) => {
+    onPageChange = (pagination, filters) => {
         const pageConfig = { ...this.state.pagination };
         const filter = this.state.filter;
         pageConfig.current = pagination.current
-        this.setState({
-            pagination: pageConfig
-        });
+        this.setState({ pagination: pageConfig });
         this.props.getTags({ filter, current: pagination.current, pageSize: pagination.pageSize });
     }
 
@@ -70,12 +60,12 @@ class TagList extends React.Component {
                 title: '标签',
                 dataIndex: 'name',
                 key: 'name',
-                width: 120
+                width: 150
             }, {
-                title: '别名',
+                title: 'Slug',
                 dataIndex: 'slug',
                 key: 'slug',
-                width: 120
+                width: 150
             }, {
                 title: '描述',
                 dataIndex: 'description',

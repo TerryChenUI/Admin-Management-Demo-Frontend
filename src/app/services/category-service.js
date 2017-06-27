@@ -1,6 +1,6 @@
 import { request, config } from '../utils';
 
-const api = `${config.site.apiPrefix}tags`;
+const api = `${config.site.apiPrefix}categories`;
 
 export async function loadList({ filter = null, current, pageSize }) {
     let params = [];

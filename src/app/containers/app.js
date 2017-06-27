@@ -11,7 +11,7 @@ import '../themes/index.less';
 import './app.scss';
 
 const { Header, Bread, Footer, Sider, styles } = Layout;
-let tid;
+let tid = null;
 
 class App extends React.Component {
     constructor(props) {

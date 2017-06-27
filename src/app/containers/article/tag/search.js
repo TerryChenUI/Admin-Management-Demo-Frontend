@@ -1,60 +1,86 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Form, Input, Radio } from 'antd';
 
-import { Form, Button, Row, Col, Input, Select } from 'antd';
 import { config } from '../../../utils';
 
-const Option = Select.Option;
+const FormItem = Form.Item;
+let tid = null;
 
 class TagSearch extends React.Component {
     constructor(props) {
         super(props);
     }
 
-    handleSubmit = () => {
-        const data = this.props.form.getFieldsValue();
-        if (data.visible === '-1') {
-            delete data.visible;
-        } else {
-            data.visible = data.visible === '1';
-        }
-        !data.keyword && delete data.keyword;
-        this.props.onSearch(data);
+    handleVisibleChange = (e) => {
+        this.handleSearch(e.target.value);
     }
 
-    handleReset = () => {
-        this.props.form.resetFields();
-        this.props.onReset();
+    handleKeywordChange = (e) => {
+        clearTimeout(tid);
+        tid = setTimeout(this.handleSearch, 300);
+    }
+
+    handleSearch = (visible) => {
+        let values = this.props.form.getFieldsValue();
+        if (visible) values.visible = visible;
+        if (values.visible === "-1") {
+            delete values.visible;
+        }
+        if (!values.keyword) {
+            delete values.keyword;
+        }
+        this.props.onSearch(values);
     }
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const { itemLayout, actionLayout } = config.searchForm;
+        // const { labelCol, wrapperCol } = config.searchForm;
         return (
-            <Row gutter={24}>
-                <Col {...itemLayout}>
-                    {
-                        getFieldDecorator('keyword')(
-                            <Input placeholder="标签，别名，关键字" />
-                        )
-                    }
-                </Col>
-                <Col {...itemLayout}>
+            <Form className="search-form" layout="inline">
+                <FormItem>
                     {
                         getFieldDecorator('visible', { initialValue: '-1' })(
-                            <Select style={{ width: '100%' }}>
-                                <Option value="-1">--状态--</Option>
-                                <Option value="1">可见</Option>
-                                <Option value="0">隐藏</Option>
-                            </Select>
+                            <Radio.Group onChange={this.handleVisibleChange}>
+                                <Radio.Button value="-1">全部</Radio.Button>
+                                <Radio.Button value="1">可见</Radio.Button>
+                                <Radio.Button value="0">隐藏</Radio.Button>
+                            </Radio.Group>
                         )
                     }
-                </Col>
-                <Col className="form-action" {...actionLayout}>
-                    <Button type="primary" onClick={this.handleSubmit}>搜索</Button>
-                    <Button onClick={this.handleReset}>重置</Button>
-                </Col>
-            </Row>
+                </FormItem>
+                <FormItem label="关键字">
+                    {
+                        getFieldDecorator('keyword')(
+                            <Input placeholder="标签，Slug，描述" onChange={this.handleKeywordChange} />
+                        )
+                    }
+                </FormItem>
+            </Form>
+            // <Row gutter={24}>
+            //     <Col>
+            //         {
+            //             getFieldDecorator('visible', { initialValue: '-1' })(
+            //                 <Radio.Group onChange={this.handleVisibleChange}>
+            //                     <Radio.Button value="-1">全部</Radio.Button>
+            //                     <Radio.Button value="1">可见</Radio.Button>
+            //                     <Radio.Button value="0">隐藏</Radio.Button>
+            //                 </Radio.Group>
+            //             )
+            //         }
+            //     </Col>
+            //     <Col {...itemLayout}>
+            // {
+            //     getFieldDecorator('keyword')(
+            //         <Input placeholder="标签，别名，关键字" onChange={this.handleKeywordChange} />
+            //     )
+            // }
+            //     </Col>
+            //     {/*<Col className="form-action" {...actionLayout}>
+            //         <Button type="primary" onClick={this.handleSearch}>搜索</Button>
+            //         <Button onClick={this.handleReset}>重置</Button>
+            //     </Col>*/}
+            // </Row>
         )
     }
 }

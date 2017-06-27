@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { Table, Icon, Button, Popconfirm } from 'antd';
 
-import { TagAction } from '../../../actions';
-import { TagService } from '../../../services';
+import { CategoryAction } from '../../../actions';
+import { CategoryService } from '../../../services';
 import { notify, time, config } from '../../../utils';
-import TagSearch from './search';
+import CategorySearch from './search';
 
-class TagList extends React.Component {
+class CategoryList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -23,13 +23,13 @@ class TagList extends React.Component {
 
     componentDidMount() {
         const { current, pageSize } = this.state.pagination;
-        this.props.getTags({ current, pageSize });
+        this.props.getCategories({ current, pageSize });
     }
 
     onSearch = (values) => {
         const { current, pageSize } = this.state.pagination;
         this.setState({ filter: values });
-        this.props.getTags({ filter: values, current, pageSize });
+        this.props.getCategories({ filter: values, current, pageSize });
     }
 
     onPageChange = (pagination, filters) => {
@@ -37,13 +37,13 @@ class TagList extends React.Component {
         const filter = this.state.filter;
         pageConfig.current = pagination.current
         this.setState({ pagination: pageConfig });
-        this.props.getTags({ filter, current: pagination.current, pageSize: pagination.pageSize });
+        this.props.getCategories({ filter, current: pagination.current, pageSize: pagination.pageSize });
     }
 
     onConfirmDelete(id) {
         const deletingIds = [...this.state.deletingIds, id]
         this.setState({ deletingIds });
-        this.props.deleteTag(id);
+        this.props.deleteCategory(id);
     }
 
     isDeleting(id) {
@@ -57,7 +57,7 @@ class TagList extends React.Component {
 
         const columns = [
             {
-                title: '标签',
+                title: '分类',
                 dataIndex: 'name',
                 key: 'name',
                 width: 150
@@ -98,7 +98,7 @@ class TagList extends React.Component {
                 width: 160,
                 render: (id, record, index) => (
                     <span>
-                        <Link to={`/tags/${id}`} style={{ marginRight: 10 }}><Button type="primary" size="small" icon="edit">编辑</Button></Link>
+                        <Link to={`/categories/${id}`} style={{ marginRight: 10 }}><Button type="primary" size="small" icon="edit">编辑</Button></Link>
                         <Popconfirm title="你确认要删除这条记录?" onConfirm={() => this.onConfirmDelete(id)} okText="确定" cancelText="取消">
                             <Button type="danger" size="small" icon="delete" loading={this.isDeleting(id)}>删除</Button>
                         </Popconfirm>
@@ -110,10 +110,10 @@ class TagList extends React.Component {
         return (
             <div className="content-inner">
                 <div className="page-title">
-                    <h2>文章标签</h2>
-                    <Link to='/tags/add'><Button type="primary" size="small" icon="plus">新增</Button></Link>
+                    <h2>分类目录</h2>
+                    <Link to='/categories/add'><Button type="primary" size="small" icon="plus">新增</Button></Link>
                 </div>
-                <TagSearch filter={this.props.filter} onSearch={this.onSearch} onReset={this.onReset} />
+                <CategorySearch filter={this.props.filter} onSearch={this.onSearch} onReset={this.onReset} />
                 <Table
                     dataSource={data}
                     columns={columns}
@@ -131,24 +131,24 @@ class TagList extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        list: state.tag.list,
-        loading: state.tag.loading
+        list: state.category.list,
+        loading: state.category.loading
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        getTags: ({ current, pageSize, filter }) => {
-            dispatch(TagAction.getTagsRequest());
-            TagService.loadList({ current, pageSize, filter }).then((response) => {
-                dispatch(TagAction.getTags(response.result));
+        getCategories: ({ current, pageSize, filter }) => {
+            dispatch(CategoryAction.getCategoriesRequest());
+            CategoryService.loadList({ current, pageSize, filter }).then((response) => {
+                dispatch(CategoryAction.getCategories(response.result));
             }, (error) => {
                 notify.error(error.response.message, error.response.error);
             });
         },
-        deleteTag: (id) => {
-            TagService.remove(id).then((response) => {
-                dispatch(TagAction.deleteTag(response.result));
+        deleteCategory: (id) => {
+            CategoryService.remove(id).then((response) => {
+                dispatch(CategoryAction.deleteCategory(response.result));
                 notify.success(response.message);
             }, (error) => {
                 notify.error(error.response.message, error.response.error);
@@ -160,4 +160,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(TagList);
+)(CategoryList);

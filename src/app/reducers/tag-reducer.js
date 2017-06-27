@@ -29,9 +29,11 @@ const updateTag = (state, action) => {
 
 const deleteTag = (state, action) => {
     const deletedData = state.list.data.filter(t => t._id !== action.payload._id);
+    const pagination = [...state.list.pagination];
+    pagination.total -= 1;
     return {
         ...state,
-        list: { data: deletedData, pagination: state.list.pagination }
+        list: { data: deletedData, pagination }
     }
 };
 

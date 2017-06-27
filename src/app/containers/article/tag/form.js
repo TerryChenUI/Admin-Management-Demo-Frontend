@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-
 import { Form, Button, Input, Switch, InputNumber } from 'antd';
+
 import { time, config } from '../../../utils';
+import { TagService } from '../../../services';
 
 const FormItem = Form.Item;
 let tid = null;
@@ -18,24 +19,21 @@ class TagForm extends React.Component {
     }
 
     checkExist = (rule, value, callback) => {
-        const { form, initialValue } = this.props;
-        callback();
-        // if (value === "" || (initialValue && value === initialValue.slug)) {
-        //     clearTimeout(tid);
-        //     callback();
-        // }
-        // if (value !== "") {
-        //     tid = setTimeout(() => {
-                
-        //     }, 500);
-        // }
-        // if (value !== initialValue.slug && value !== '') {
-        //     TagService.checkExist(value).then((response) => {
-        //         response.result ? callback('slug已存在') : callback();
-        //     }, (error) => {
-        //         callback(error.response.message)
-        //     });
-        // }
+        const { initialValue } = this.props;
+        if (value === "" || (initialValue && value === initialValue.slug)) {
+            clearTimeout(tid);
+            callback();
+        }
+        if (value !== "") {
+            tid = setTimeout(() => {
+                const param = `slug=${value.trim()}`;
+                TagService.checkExist(param).then(() => {
+                    callback();
+                }, (error) => {
+                    callback(error.response.message)
+                });
+            }, 300);
+        }
     }
 
     handleSubmit = (e) => {
@@ -73,7 +71,7 @@ class TagForm extends React.Component {
                 </FormItem>
                 <FormItem
                     {...formItemLayout}
-                    label="别名"
+                    label="Slug"
                 >
                     {getFieldDecorator('slug', {
                         rules: [{
@@ -93,7 +91,7 @@ class TagForm extends React.Component {
                     {getFieldDecorator('description', {
                         initialValue: initialValue && initialValue.description
                     })(
-                        <Input type="textarea" rows={4} placeholder="标签描述" />
+                        <Input type="textarea" rows={4} placeholder="描述" />
                         )}
                 </FormItem>
                 <FormItem
@@ -120,7 +118,6 @@ class TagForm extends React.Component {
                         <Switch />
                         )}
                 </FormItem>
-
                 {initialValue && initialValue.create_time &&
                     <FormItem
                         {...formItemLayout}

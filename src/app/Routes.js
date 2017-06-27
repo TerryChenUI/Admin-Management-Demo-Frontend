@@ -7,21 +7,21 @@ import Index from './containers/dashboard/';
 
 // import ArticleList from './containers/article/list/ArticleList';
 // import ArticleEdit from './containers/article/edit/ArticleEdit';
-// import CategoryList from './containers/article/category/CategoryList';
-// import CategoryEdit from './containers/article/category/CategoryEdit';
+import CategoryList from './containers/article/category/list';
+import CategoryEdit from './containers/article/category/edit';
 import TagList from './containers/article/tag/list';
 import TagEdit from './containers/article/tag/edit';
 
-const routes = 
+const routes =
     <Route path="/" component={App}>
         {/*<Route component={Main}>*/}
-            <IndexRoute component={Index}/>
-            {/*<Route path="article/list" component={ArticleList} />
-            <Route path="article/(add)(edit)(/:id)" component={ArticleEdit} />
-            <Route path="category/list" component={CategoryList} />
-            <Route path="category/(add)(edit)(/:id)" component={CategoryEdit} />*/}
-            <Route path="tags" component={TagList} />
-            <Route path="tags/(add)(:id)" component={TagEdit} />
+        <IndexRoute component={Index} />
+        {/*<Route path="article/list" component={ArticleList} />
+            <Route path="article/(add)(edit)(/:id)" component={ArticleEdit} />*/}
+        <Route path="categories" component={CategoryList} />
+        <Route path="categories/(add)(:id)" component={CategoryEdit} />
+        <Route path="tags" component={TagList} />
+        <Route path="tags/(add)(:id)" component={TagEdit} />
         {/*</Route>*/}
     </Route>;
 

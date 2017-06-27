@@ -1,71 +1,58 @@
 import { CategoryAction } from '../actions';
+import { handleActions } from 'redux-actions';
 
 const INITIAL_STATE = {
-    list: { data: null, pagination: null, message: null, error: null, loading: false },
-    current: { data: null, message: null, error: null, loading: false },
-    created: { data: null, message: null, error: null, loading: false },
-    updated: { data: null, message: null, error: null, loading: false },
-    deleted: { data: null, message: null, error: null, loading: false }
+    list: { data: [], pagination: null },
+    selected: { data: null },
+    loading: false
 };
 
-export default function Category(state = INITIAL_STATE, action) {
-    switch (action.type) {
-        case CategoryAction.GET_CATEGORIES_SUCCESS:
-            const { data, pagination } = action.payload.result;
-            return { ...state, list: { data, pagination, message: action.payload.message, loading: false } };
-        case CategoryAction.GET_CATEGORIES_FAILURE:
-            return { ...state, list: { data: state.list.data || null, message: action.payload.message, error: action.payload.error, loading: false } };
-        case CategoryAction.RESET_GET_CATEGORIES:
-            return { ...state, list: { data: null, pagination: null, message: null, error: null, loading: false } };
-
-        case CategoryAction.GET_CATEGORY_BY_ID_REQUEST:
-            return { ...state, current: { data: null, message: null, error: null, loading: true } };
-        case CategoryAction.GET_CATEGORY_BY_ID_SUCCESS:
-            return { ...state, current: { data: action.payload.result, message: action.payload.message, loading: false } };
-        case CategoryAction.GET_CATEGORY_BY_ID_FAILURE:
-            return { ...state, current: { data: null, message: action.payload.message, error: action.payload.error, loading: false } };
-        case CategoryAction.RESET_CURRENT_CATEGORY:
-            return { ...state, current: { data: null, message: null, error: null, loading: false } };
-
-        case CategoryAction.CREATE_CATEGORY_REQUEST:
-            return { ...state, created: { data: null, message: null, error: null, loading: true } };
-        case CategoryAction.CREATE_CATEGORY_SUCCESS:
-            return { ...state, created: { data: action.payload.result, message: action.payload.message, loading: false } };
-        case CategoryAction.CREATE_CATEGORY_FAILURE:
-            return { ...state, created: { data: null, message: action.payload.message, error: action.payload.error, loading: false } };
-        case CategoryAction.RESET_CREATE_CATEGORY:
-            return { ...state, created: { data: null, message: null, error: null, loading: false } };
-
-        case CategoryAction.UPDATE_CATEGORY_REQUEST:
-            return { ...state, updated: { data: null, message: null, error: null, loading: true } };
-        case CategoryAction.UPDATE_CATEGORY_SUCCESS:
-            return { ...state, updated: { data: action.payload.result, message: action.payload.message, loading: false } };
-        case CategoryAction.UPDATE_CATEGORY_FAILURE:
-            return { ...state, updated: { data: null, message: action.payload.message, error: action.payload.error, loading: false } };
-        case CategoryAction.RESET_UPDATE_CATEGORY:
-            return { ...state, updated: { data: null, message: null, error: null, loading: false } };
-
-        case CategoryAction.DELETE_CATEGORY_REQUEST:
-            return { ...state, deleted: { data: action.payload, message: null, error: null, loading: true } };
-        case CategoryAction.DELETE_CATEGORY_SUCCESS:
-            const { result, message } = action.payload;
-            const newData = state.list.data.filter(t => t._id !== result._id);
-            return {
-                ...state,
-                list: {
-                    data: newData,
-                    pagination: state.list.pagination,
-                    message: null,
-                    loading: false
-                },
-                deleted: { data: result, message: message, loading: false }
-            }
-        case CategoryAction.DELETE_CATEGORY_FAILURE:
-            return { ...state, deleted: { data: null, error: action.payload.error, message: action.payload.message, loading: false } };
-        case CategoryAction.RESET_DELETE_CATEGORY:
-            return { ...state, deleted: { data: null, message: null, error: null, loading: false } };
-
-        default:
-            return state
+const createCategory = (state, action) => {
+    const createdData = action.payload;
+    const createdList = [...state.list.data]
+    const additionalIndex = createdList.findIndex(t => t._id === createdData._id);
+    if (additionalIndex === -1) {
+        createdList.push(createdData);
     }
-}
+    return { ...state, list: { data: createdList, pagination: state.list.pagination } };
+};
+
+const updateCategory = (state, action) => {
+    const updatedData = action.payload;
+    const updatedList = [...state.list.data]
+    const additionalIndex = updatedList.findIndex(t => t._id === updatedData._id);
+    if (additionalIndex > -1) {
+        updatedList[additionalIndex] = updatedData;
+    }
+    return { ...state, list: { data: updatedList, pagination: state.list.pagination } };
+};
+
+const deleteCategory = (state, action) => {
+    const deletedData = state.list.data.filter(t => t._id !== action.payload._id);
+    const pagination = [...state.list.pagination];
+    pagination.total -= 1;
+    return {
+        ...state,
+        list: { data: deletedData, pagination }
+    }
+};
+
+const reducer = handleActions({
+    [CategoryAction.GET_CATEGORIES_REQUEST]: (state, action) => ({
+        ...state, loading: true
+    }),
+    [CategoryAction.GET_CATEGORIES]: (state, action) => ({
+        ...state, list: { ...action.payload }, loading: false
+    }),
+    [CategoryAction.GET_CATEGORY_BY_ID_REQUEST]: (state, action) => ({
+        ...state, selected: { data: null }, loading: true
+    }),
+    [CategoryAction.GET_CATEGORY_BY_ID]: (state, action) => ({
+        ...state, selected: { ...action.payload }, loading: false
+    }),
+    [CategoryAction.CREATE_CATEGORY]: (state, action) => createCategory(state, action),
+    [CategoryAction.UPDATE_CATEGORY]: (state, action) => updateCategory(state, action),
+    [CategoryAction.DELETE_CATEGORY]: (state, action) => deleteCategory(state, action)
+}, INITIAL_STATE);
+
+module.exports = reducer;

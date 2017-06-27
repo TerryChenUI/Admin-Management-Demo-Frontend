@@ -1,21 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-import { Form, Button, Input, Switch, InputNumber } from 'antd';
+import { Form, Button, Input, Switch, Select, InputNumber } from 'antd';
 
 import { time, config } from '../../../utils';
-import { TagService } from '../../../services';
+import { CategoryService } from '../../../services';
 
 const FormItem = Form.Item;
+const { Option, OptGroup } = Select;
 let tid = null;
 
-class TagForm extends React.Component {
+class CategoryForm extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            loading: false
+            loading: false,
+            availableCategories: [
+                { value: '-1', text: "--请选择--" }
+            ]
         };
+    }
+
+    componentWillMount() {
+        CategoryService.getAll().then(response => {
+            const parentCategories = response.result.data.map(m => { return { value: m._id, text: m.name } });
+            this.setState({ availableCategories: [...this.state.availableCategories, ...parentCategories] });
+        });
     }
 
     checkExist = (rule, value, callback) => {
@@ -27,7 +38,7 @@ class TagForm extends React.Component {
         if (value !== "") {
             tid = setTimeout(() => {
                 const param = `slug=${value.trim()}`;
-                TagService.checkExist(param).then(() => {
+                CategoryService.checkExist(param).then(() => {
                     callback();
                 }, (error) => {
                     callback(error.response.message)
@@ -44,6 +55,9 @@ class TagForm extends React.Component {
                 if (this.props.initialValue) {
                     data._id = this.props.initialValue._id;
                 }
+                if (data.pid === "-1") {
+                    delete data.pid;
+                }
                 this.setState({ loading: true });
                 this.props.onSubmit(data);
             }
@@ -58,7 +72,7 @@ class TagForm extends React.Component {
             <Form onSubmit={this.handleSubmit}>
                 <FormItem
                     {...formItemLayout}
-                    label="标签"
+                    label="分类"
                 >
                     {getFieldDecorator('name', {
                         rules: [{
@@ -66,7 +80,7 @@ class TagForm extends React.Component {
                         }],
                         initialValue: initialValue && initialValue.name
                     })(
-                        <Input placeholder="文章标签" />
+                        <Input placeholder="分类名称" />
                         )}
                 </FormItem>
                 <FormItem
@@ -82,6 +96,22 @@ class TagForm extends React.Component {
                         initialValue: initialValue && initialValue.slug
                     })(
                         <Input placeholder="在URL中使用的别称，建议小写，字母、数字、连字符（-）" />
+                        )}
+                </FormItem>
+                <FormItem
+                    {...formItemLayout}
+                    label="所属分类"
+                >
+                    {getFieldDecorator('pid', {
+                        initialValue: initialValue && initialValue.pid || "-1"
+                    })(
+                        <Select>
+                            {
+                                this.state.availableCategories.map(data => {
+                                    return <Option key={data.value} value={data.value}>{data.text}</Option>
+                                })
+                            }
+                        </Select>
                         )}
                 </FormItem>
                 <FormItem
@@ -139,7 +169,7 @@ class TagForm extends React.Component {
                     </FormItem>
                 }
                 <FormItem className="form-action" {...tailFormItemLayout}>
-                    <Link to='/tags'><Button size="large">取消</Button></Link>
+                    <Link to='/categories'><Button size="large">取消</Button></Link>
                     <Button type="primary" htmlType="submit" size="large" loading={this.state.loading}>保存</Button>
                 </FormItem>
             </Form>
@@ -147,4 +177,4 @@ class TagForm extends React.Component {
     }
 }
 
-export default Form.create()(TagForm);
+export default Form.create()(CategoryForm);

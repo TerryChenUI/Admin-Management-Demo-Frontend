@@ -49,10 +49,10 @@ Date.prototype.format = function (format) {
  */
 
 const queryURL = (name) => {
-  let reg = new RegExp(`(^|&)${name}=([^&]*)(&|$)`, 'i')
-  let r = window.location.search.substr(1).match(reg)
-  if (r != null) return decodeURI(r[2])
-  return null
+  let reg = new RegExp(`(^|&)${name}=([^&]*)(&|$)`, 'i');
+  let r = window.location.search.substr(1).match(reg);
+  if (r != null) return decodeURI(r[2]);
+  return null;
 }
 
 /**
@@ -64,13 +64,13 @@ const queryURL = (name) => {
  */
 const queryArray = (array, key, keyAlias = 'key') => {
   if (!(array instanceof Array)) {
-    return null
+    return null;
   }
-  const item = array.filter(_ => _[keyAlias] === key)
+  const item = array.filter(_ => _[keyAlias] === key);
   if (item.length) {
-    return item[0]
+    return item[0];
   }
-  return null
+  return null;
 }
 
 /**
@@ -82,23 +82,23 @@ const queryArray = (array, key, keyAlias = 'key') => {
  * @return  {Array}
  */
 const arrayToTree = (array, id = 'id', pid = 'pid', children = 'children') => {
-  let data = lodash.cloneDeep(array)
-  let result = []
-  let hash = {}
+  let data = lodash.cloneDeep(array);
+  let result = [];
+  let hash = {};
   data.forEach((item, index) => {
-    hash[data[index][id]] = data[index]
+    hash[data[index][id]] = data[index];
   })
 
   data.forEach((item) => {
-    let hashVP = hash[item[pid]]
+    let hashVP = hash[item[pid]];
     if (hashVP) {
-      !hashVP[children] && (hashVP[children] = [])
-      hashVP[children].push(item)
+      !hashVP[children] && (hashVP[children] = []);
+      hashVP[children].push(item);
     } else {
-      result.push(item)
+      result.push(item);
     }
   })
-  return result
+  return result;
 }
 
 module.exports = {

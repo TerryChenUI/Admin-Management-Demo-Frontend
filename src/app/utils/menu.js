@@ -9,14 +9,14 @@ module.exports = [
     id: 4,
     bpid: 1,
     name: '文章管理',
-    icon: 'bars'
+    icon: 'book'
   },
   {
     id: 41,
     bpid: 4,
     mpid: 4,
     name: '所有文章',
-    icon: 'book',
+    icon: 'file-text',
     router: '/articles'
   },
   {
@@ -34,6 +34,20 @@ module.exports = [
     name: '分类目录',
     icon: 'bars',
     router: '/categories'
+  },
+  {
+    id: 431,
+    mpid: -1,
+    bpid: 43,
+    name: '添加分类',
+    router: '/categories/add'
+  },
+  {
+    id: 432,
+    mpid: -1,
+    bpid: 43,
+    name: '编辑分类',
+    router: '/categories/:id(\\w+)'
   },
   {
     id: 44,

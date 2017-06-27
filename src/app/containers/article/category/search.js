@@ -1,31 +1,56 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, Radio } from 'antd';
+import { Form, Input, Radio, Select } from 'antd';
 
 import { config } from '../../../utils';
+import { CategoryService } from '../../../services';
 
 const FormItem = Form.Item;
+const Option = Select.Option;
 let tid = null;
 
-class TagSearch extends React.Component {
+class CategorySearch extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            availableCategories: [
+                { value: '-1', text: "--请选择--" }
+            ]
+        };
+    }
+
+    componentWillMount() {
+        CategoryService.getAll().then(response => {
+            const parentCategories = response.result.data.map(m => { return { value: m._id, text: m.name } });
+            this.setState({ availableCategories: [...this.state.availableCategories, ...parentCategories] });
+        });
     }
 
     handleVisibleChange = (e) => {
-        this.handleSearch(e.target.value);
+        const visible = e.target.value;
+        this.handleSearch({ visible });
     }
 
     handleKeywordChange = (e) => {
         clearTimeout(tid);
-        tid = setTimeout(this.handleSearch, 300);
+        tid = setTimeout(() => { this.handleSearch({}) }, 300);
     }
 
-    handleSearch = (visible) => {
-        let values = this.props.form.getFieldsValue();
+    handleCategoryChange = (value) => {
+        const pid = value;
+        this.handleSearch({ pid });
+    }
+
+    handleSearch = ({ visible = null, pid = null }) => {
+        const values = this.props.form.getFieldsValue();
         if (visible) values.visible = visible;
+        if (pid) values.pid = pid;
         if (values.visible === "-1") {
             delete values.visible;
+        }
+        if (values.pid === "-1") {
+            delete values.pid;
         }
         if (!values.keyword) {
             delete values.keyword;
@@ -52,7 +77,20 @@ class TagSearch extends React.Component {
                 <FormItem label="关键字">
                     {
                         getFieldDecorator('keyword')(
-                            <Input placeholder="标签，Slug，描述" onChange={this.handleKeywordChange} />
+                            <Input placeholder="分类，Slug，描述" onChange={this.handleKeywordChange} />
+                        )
+                    }
+                </FormItem>
+                <FormItem label="所属分类">
+                    {
+                        getFieldDecorator('pid', { initialValue: "-1" })(
+                            <Select style={{ width: 150 }} onChange={this.handleCategoryChange}>
+                                {
+                                    this.state.availableCategories.map(data => {
+                                        return <Option key={data.value} value={data.value}>{data.text}</Option>
+                                    })
+                                }
+                            </Select>
                         )
                     }
                 </FormItem>
@@ -85,10 +123,10 @@ class TagSearch extends React.Component {
     }
 }
 
-TagSearch.propTypes = {
+CategorySearch.propTypes = {
     filter: PropTypes.object,
     onSearch: PropTypes.func,
     onReset: PropTypes.func
 }
 
-export default Form.create()(TagSearch);
+export default Form.create()(CategorySearch);

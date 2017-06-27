@@ -38,8 +38,8 @@ class TagEdit extends React.Component {
     }
 }
 
-function mapStateToProps(state, ownState) {
-    return ownState.params.id ? {
+function mapStateToProps(state, ownProps) {
+    return ownProps.params.id ? {
         selected: state.tag.selected,
         loading: state.tag.loading
     } : { loading: false };
@@ -73,9 +73,6 @@ function mapDispatchToProps(dispatch) {
                 notify.error(error.response.message, error.response.error)
             });
         }
-        // ,checkExist: (slug) => {
-        //     return TagService.checkExist(slug);
-        // }
     }
 }
 
