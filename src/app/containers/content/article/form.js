@@ -4,12 +4,12 @@ import { Link } from 'react-router';
 import { Form, Button, Input, Switch, InputNumber } from 'antd';
 
 import { time, config } from '../../../utils';
-import { TagService } from '../../../services';
+import { ArticleService } from '../../../services';
 
 const FormItem = Form.Item;
 let tid = null;
 
-class TagForm extends React.Component {
+class ArticleForm extends React.Component {
     constructor(props) {
         super(props);
 
@@ -27,7 +27,7 @@ class TagForm extends React.Component {
         if (value !== "") {
             tid = setTimeout(() => {
                 const param = `slug=${value.trim()}`;
-                TagService.checkExist(param).then(() => {
+                ArticleService.checkExist(param).then(() => {
                     callback();
                 }, (error) => {
                     callback(error.response.message)
@@ -139,7 +139,7 @@ class TagForm extends React.Component {
                     </FormItem>
                 }
                 <FormItem className="form-action" {...tailFormItemLayout}>
-                    <Link to='/tags'><Button size="large">取消</Button></Link>
+                    <Link to='/articles'><Button size="large">取消</Button></Link>
                     <Button type="primary" htmlType="submit" size="large" loading={this.state.loading}>保存</Button>
                 </FormItem>
             </Form>
@@ -147,4 +147,4 @@ class TagForm extends React.Component {
     }
 }
 
-export default Form.create()(TagForm);
+export default Form.create()(ArticleForm);

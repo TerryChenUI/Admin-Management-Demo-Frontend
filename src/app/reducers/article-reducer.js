@@ -1,71 +1,58 @@
 import { ArticleAction } from '../actions';
+import { handleActions } from 'redux-actions';
 
 const INITIAL_STATE = {
-    list: { data: null, pagination: null, message: null, error: null, loading: false },
-    current: { data: null, message: null, error: null, loading: false },
-    created: { data: null, message: null, error: null, loading: false },
-    updated: { data: null, message: null, error: null, loading: false },
-    deleted: { data: null, message: null, error: null, loading: false }
+    list: { data: [], pagination: null },
+    selected: { data: null },
+    loading: false
 };
 
-export default function Article(state = INITIAL_STATE, action) {
-    switch (action.type) {
-        case ArticleAction.GET_ARTICLES_SUCCESS:
-            const { data, pagination } = action.payload.result;
-            return { ...state, list: { data, pagination, message: action.payload.message, loading: false } };
-        case ArticleAction.GET_ARTICLES_FAILURE:
-            return { ...state, list: { data: state.list.data || null, message: action.payload.message, error: action.payload.error, loading: false } };
-        case ArticleAction.RESET_GET_ARTICLES:
-            return { ...state, list: { data: null, pagination: null, message: null, error: null, loading: false } };
-
-        case ArticleAction.GET_ARTICLE_BY_ID_REQUEST:
-            return { ...state, current: { data: null, message: null, error: null, loading: true } };
-        case ArticleAction.GET_ARTICLE_BY_ID_SUCCESS:
-            return { ...state, current: { data: action.payload.result, message: action.payload.message, loading: false } };
-        case ArticleAction.GET_ARTICLE_BY_ID_FAILURE:
-            return { ...state, current: { data: null, message: action.payload.message, error: action.payload.error, loading: false } };
-        case ArticleAction.RESET_CURRENT_ARTICLE:
-            return { ...state, current: { data: null, message: null, error: null, loading: false } };
-
-        case ArticleAction.CREATE_ARTICLE_REQUEST:
-            return { ...state, created: { data: null, message: null, error: null, loading: true } };
-        case ArticleAction.CREATE_ARTICLE_SUCCESS:
-            return { ...state, created: { data: action.payload.result, message: action.payload.message, loading: false } };
-        case ArticleAction.CREATE_ARTICLE_FAILURE:
-            return { ...state, created: { data: null, message: action.payload.message, error: action.payload.error, loading: false } };
-        case ArticleAction.RESET_CREATE_ARTICLE:
-            return { ...state, created: { data: null, message: null, error: null, loading: false } };
-
-        case ArticleAction.UPDATE_ARTICLE_REQUEST:
-            return { ...state, updated: { data: null, message: null, error: null, loading: true } };
-        case ArticleAction.UPDATE_ARTICLE_SUCCESS:
-            return { ...state, updated: { data: action.payload.result, message: action.payload.message, loading: false } };
-        case ArticleAction.UPDATE_ARTICLE_FAILURE:
-            return { ...state, updated: { data: null, message: action.payload.message, error: action.payload.error, loading: false } };
-        case ArticleAction.RESET_UPDATE_ARTICLE:
-            return { ...state, updated: { data: null, message: null, error: null, loading: false } };
-
-        case ArticleAction.DELETE_ARTICLE_REQUEST:
-            return { ...state, deleted: { data: action.payload, message: null, error: null, loading: true } };
-        case ArticleAction.DELETE_ARTICLE_SUCCESS:
-            const { result, message } = action.payload;
-            const newData = state.list.data.filter(t => t._id !== result._id);
-            return {
-                ...state,
-                list: {
-                    data: newData,
-                    pagination: state.list.pagination,
-                    message: null,
-                    loading: false
-                },
-                deleted: { data: result, message: message, loading: false }
-            }
-        case ArticleAction.DELETE_ARTICLE_FAILURE:
-            return { ...state, deleted: { data: null, error: action.payload.error, message: action.payload.message, loading: false } };
-        case ArticleAction.RESET_DELETE_ARTICLE:
-            return { ...state, deleted: { data: null, message: null, error: null, loading: false } };
-
-        default:
-            return state
+const createArticle = (state, action) => {
+    const createdData = action.payload;
+    const createdList = [...state.list.data]
+    const additionalIndex = createdList.findIndex(t => t._id === createdData._id);
+    if (additionalIndex === -1) {
+        createdList.push(createdData);
     }
-}
+    return { ...state, list: { data: createdList, pagination: state.list.pagination } };
+};
+
+const updateArticle = (state, action) => {
+    const updatedData = action.payload;
+    const updatedList = [...state.list.data]
+    const additionalIndex = updatedList.findIndex(t => t._id === updatedData._id);
+    if (additionalIndex > -1) {
+        updatedList[additionalIndex] = updatedData;
+    }
+    return { ...state, list: { data: updatedList, pagination: state.list.pagination } };
+};
+
+const deleteArticle = (state, action) => {
+    const deletedData = state.list.data.filter(t => t._id !== action.payload._id);
+    const pagination = [...state.list.pagination];
+    pagination.total -= 1;
+    return {
+        ...state,
+        list: { data: deletedData, pagination }
+    }
+};
+
+const reducer = handleActions({
+    [ArticleAction.GET_ARTICLES_REQUEST]: (state, action) => ({
+        ...state, loading: true
+    }),
+    [ArticleAction.GET_ARTICLES]: (state, action) => ({
+        ...state, list: { ...action.payload }, loading: false
+    }),
+    [ArticleAction.GET_ARTICLE_BY_ID_REQUEST]: (state, action) => ({
+        ...state, selected: { data: null }, loading: true
+    }),
+    [ArticleAction.GET_ARTICLE_BY_ID]: (state, action) => ({
+        ...state, selected: { ...action.payload }, loading: false
+    }),
+    [ArticleAction.CREATE_ARTICLE]: (state, action) => createArticle(state, action),
+    [ArticleAction.UPDATE_ARTICLE]: (state, action) => updateArticle(state, action),
+    [ArticleAction.DELETE_ARTICLE]: (state, action) => deleteArticle(state, action)
+}, INITIAL_STATE);
+
+module.exports = reducer;

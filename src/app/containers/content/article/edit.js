@@ -5,12 +5,12 @@ import { browserHistory } from 'react-router';
 import { Spin } from 'antd';
 
 import { notify } from '../../../utils';
-import { TagAction } from '../../../actions';
-import { TagService } from '../../../services';
+import { ArticleAction } from '../../../actions';
+import { ArticleService } from '../../../services';
 
-import TagForm from './form';
+import ArticleForm from './form';
 
-class TagEdit extends React.Component {
+class ArticleEdit extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -18,20 +18,20 @@ class TagEdit extends React.Component {
     componentDidMount() {
         const id = this.props.params.id;
         if (id) {
-            this.props.getTagById(id);
+            this.props.getArticleById(id);
         }
     }
 
     render() {
-        const { selected, loading, params, createTag, updateTag } = this.props;
-        const onSubmit = params.id ? updateTag : createTag;
+        const { selected, loading, params, createArticle, updateArticle } = this.props;
+        const onSubmit = params.id ? updateArticle : createArticle;
         return (
             <div className="content-inner">
                 <div className="page-title">
-                    <h2>{params.id ? '编辑' : '添加'}标签</h2>
+                    <h2>{params.id ? '编辑' : '添加'}文章</h2>
                 </div>
                 <Spin spinning={loading} delay={500} >
-                    <TagForm initialValue={selected} onSubmit={onSubmit} />
+                    <ArticleForm initialValue={selected} onSubmit={onSubmit} />
                 </Spin>
             </div>
         );
@@ -40,35 +40,35 @@ class TagEdit extends React.Component {
 
 function mapStateToProps(state, ownProps) {
     return ownProps.params.id ? {
-        selected: state.tag.selected,
-        loading: state.tag.loading
+        selected: state.article.selected,
+        loading: state.article.loading
     } : { loading: false };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        getTagById: (id) => {
-            dispatch(TagAction.getTagByIdRequest());
-            TagService.getById(id).then((response) => {
-                dispatch(TagAction.getTagById(response.result));
+        getArticleById: (id) => {
+            dispatch(ArticleAction.getArticleByIdRequest());
+            ArticleService.getById(id).then((response) => {
+                dispatch(ArticleAction.getArticleById(response.result));
             }, (error) => {
                 notify.error(error.response.message, error.response.error);
             });
         },
-        createTag: (params) => {
-            TagService.create(params).then((response) => {
-                dispatch(TagAction.createTag(response.result));
+        createArticle: (params) => {
+            ArticleService.create(params).then((response) => {
+                dispatch(ArticleAction.createArticle(response.result));
                 notify.success(response.message);
-                browserHistory.push('/tags');
+                browserHistory.push('/articles');
             }, (error) => {
                 notify.error(error.response.message, error.response.error);
             });
         },
-        updateTag: (params) => {
-            const response = TagService.update(params).then((response) => {
-                dispatch(TagAction.updateTag(response.result));
+        updateArticle: (params) => {
+            const response = ArticleService.update(params).then((response) => {
+                dispatch(ArticleAction.updateArticle(response.result));
                 notify.success(response.message);
-                browserHistory.push('/tags');
+                browserHistory.push('/articles');
             }, (error) => {
                 notify.error(error.response.message, error.response.error)
             });
@@ -79,4 +79,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(TagEdit);
+)(ArticleEdit);

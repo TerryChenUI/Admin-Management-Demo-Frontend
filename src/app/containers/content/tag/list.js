@@ -113,7 +113,7 @@ class TagList extends React.Component {
                     <h2>文章标签</h2>
                     <Link to='/tags/add'><Button type="primary" size="small" icon="plus">新增</Button></Link>
                 </div>
-                <TagSearch filter={this.props.filter} onSearch={this.onSearch} onReset={this.onReset} />
+                <TagSearch filter={this.state.filter} onSearch={this.onSearch}/>
                 <Table
                     dataSource={data}
                     columns={columns}

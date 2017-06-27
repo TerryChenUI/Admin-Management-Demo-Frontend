@@ -34,13 +34,13 @@ class TagSearch extends React.Component {
     }
 
     render() {
-        const { getFieldDecorator } = this.props.form;
-        // const { labelCol, wrapperCol } = config.searchForm;
+        const { filter, form } = this.props;
+        const { getFieldDecorator } = form;
         return (
             <Form className="search-form" layout="inline">
                 <FormItem>
                     {
-                        getFieldDecorator('visible', { initialValue: '-1' })(
+                        getFieldDecorator('visible', { initialValue: filter.visible })(
                             <Radio.Group onChange={this.handleVisibleChange}>
                                 <Radio.Button value="-1">全部</Radio.Button>
                                 <Radio.Button value="1">可见</Radio.Button>
@@ -57,38 +57,13 @@ class TagSearch extends React.Component {
                     }
                 </FormItem>
             </Form>
-            // <Row gutter={24}>
-            //     <Col>
-            //         {
-            //             getFieldDecorator('visible', { initialValue: '-1' })(
-            //                 <Radio.Group onChange={this.handleVisibleChange}>
-            //                     <Radio.Button value="-1">全部</Radio.Button>
-            //                     <Radio.Button value="1">可见</Radio.Button>
-            //                     <Radio.Button value="0">隐藏</Radio.Button>
-            //                 </Radio.Group>
-            //             )
-            //         }
-            //     </Col>
-            //     <Col {...itemLayout}>
-            // {
-            //     getFieldDecorator('keyword')(
-            //         <Input placeholder="标签，别名，关键字" onChange={this.handleKeywordChange} />
-            //     )
-            // }
-            //     </Col>
-            //     {/*<Col className="form-action" {...actionLayout}>
-            //         <Button type="primary" onClick={this.handleSearch}>搜索</Button>
-            //         <Button onClick={this.handleReset}>重置</Button>
-            //     </Col>*/}
-            // </Row>
         )
     }
 }
 
 TagSearch.propTypes = {
     filter: PropTypes.object,
-    onSearch: PropTypes.func,
-    onReset: PropTypes.func
+    onSearch: PropTypes.func
 }
 
 export default Form.create()(TagSearch);

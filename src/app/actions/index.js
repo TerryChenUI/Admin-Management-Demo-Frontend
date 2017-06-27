@@ -1,11 +1,11 @@
 import * as AppAction from './app-action';
-// import * as ArticleAction from './article-action';
+import * as ArticleAction from './article-action';
 import * as CategoryAction from './category-action';
 import * as TagAction from './tag-action';
 
-export { 
+export {
     AppAction,
-    // ArticleAction, 
-    CategoryAction, 
+    ArticleAction,
+    CategoryAction,
     TagAction
 };

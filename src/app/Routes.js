@@ -5,19 +5,19 @@ import App from './containers/app';
 // import Main from './containers/Layout/Main';
 import Index from './containers/dashboard/';
 
-// import ArticleList from './containers/article/list/ArticleList';
-// import ArticleEdit from './containers/article/edit/ArticleEdit';
-import CategoryList from './containers/article/category/list';
-import CategoryEdit from './containers/article/category/edit';
-import TagList from './containers/article/tag/list';
-import TagEdit from './containers/article/tag/edit';
+import ArticleList from './containers/content/article/list';
+import ArticleEdit from './containers/content/article/edit';
+import CategoryList from './containers/content/category/list';
+import CategoryEdit from './containers/content/category/edit';
+import TagList from './containers/content/tag/list';
+import TagEdit from './containers/content/tag/edit';
 
 const routes =
     <Route path="/" component={App}>
         {/*<Route component={Main}>*/}
         <IndexRoute component={Index} />
-        {/*<Route path="article/list" component={ArticleList} />
-            <Route path="article/(add)(edit)(/:id)" component={ArticleEdit} />*/}
+        <Route path="articles" component={ArticleList} />
+        <Route path="articles/(add)(:id)" component={ArticleEdit} />
         <Route path="categories" component={CategoryList} />
         <Route path="categories/(add)(:id)" component={CategoryEdit} />
         <Route path="tags" component={TagList} />

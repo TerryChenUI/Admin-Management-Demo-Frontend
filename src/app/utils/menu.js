@@ -20,12 +20,18 @@ module.exports = [
     router: '/articles'
   },
   {
-    id: 42,
-    bpid: 4,
-    mpid: 4,
-    name: '发布文章',
-    icon: 'edit',
-    router: '/article/edit'
+    id: 411,
+    mpid: -1,
+    bpid: 41,
+    name: '添加文章',
+    router: '/articles/add'
+  },
+  {
+    id: 412,
+    mpid: -1,
+    bpid: 41,
+    name: '编辑文章',
+    router: '/articles/:id(\\w+)'
   },
   {
     id: 43,

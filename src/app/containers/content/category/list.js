@@ -113,7 +113,7 @@ class CategoryList extends React.Component {
                     <h2>分类目录</h2>
                     <Link to='/categories/add'><Button type="primary" size="small" icon="plus">新增</Button></Link>
                 </div>
-                <CategorySearch filter={this.props.filter} onSearch={this.onSearch} onReset={this.onReset} />
+                <CategorySearch filter={this.state.filter} onSearch={this.onSearch}/>
                 <Table
                     dataSource={data}
                     columns={columns}
