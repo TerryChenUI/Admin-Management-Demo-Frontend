@@ -20,6 +20,12 @@ export const site = {
   }
 }
 
+export const storageKey = {
+  siderFold: 'siderFold',
+  lightTheme: 'lightTheme',
+  navOpenKeys: 'navOpenKeys'
+};
+
 export const pager = {
   current: 1,
   pageSize: 10,

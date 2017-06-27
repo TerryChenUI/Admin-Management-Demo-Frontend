@@ -24,8 +24,8 @@ class CategoryForm extends React.Component {
 
     componentWillMount() {
         CategoryService.getAll().then(response => {
-            const parentCategories = response.result.data.map(m => { return { value: m._id, text: m.name } });
-            this.setState({ availableCategories: [...this.state.availableCategories, ...parentCategories] });
+            const categories = response.result.data.map(m => { return { value: m._id, text: m.name } });
+            this.setState({ availableCategories: [...this.state.availableCategories, ...categories] });
         });
     }
 

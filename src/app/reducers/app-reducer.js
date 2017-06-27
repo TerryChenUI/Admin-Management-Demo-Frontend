@@ -1,22 +1,25 @@
 import { AppAction } from '../actions';
+import { config } from '../utils';
+
+const storageKey = config.storageKey;
 
 const INITIAL_STATE = {
     user: { id: '1', username: 'admin' },
     menuPopoverVisible: false,
     isNavbar: document.body.clientWidth < 769,
-    siderFold: localStorage.getItem('siderFold') === 'true',
-    darkTheme: localStorage.getItem('darkTheme') === 'true',
-    navOpenKeys: JSON.parse(localStorage.getItem('navOpenKeys')) || []
+    siderFold: localStorage.getItem(storageKey.siderFold) === 'true',
+    lightTheme: localStorage.getItem(storageKey.lightTheme) === 'true',
+    navOpenKeys: JSON.parse(localStorage.getItem(storageKey.navOpenKeys)) || []
 };
 
 export default function App(state = INITIAL_STATE, action) {
     switch (action.type) {
         case AppAction.SWITCH_SIDER:
-            localStorage.setItem('siderFold', !state.siderFold);
+            localStorage.setItem(storageKey.siderFold, !state.siderFold);
             return { ...state, siderFold: !state.siderFold };
         case AppAction.SWITCH_THEME:
-            localStorage.setItem('darkTheme', !state.darkTheme);
-            return { ...state, darkTheme: !state.darkTheme };
+            localStorage.setItem(storageKey.lightTheme, !state.lightTheme);
+            return { ...state, lightTheme: !state.lightTheme };
         case AppAction.SWITCH_MENU_POPOVER:
             return { ...state, menuPopoverVisible: !state.menuPopoverVisible };
         case AppAction.HANDLE_NAV_OPENKEYS:

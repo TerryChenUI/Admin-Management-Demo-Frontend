@@ -4,13 +4,14 @@ import classnames from 'classnames';
 
 import { Layout } from '../components';
 import { AppAction } from '../actions';
-import { menu } from '../utils';
+import { menu, config } from '../utils';
 
 import 'antd/dist/antd.css';
 import '../themes/index.less';
 import './app.scss';
 
 const { Header, Bread, Footer, Sider, styles } = Layout;
+const storageKey = config.storageKey;
 let tid = null;
 
 class App extends React.Component {
@@ -39,7 +40,7 @@ class App extends React.Component {
     }
 
     render() {
-        const { user, siderFold, darkTheme, isNavbar, menuPopoverVisible, navOpenKeys,
+        const { user, siderFold, lightTheme, isNavbar, menuPopoverVisible, navOpenKeys,
             switchSider, switchTheme, switchMenuPopover, changeOpenKeys, changeNavbar } = this.props;
 
         const headerProps = {
@@ -60,13 +61,13 @@ class App extends React.Component {
 
         const siderProps = {
             menu,
-            darkTheme,
+            lightTheme,
             siderFold,
             location,
             navOpenKeys,
             switchTheme,
             changeOpenKeys(openKeys) {
-                localStorage.setItem('navOpenKeys', JSON.stringify(openKeys));
+                localStorage.setItem(storageKey.navOpenKeys, JSON.stringify(openKeys));
                 changeOpenKeys(openKeys);
             },
         };
@@ -84,7 +85,7 @@ class App extends React.Component {
 
         return (
             <div className={classnames(styles.layout, { [styles.fold]: isNavbar ? false : siderFold }, { [styles.withnavbar]: isNavbar })}>
-                {!isNavbar ? <aside className={classnames(styles.sider, { [styles.light]: !darkTheme })}>
+                {!isNavbar ? <aside className={classnames(styles.sider, { [styles.light]: lightTheme })}>
                     <Sider {...siderProps} />
                 </aside> : ''}
                 <div className={styles.main}>

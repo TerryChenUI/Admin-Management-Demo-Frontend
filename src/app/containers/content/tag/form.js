@@ -17,7 +17,7 @@ class TagForm extends React.Component {
             loading: false
         };
     }
-
+    
     checkExist = (rule, value, callback) => {
         const { initialValue } = this.props;
         if (value === "" || (initialValue && value === initialValue.slug)) {

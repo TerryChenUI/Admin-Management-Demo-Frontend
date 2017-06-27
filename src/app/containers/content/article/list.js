@@ -60,16 +60,31 @@ class ArticleList extends React.Component {
                 title: '标题',
                 dataIndex: 'title',
                 key: 'title',
-                width: 350
+                width: 300
             }, {
-                title: '描述',
+                title: '简介',
                 dataIndex: 'description',
                 key: 'description'
+            }, {
+                title: '访问量',
+                dataIndex: 'meta.views',
+                key: 'meta.views',
+                width: 70
+            }, {
+                title: '点赞数',
+                dataIndex: 'meta.likes',
+                key: 'meta.likes',
+                width: 70
+            }, {
+                title: '评论',
+                dataIndex: 'meta.comments',
+                key: 'meta.comments',
+                width: 70
             }, {
                 title: '状态',
                 dataIndex: 'state',
                 key: 'state',
-                width: 80,
+                width: 70,
                 render: (text, record, index) => (
                     // <Icon type={text ? 'unlock' : 'lock'} title={text ? '可见' : '隐藏'} style={{ fontSize: 18, color: text ? '#108ee9' : '#f04134' }} />
                     text === 2 ? '回收站' : text ? '已发布' : '草稿'
@@ -78,14 +93,6 @@ class ArticleList extends React.Component {
                 title: '创建时间',
                 key: 'create_time',
                 dataIndex: 'create_time',
-                width: 150,
-                render: (text, record, index) => (
-                    time.convert(text)
-                )
-            }, {
-                title: '更新时间',
-                key: 'update_time',
-                dataIndex: 'update_time',
                 width: 150,
                 render: (text, record, index) => (
                     time.convert(text)
@@ -112,7 +119,7 @@ class ArticleList extends React.Component {
                     <h2>所有文章</h2>
                     <Link to='/articles/add'><Button type="primary" size="small" icon="plus">新增</Button></Link>
                 </div>
-                <ArticleSearch filter={this.state.filter} onSearch={this.onSearch}/>
+                <ArticleSearch filter={this.state.filter} onSearch={this.onSearch} />
                 <Table
                     dataSource={data}
                     columns={columns}

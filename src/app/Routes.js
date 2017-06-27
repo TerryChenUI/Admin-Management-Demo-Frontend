@@ -3,7 +3,7 @@ import { Route, IndexRoute } from 'react-router';
 
 import App from './containers/app';
 // import Main from './containers/Layout/Main';
-import Index from './containers/dashboard/';
+import Index from './containers/home/';
 
 import ArticleList from './containers/content/article/list';
 import ArticleEdit from './containers/content/article/edit';
