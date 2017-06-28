@@ -26,18 +26,30 @@ class TagList extends React.Component {
         this.props.getTags({ current, pageSize });
     }
 
-    onSearch = (values) => {
+    getParams = (filter) => {
+        const params = {};
+        if (filter.keyword) params.keyword = filter.keyword;
+        if (filter.visible !== '-1') params.visible = filter.visible;
+        return params;
+    };
+
+    onSearch = (fieldsValue) => {
         const { current, pageSize } = this.state.pagination;
-        this.setState({ filter: values });
-        this.props.getTags({ filter: values, current, pageSize });
+        const filter = { ...this.state.filter, ...fieldsValue }
+        this.setState({ filter });
+        
+        const params = this.getParams(filter);
+        this.props.getTags({ params, current, pageSize });
     }
 
-    onPageChange = (pagination, filters) => {
-        const pageConfig = { ...this.state.pagination };
-        const filter = this.state.filter;
-        pageConfig.current = pagination.current
-        this.setState({ pagination: pageConfig });
-        this.props.getTags({ filter, current: pagination.current, pageSize: pagination.pageSize });
+   onPageChange = (pageConfig) => {
+        const { pagination, filter } = this.state;
+        pagination.current = pageConfig.current;
+        this.setState({ pagination });
+
+        const { current, pageSize } = pagination;
+        const params = this.getParams(filter);
+        this.props.getTags({ params, current, pageSize });
     }
 
     onConfirmDelete(id) {
@@ -113,7 +125,7 @@ class TagList extends React.Component {
                     <h2>文章标签</h2>
                     <Link to='/tags/add'><Button type="primary" size="small" icon="plus">新增</Button></Link>
                 </div>
-                <TagSearch filter={this.state.filter} onSearch={this.onSearch}/>
+                <TagSearch filter={this.state.filter} onSearch={this.onSearch} />
                 <Table
                     dataSource={data}
                     columns={columns}
@@ -138,9 +150,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getTags: ({ current, pageSize, filter }) => {
+        getTags: ({ params, current, pageSize, }) => {
             dispatch(TagAction.getTagsRequest());
-            TagService.loadList({ current, pageSize, filter }).then((response) => {
+            TagService.loadList({ params, current, pageSize }).then((response) => {
                 dispatch(TagAction.getTags(response.result));
             }, (error) => {
                 notify.error(error.response.message, error.response.error);

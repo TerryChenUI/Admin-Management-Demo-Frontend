@@ -5,7 +5,7 @@ import { Table, Icon, Button, Popconfirm } from 'antd';
 
 import { CategoryAction } from '../../../actions';
 import { CategoryService } from '../../../services';
-import { notify, time, config } from '../../../utils';
+import { notify, time, config, objectToArray } from '../../../utils';
 import CategorySearch from './search';
 
 class CategoryList extends React.Component {
@@ -14,7 +14,8 @@ class CategoryList extends React.Component {
         this.state = {
             filter: {
                 keyword: '',
-                visible: '-1'
+                visible: '-1',
+                pid: '-1'
             },
             pagination: { ...config.pager },
             deletingIds: []
@@ -26,18 +27,31 @@ class CategoryList extends React.Component {
         this.props.getCategories({ current, pageSize });
     }
 
-    onSearch = (values) => {
+    getParams = (filter) => {
+        const params = {};
+        if (filter.keyword) params.keyword = filter.keyword;
+        if (filter.visible !== '-1') params.visible = filter.visible;
+        if (filter.pid !== '-1') params.pid = filter.pid;
+        return params;
+    };
+
+    onSearch = (fieldsValue) => {
         const { current, pageSize } = this.state.pagination;
-        this.setState({ filter: values });
-        this.props.getCategories({ filter: values, current, pageSize });
+        const filter = { ...this.state.filter, ...fieldsValue }
+        this.setState({ filter });
+        
+        const params = this.getParams(filter);
+        this.props.getCategories({ params, current, pageSize });
     }
 
-    onPageChange = (pagination, filters) => {
-        const pageConfig = { ...this.state.pagination };
-        const filter = this.state.filter;
-        pageConfig.current = pagination.current
-        this.setState({ pagination: pageConfig });
-        this.props.getCategories({ filter, current: pagination.current, pageSize: pagination.pageSize });
+    onPageChange = (pageConfig) => {
+        const { pagination, filter } = this.state;
+        pagination.current = pageConfig.current;
+        this.setState({ pagination });
+
+        const { current, pageSize } = pagination;
+        const params = this.getParams(filter);
+        this.props.getCategories({ params, current, pageSize });
     }
 
     onConfirmDelete(id) {
@@ -113,7 +127,7 @@ class CategoryList extends React.Component {
                     <h2>分类目录</h2>
                     <Link to='/categories/add'><Button type="primary" size="small" icon="plus">新增</Button></Link>
                 </div>
-                <CategorySearch filter={this.state.filter} onSearch={this.onSearch}/>
+                <CategorySearch filter={this.state.filter} onSearch={this.onSearch} />
                 <Table
                     dataSource={data}
                     columns={columns}
@@ -128,7 +142,6 @@ class CategoryList extends React.Component {
     }
 }
 
-
 function mapStateToProps(state) {
     return {
         list: state.category.list,
@@ -138,9 +151,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getCategories: ({ current, pageSize, filter }) => {
+        getCategories: ({ params, current, pageSize }) => {
             dispatch(CategoryAction.getCategoriesRequest());
-            CategoryService.loadList({ current, pageSize, filter }).then((response) => {
+            CategoryService.loadList({ params, current, pageSize }).then((response) => {
                 dispatch(CategoryAction.getCategories(response.result));
             }, (error) => {
                 notify.error(error.response.message, error.response.error);

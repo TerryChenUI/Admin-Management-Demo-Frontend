@@ -14,9 +14,7 @@ class CategorySearch extends React.Component {
         super(props);
 
         this.state = {
-            availableCategories: [
-                { value: '-1', text: "--请选择--" }
-            ]
+            availableCategories: [config.constant.defaultOption]
         };
     }
 
@@ -34,28 +32,16 @@ class CategorySearch extends React.Component {
 
     handleKeywordChange = (e) => {
         clearTimeout(tid);
-        tid = setTimeout(() => { this.handleSearch({}) }, 300);
+        const keyword = e.target.value;
+        tid = setTimeout(this.handleSearch({ keyword }), 300);
     }
 
-    handleCategoryChange = (value) => {
-        const pid = value;
+    handleCategoryChange = (pid) => {
         this.handleSearch({ pid });
     }
 
-    handleSearch = ({ visible = null, pid = null }) => {
-        const values = this.props.form.getFieldsValue();
-        if (visible) values.visible = visible;
-        if (pid) values.pid = pid;
-        if (values.visible === "-1") {
-            delete values.visible;
-        }
-        if (values.pid === "-1") {
-            delete values.pid;
-        }
-        if (!values.keyword) {
-            delete values.keyword;
-        }
-        this.props.onSearch(values);
+    handleSearch = (params) => {
+        this.props.onSearch(params);
     }
 
     render() {
@@ -83,7 +69,7 @@ class CategorySearch extends React.Component {
                 </FormItem>
                 <FormItem label="所属分类">
                     {
-                        getFieldDecorator('pid', { initialValue: "-1" })(
+                        getFieldDecorator('pid', { initialValue: filter.pid })(
                             <Select style={{ width: 150 }} onChange={this.handleCategoryChange}>
                                 {
                                     this.state.availableCategories.map(data => {

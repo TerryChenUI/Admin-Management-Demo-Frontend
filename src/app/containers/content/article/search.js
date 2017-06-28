@@ -34,9 +34,10 @@ class ArticleSearch extends React.Component {
         this.handleSearch({ state });
     }
 
-    handleKeywordChange = () => {
+    handleKeywordChange = (e) => {
         clearTimeout(tid);
-        tid = setTimeout(() => { this.handleSearch({}) }, 300);
+        const keyword = e.target.value;
+        tid = setTimeout(this.handleSearch({ keyword }), 300);
     }
 
     handleCategoryChange = (categories) => {
@@ -47,18 +48,8 @@ class ArticleSearch extends React.Component {
         this.handleSearch({ tags });
     }
 
-    handleSearch = ({ state = null, categories = null, tags = null }) => {
-        let values = this.props.form.getFieldsValue();
-        if (state) {
-            values.state = state;
-        }
-        if (categories) {
-            values.categories = categories;
-        }
-        if (tags) {
-            values.tags = tags;
-        }
-        this.props.onSearch(values);
+   handleSearch = (params) => {
+        this.props.onSearch(params);
     }
 
     render() {

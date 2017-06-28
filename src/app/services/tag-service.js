@@ -1,13 +1,9 @@
-import { request, config } from '../utils';
+import { request, config, objectToArray } from '../utils';
 
 const api = `${config.site.apiPrefix}tags`;
 
-export async function loadList({ filter = null, current, pageSize }) {
-    let params = [];
-    filter && Object.keys(filter).map((key) => {
-        params.push(`${key}=${filter[key]}`);
-    });
-    params = [...params, `currentPage=${current}`, `perPage=${pageSize}`];
+export async function loadList({ params = null, current, pageSize }) {
+    params = [...objectToArray(params), `currentPage=${current}`, `perPage=${pageSize}`];
     return await request(`${api}?${params.join('&')}`);
 }
 

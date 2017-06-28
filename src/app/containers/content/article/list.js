@@ -14,7 +14,9 @@ class ArticleList extends React.Component {
         this.state = {
             filter: {
                 keyword: '',
-                state: '-1'
+                state: '-1',
+                categories: [],
+                tags: []
             },
             pagination: { ...config.pager },
             deletingIds: []
@@ -26,18 +28,32 @@ class ArticleList extends React.Component {
         this.props.getArticles({ current, pageSize });
     }
 
-    onSearch = (values) => {
+    getParams = (filter) => {
+        const params = {};
+        if (filter.state !== '-1') params.state = filter.state;
+        if (filter.keyword) params.keyword = filter.keyword;
+        if (filter.categories.length) params.categories = filter.categories;
+        if (filter.tags.length) params.tags = filter.tags;
+        return params;
+    };
+
+    onSearch = (fieldsValue) => {
         const { current, pageSize } = this.state.pagination;
-        this.setState({ filter: values });
-        this.props.getArticles({ filter: values, current, pageSize });
+        const filter = { ...this.state.filter, ...fieldsValue }
+        this.setState({ filter });
+
+        const params = this.getParams(filter);
+        this.props.getArticles({ params, current, pageSize });
     }
 
-    onPageChange = (pagination, filters) => {
-        const pageConfig = { ...this.state.pagination };
-        const filter = this.state.filter;
-        pageConfig.current = pagination.current
-        this.setState({ pagination: pageConfig });
-        this.props.getArticles({ filter, current: pagination.current, pageSize: pagination.pageSize });
+    onPageChange = (pageConfig) => {
+        const { pagination, filter } = this.state;
+        pagination.current = pageConfig.current;
+        this.setState({ pagination });
+
+        const { current, pageSize } = pagination;
+        const params = this.getParams(filter);
+        this.props.getArticles({ params, current, pageSize });
     }
 
     onConfirmDelete(id) {
@@ -134,7 +150,6 @@ class ArticleList extends React.Component {
     }
 }
 
-
 function mapStateToProps(state) {
     return {
         list: state.article.list,
@@ -144,9 +159,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getArticles: ({ current, pageSize, filter }) => {
+        getArticles: ({ params, current, pageSize }) => {
             dispatch(ArticleAction.getArticlesRequest());
-            ArticleService.loadList({ current, pageSize, filter }).then((response) => {
+            ArticleService.loadList({ params, current, pageSize }).then((response) => {
                 dispatch(ArticleAction.getArticles(response.result));
             }, (error) => {
                 notify.error(error.response.message, error.response.error);

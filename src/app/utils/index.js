@@ -101,6 +101,16 @@ const arrayToTree = (array, id = 'id', pid = 'pid', children = 'children') => {
   return result;
 }
 
+const objectToArray = (params) => {
+  const data = [];
+  if (params) {
+    Object.keys(params).map((key) => {
+      data.push(`${key}=${params[key]}`);
+    });
+  }
+  return data;
+};
+
 module.exports = {
   config,
   menu,
@@ -111,5 +121,6 @@ module.exports = {
   classnames,
   queryURL,
   queryArray,
-  arrayToTree
+  arrayToTree,
+  objectToArray
 }

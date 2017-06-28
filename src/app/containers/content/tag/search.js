@@ -13,24 +13,18 @@ class TagSearch extends React.Component {
     }
 
     handleVisibleChange = (e) => {
-        this.handleSearch(e.target.value);
+        const visible = e.target.value;
+        this.handleSearch({ visible });
     }
 
     handleKeywordChange = (e) => {
         clearTimeout(tid);
-        tid = setTimeout(this.handleSearch, 300);
+        const keyword = e.target.value;
+        tid = setTimeout(this.handleSearch({ keyword }), 300);
     }
 
-    handleSearch = (visible) => {
-        let values = this.props.form.getFieldsValue();
-        if (visible) values.visible = visible;
-        if (values.visible === "-1") {
-            delete values.visible;
-        }
-        if (!values.keyword) {
-            delete values.keyword;
-        }
-        this.props.onSearch(values);
+    handleSearch = (params) => {
+        this.props.onSearch(params);
     }
 
     render() {

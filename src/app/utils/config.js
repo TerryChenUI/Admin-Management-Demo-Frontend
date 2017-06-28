@@ -28,7 +28,7 @@ export const storageKey = {
 
 export const pager = {
   current: 1,
-  pageSize: 10,
+  pageSize: 2,
   showTotal: total => `共 ${total} 条`,
   showQuickJumper: true
 };
@@ -65,6 +65,10 @@ export const editForm = {
       xl: { span: 12 }
     },
   }
+};
+
+export const constant = {
+  defaultOption: { value: '-1', text: "--请选择--" }
 };
 
 

@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { Form, Button, Input, Switch, Radio, Upload, Icon, Select } from 'antd';
 
-// import { Editor } from '../../../components';
+import { Editor } from '../../../components';
+import { EditorState, convertToRaw } from 'draft-js';
+import draftToHtml from 'draftjs-to-html'
+import draftToMarkdown from 'draftjs-to-markdown'
 import { time, config } from '../../../utils';
 import { ArticleService, CategoryService, TagService } from '../../../services';
 
@@ -19,6 +22,7 @@ class ArticleForm extends React.Component {
 
         this.state = {
             loading: false,
+            editorContent: EditorState.createEmpty(),
             availableCategories: [],
             availableTags: []
         };
@@ -33,6 +37,35 @@ class ArticleForm extends React.Component {
             const tags = response.result.data.map(m => { return { value: m._id, text: m.name } });
             this.setState({ availableTags: [...this.state.availableTags, ...tags] });
         });
+    }
+
+    onEditorStateChange = (editorContent) => {
+        const test1 = convertToRaw(editorContent.getCurrentContent());
+        const test2 = draftToHtml(test2);
+        this.setState({
+            editorContent
+        });
+    }
+
+    uploadImageCallBack = (file) => {
+        return new Promise(
+            (resolve, reject) => {
+                const xhr = new XMLHttpRequest(); // eslint-disable-line no-undef
+                xhr.open('POST', 'https://api.imgur.com/3/image');
+                xhr.setRequestHeader('Authorization', 'Client-ID 8d26ccd12712fca');
+                const data = new FormData(); // eslint-disable-line no-undef
+                data.append('image', file);
+                xhr.send(data);
+                xhr.addEventListener('load', () => {
+                    const response = JSON.parse(xhr.responseText);
+                    resolve(response);
+                });
+                xhr.addEventListener('error', () => {
+                    const error = JSON.parse(xhr.responseText);
+                    reject(error);
+                });
+            }
+        );
     }
 
     handleSubmit = (e) => {
@@ -52,6 +85,7 @@ class ArticleForm extends React.Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         const { initialValue } = this.props;
+        // EditorState.createWithContent(content);
         const { formItemLayout, tailFormItemLayout } = config.editForm;
         return (
             <Form onSubmit={this.handleSubmit}>
@@ -129,11 +163,17 @@ class ArticleForm extends React.Component {
                     {...formItemLayout}
                     label="正文"
                 >
-                    {getFieldDecorator('content', {
+                    {/*{getFieldDecorator('content', {
                         initialValue: initialValue && initialValue.content
-                    })(
-                        <Input type="textarea" rows={10} placeholder="文章正文" />
-                        )}
+                    })(*/}
+                    <Editor
+                        wrapperStyle={{ minHeight: 500 }}
+                        editorStyle={{ minHeight: 376 }}
+                        editorState={this.state.editorContent}
+                        onEditorStateChange={this.onEditorStateChange}
+                        uploadCallback={this.uploadImageCallBack}
+                    />
+                    {/*)}*/}
                 </FormItem>
                 <FormItem
                     {...formItemLayout}
@@ -171,7 +211,7 @@ class ArticleForm extends React.Component {
                     label="状态">
                     {
                         getFieldDecorator('state', {
-                            initialValue: initialValue ? `${initialValue.state}`  : "0"
+                            initialValue: initialValue ? `${initialValue.state}` : "0"
                         })(
                             <Radio.Group>
                                 <Radio.Button value="0">草稿</Radio.Button>
