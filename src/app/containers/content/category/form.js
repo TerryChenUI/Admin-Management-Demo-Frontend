@@ -16,9 +16,7 @@ class CategoryForm extends React.Component {
 
         this.state = {
             loading: false,
-            availableCategories: [
-                { value: '-1', text: "--请选择--" }
-            ]
+            availableCategories: [config.constant.defaultOption]
         };
     }
 

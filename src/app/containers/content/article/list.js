@@ -76,20 +76,24 @@ class ArticleList extends React.Component {
                 title: '标题',
                 dataIndex: 'title',
                 key: 'title',
-                width: 300
+                width: 300,
+
             }, {
                 title: '简介',
                 dataIndex: 'description',
                 key: 'description'
             }, {
-                title: '访问量',
+                title: '所属分类',
+                dataIndex: 'categories',
+                key: 'categories',
+                width: 120,
+                render: (text, record, index) => (
+                    text.map((data) => data.name).join(',')
+                )
+            }, {
+                title: '阅读次数',
                 dataIndex: 'meta.views',
                 key: 'meta.views',
-                width: 70
-            }, {
-                title: '点赞数',
-                dataIndex: 'meta.likes',
-                key: 'meta.likes',
                 width: 70
             }, {
                 title: '评论',
@@ -101,8 +105,7 @@ class ArticleList extends React.Component {
                 dataIndex: 'state',
                 key: 'state',
                 width: 70,
-                render: (text, record, index) => (
-                    // <Icon type={text ? 'unlock' : 'lock'} title={text ? '可见' : '隐藏'} style={{ fontSize: 18, color: text ? '#108ee9' : '#f04134' }} />
+                render: (text, record, index) =>  (
                     text === 2 ? '回收站' : text ? '已发布' : '草稿'
                 )
             }, {

@@ -5,9 +5,10 @@ export const site = {
   logo: '/assets/images/logo.png',
   iconFontCSS: '/iconfont.css',
   iconFontJS: '/iconfont.js',
-  baseURL: 'http://localhost:8000/api/v1',
+  baseURL: 'http://localhost:3000/api/',
+  corsURL: 'http://localhost:8080/api/',
   YQL: ['http://www.zuimeitianqi.com'],
-  CORS: ['http://localhost:7000'],
+  CORS: ['http://localhost:8080'],
   openPages: ['/login'],
   apiPrefix: '/api/',
   api: {

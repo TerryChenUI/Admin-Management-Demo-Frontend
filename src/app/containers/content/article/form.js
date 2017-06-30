@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { Form, Button, Input, Switch, Radio, Upload, Icon, Select } from 'antd';
+import { EditorState, ContentState, convertFromHTML, convertToRaw } from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
+import draftToMarkdown from 'draftjs-to-markdown';
 
 import { Editor } from '../../../components';
-import { EditorState, convertToRaw } from 'draft-js';
-import draftToHtml from 'draftjs-to-html'
-import draftToMarkdown from 'draftjs-to-markdown'
 import { time, config } from '../../../utils';
 import { ArticleService, CategoryService, TagService } from '../../../services';
 
@@ -14,14 +14,13 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
-let tid = null;
 
 class ArticleForm extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            loading: false,
+            isSaving: false,
             editorContent: EditorState.createEmpty(),
             availableCategories: [],
             availableTags: []
@@ -39,13 +38,26 @@ class ArticleForm extends React.Component {
         });
     }
 
+    componentWillReceiveProps(nextProps, nextContext) {
+        const { initialValue } = nextProps;
+        if (initialValue) {
+            const state = ContentState.createFromBlockArray(convertFromHTML(initialValue.content));
+            const editorContent = EditorState.createWithContent(state);
+            this.setState({
+                editorContent
+            });
+        }
+    }
+
     onEditorStateChange = (editorContent) => {
-        const test1 = convertToRaw(editorContent.getCurrentContent());
-        const test2 = draftToHtml(test2);
         this.setState({
             editorContent
         });
     }
+
+    uploadThumb = () => {
+
+    };
 
     uploadImageCallBack = (file) => {
         return new Promise(
@@ -76,7 +88,8 @@ class ArticleForm extends React.Component {
                 if (this.props.initialValue) {
                     data._id = this.props.initialValue._id;
                 }
-                this.setState({ loading: true });
+                data.content = draftToHtml(convertToRaw(this.state.editorContent.getCurrentContent()));
+                this.setState({ isSaving: true });
                 this.props.onSubmit(data);
             }
         });
@@ -85,8 +98,26 @@ class ArticleForm extends React.Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         const { initialValue } = this.props;
-        // EditorState.createWithContent(content);
         const { formItemLayout, tailFormItemLayout } = config.editForm;
+
+        const uploadProps = {
+            listType: "picture",
+            action: `${config.site.corsURL}upload/articlethumb`,
+            // headers: {
+            //     authorization: 'authorization-text',
+            // },
+            onChange(info) {
+                if (info.file.status !== 'uploading') {
+                    console.log(info.file, info.fileList);
+                }
+                if (info.file.status === 'done') {
+                    console.log(`${info.file.name} file uploaded successfully`);
+                } else if (info.file.status === 'error') {
+                    console.log(`${info.file.name} file upload failed.`);
+                }
+            },
+        };
+
         return (
             <Form onSubmit={this.handleSubmit}>
                 <FormItem
@@ -142,7 +173,7 @@ class ArticleForm extends React.Component {
                     {getFieldDecorator('thumb', {
                         initialValue: initialValue && initialValue.thumb
                     })(
-                        <Upload name="thumb" action="/upload.do" listType="picture">
+                        <Upload {...uploadProps}>
                             <Button>
                                 <Icon type="upload" /> 上传图片
                             </Button>
@@ -163,9 +194,6 @@ class ArticleForm extends React.Component {
                     {...formItemLayout}
                     label="正文"
                 >
-                    {/*{getFieldDecorator('content', {
-                        initialValue: initialValue && initialValue.content
-                    })(*/}
                     <Editor
                         wrapperStyle={{ minHeight: 500 }}
                         editorStyle={{ minHeight: 376 }}
@@ -173,7 +201,6 @@ class ArticleForm extends React.Component {
                         onEditorStateChange={this.onEditorStateChange}
                         uploadCallback={this.uploadImageCallBack}
                     />
-                    {/*)}*/}
                 </FormItem>
                 <FormItem
                     {...formItemLayout}
@@ -220,6 +247,16 @@ class ArticleForm extends React.Component {
                             )
                     }
                 </FormItem>
+                {initialValue && initialValue.meta &&
+                    <FormItem
+                        {...formItemLayout}
+                        label="数据"
+                    >
+                        <span className="ant-form-text">
+                            阅读次数：{initialValue.meta.views} | 点赞数：{initialValue.meta.likes} | 评论数：{initialValue.meta.likes}
+                        </span>
+                    </FormItem>
+                }
                 {initialValue && initialValue.create_time &&
                     <FormItem
                         {...formItemLayout}
@@ -242,7 +279,7 @@ class ArticleForm extends React.Component {
                 }
                 <FormItem className="form-action" {...tailFormItemLayout}>
                     <Link to='/articles'><Button size="large">取消</Button></Link>
-                    <Button type="primary" htmlType="submit" size="large" loading={this.state.loading}>保存</Button>
+                    <Button type="primary" htmlType="submit" size="large" loading={this.state.isSaving}>保存</Button>
                 </FormItem>
             </Form>
         );
