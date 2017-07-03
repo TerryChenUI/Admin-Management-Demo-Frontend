@@ -1,7 +1,7 @@
 import * as ArticleService from './article-service';
 import * as CategoryService from './category-service';
 import * as TagService from './tag-service';
-import * as UploadService from './tag-service';
+import * as UploadService from './upload-service';
 
 export {
     ArticleService,

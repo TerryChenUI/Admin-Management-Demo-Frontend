@@ -1,19 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-import { Form, Button, Input, Switch, Radio, Upload, Icon, Select } from 'antd';
+import { Form, Button, Input, Switch, Radio, Upload, Icon, Select, Modal } from 'antd';
 import { EditorState, ContentState, convertFromHTML, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import draftToMarkdown from 'draftjs-to-markdown';
 
 import { Editor } from '../../../components';
 import { time, config } from '../../../utils';
-import { ArticleService, CategoryService, TagService } from '../../../services';
+import { ArticleService, CategoryService, TagService, UploadService } from '../../../services';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
+const { RadioButton, RadioGroup } = Radio;
 
 class ArticleForm extends React.Component {
     constructor(props) {
@@ -23,7 +22,10 @@ class ArticleForm extends React.Component {
             isSaving: false,
             editorContent: EditorState.createEmpty(),
             availableCategories: [],
-            availableTags: []
+            availableTags: [],
+            previewVisible: false,
+            previewImage: '',
+            thumb: null
         };
     }
 
@@ -41,6 +43,20 @@ class ArticleForm extends React.Component {
     componentWillReceiveProps(nextProps, nextContext) {
         const { initialValue } = nextProps;
         if (initialValue) {
+            // thumb
+            if (initialValue.thumb) {
+                const thumb = {
+                    uid: initialValue.thumb,
+                    name: initialValue.thumb.split('\\')[2],
+                    filePath: initialValue.thumb,
+                    url: `${config.site.CORS}/${initialValue.thumb}`
+                };
+                this.setState({
+                    thumb
+                });
+            }
+
+            // content
             const state = ContentState.createFromBlockArray(convertFromHTML(initialValue.content));
             const editorContent = EditorState.createWithContent(state);
             this.setState({
@@ -55,8 +71,46 @@ class ArticleForm extends React.Component {
         });
     }
 
-    uploadThumb = () => {
+    handleCancel = () => this.setState({ previewVisible: false })
 
+    handlePreview = (file) => {
+        this.setState({
+            previewImage: file.url || file.thumbUrl,
+            previewVisible: true
+        });
+    }
+
+    handleOnChange = (info) => {
+        let thumb = {
+            uid: info.file.uid
+        };
+        if (info.file.status !== 'uploading') {
+            console.log(info.file, info.fileList);
+        }
+        if (info.file.status === 'done') {
+            const { fileName, filePath } = info.file.response.result;
+            thumb.name = fileName;
+            thumb.filePath = filePath;
+            thumb.filePath = filePath;
+            thumb.url = `${config.site.CORS}/${filePath}`;
+            console.log(`${info.file.name} file uploaded successfully`);
+        } else if (info.file.status === 'error') {
+            console.log(`${info.file.name} file upload failed.`);
+        }
+        this.setState({
+            thumb
+        });
+    };
+
+    handleRemove = (file) => {
+        UploadService.remove(this.state.thumb.filePath).then(() => {
+            console.log('delete successfully');
+            this.setState({
+                thumb: null
+            });
+        }, () => {
+            console.log('delete failure');
+        })
     };
 
     uploadImageCallBack = (file) => {
@@ -88,6 +142,11 @@ class ArticleForm extends React.Component {
                 if (this.props.initialValue) {
                     data._id = this.props.initialValue._id;
                 }
+                if (this.state.thumb) {
+                    data.thumb = this.state.thumb.filePath;
+                } else {
+                    data.thumb = null;
+                }
                 data.content = draftToHtml(convertToRaw(this.state.editorContent.getCurrentContent()));
                 this.setState({ isSaving: true });
                 this.props.onSubmit(data);
@@ -99,23 +158,17 @@ class ArticleForm extends React.Component {
         const { getFieldDecorator } = this.props.form;
         const { initialValue } = this.props;
         const { formItemLayout, tailFormItemLayout } = config.editForm;
+        const { previewVisible, previewImage, thumb } = this.state;
+        const fileList = thumb ? [thumb] : [];
 
         const uploadProps = {
             listType: "picture",
-            action: `${config.site.corsURL}upload/articlethumb`,
-            // headers: {
-            //     authorization: 'authorization-text',
-            // },
-            onChange(info) {
-                if (info.file.status !== 'uploading') {
-                    console.log(info.file, info.fileList);
-                }
-                if (info.file.status === 'done') {
-                    console.log(`${info.file.name} file uploaded successfully`);
-                } else if (info.file.status === 'error') {
-                    console.log(`${info.file.name} file upload failed.`);
-                }
-            },
+            action: `${config.site.corsURL}upload/thumb`,
+            headers: { 'X-Requested-With': null },
+            fileList: fileList,
+            onPreview: this.handlePreview,
+            onChange: this.handleOnChange,
+            onRemove: this.handleRemove
         };
 
         return (
@@ -170,15 +223,22 @@ class ArticleForm extends React.Component {
                     {...formItemLayout}
                     label="缩略图"
                 >
-                    {getFieldDecorator('thumb', {
-                        initialValue: initialValue && initialValue.thumb
-                    })(
-                        <Upload {...uploadProps}>
-                            <Button>
-                                <Icon type="upload" /> 上传图片
-                            </Button>
-                        </Upload>
-                        )}
+                    {getFieldDecorator('thumb')(
+                        <div>
+                            <Upload {...uploadProps}>
+                                {
+                                    fileList.length === 1 ? null :
+                                        <div className="select-picture">
+                                            <Icon type="plus" />
+                                            <div className="ant-upload-text">上传图片</div>
+                                        </div>
+                                }
+                            </Upload>
+                            <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
+                                <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                            </Modal>
+                        </div>
+                    )}
                 </FormItem>
                 <FormItem
                     {...formItemLayout}
