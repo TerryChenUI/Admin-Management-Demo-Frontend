@@ -116,11 +116,21 @@ class ArticleForm extends React.Component {
     uploadImageCallBack = (file) => {
         return new Promise(
             (resolve, reject) => {
+                // const formData = new FormData();
+                // formData.append('file', file);
+
+                // UploadService.uploadContent(formData).then((result) => {
+                //     const response = result;
+                //     resolve(response);
+                // }, (response) => {
+                //     const error = JSON.parse(response.statusText);
+                //     reject(error);
+                // })
                 const xhr = new XMLHttpRequest(); // eslint-disable-line no-undef
-                xhr.open('POST', 'https://api.imgur.com/3/image');
-                xhr.setRequestHeader('Authorization', 'Client-ID 8d26ccd12712fca');
+                xhr.open('POST', `${config.site.corsURL}upload`);
+                // xhr.setRequestHeader('Authorization', 'Client-ID 8d26ccd12712fca');
                 const data = new FormData(); // eslint-disable-line no-undef
-                data.append('image', file);
+                data.append('file', file);
                 xhr.send(data);
                 xhr.addEventListener('load', () => {
                     const response = JSON.parse(xhr.responseText);
