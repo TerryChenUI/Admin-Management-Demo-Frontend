@@ -104,28 +104,17 @@ class ArticleForm extends React.Component {
 
     handleRemove = (file) => {
         UploadService.remove(this.state.thumb.filePath).then(() => {
-            console.log('delete successfully');
             this.setState({
                 thumb: null
             });
-        }, () => {
-            console.log('delete failure');
+        }, (error) => {
+            console.log('删除失败');
         })
     };
 
     uploadImageCallBack = (file) => {
         return new Promise(
             (resolve, reject) => {
-                // const formData = new FormData();
-                // formData.append('file', file);
-
-                // UploadService.uploadContent(formData).then((result) => {
-                //     const response = result;
-                //     resolve(response);
-                // }, (response) => {
-                //     const error = JSON.parse(response.statusText);
-                //     reject(error);
-                // })
                 const xhr = new XMLHttpRequest(); // eslint-disable-line no-undef
                 xhr.open('POST', `${config.site.corsURL}upload`);
                 // xhr.setRequestHeader('Authorization', 'Client-ID 8d26ccd12712fca');
@@ -134,7 +123,12 @@ class ArticleForm extends React.Component {
                 xhr.send(data);
                 xhr.addEventListener('load', () => {
                     const response = JSON.parse(xhr.responseText);
-                    resolve(response);
+                    const image = {
+                        data: {
+                            link: response.result.urlPath
+                        }
+                    };
+                    resolve(image);
                 });
                 xhr.addEventListener('error', () => {
                     const error = JSON.parse(xhr.responseText);
