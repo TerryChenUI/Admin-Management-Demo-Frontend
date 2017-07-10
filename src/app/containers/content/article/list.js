@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import { Table, Icon, Button, Popconfirm } from 'antd';
 
 import { ArticleAction } from '../../../actions';
-import { ArticleService } from '../../../services';
+import { ArticleService, CategoryService, TagService } from '../../../services';
 import { notify, time, config } from '../../../utils';
 import ArticleSearch from './search';
 
@@ -18,6 +18,8 @@ class ArticleList extends React.Component {
                 categories: [],
                 tags: []
             },
+            availableCategories: [],
+            availableTags: [],
             pagination: { ...config.pager },
             deletingIds: []
         }
@@ -26,6 +28,22 @@ class ArticleList extends React.Component {
     componentDidMount() {
         const { current, pageSize } = this.state.pagination;
         this.props.getArticles({ current, pageSize });
+        this.loadAllCategories();
+        this.loadAllTags();
+    }
+
+    loadAllCategories = () => {
+        CategoryService.getAll().then(response => {
+            const categories = response.result.data.map(m => { return { value: m._id, text: m.name } });
+            this.setState({ availableCategories: [...this.state.availableCategories, ...categories] });
+        }, notify.error);
+    }
+
+    loadAllTags = () => {
+        TagService.getAll().then(response => {
+            const tags = response.result.data.map(m => { return { value: m._id, text: m.name } });
+            this.setState({ availableTags: [...this.state.availableTags, ...tags] });
+        }, notify.error);
     }
 
     getParams = (filter) => {
@@ -68,8 +86,15 @@ class ArticleList extends React.Component {
 
     render() {
         const { list, loading } = this.props;
+        const { filter, availableCategories, availableTags } = this.state;
         const { data, pagination } = list;
         const pageConfig = { ...pagination, ...this.state.pagination };
+        const searchProps = {
+            filter,
+            availableCategories,
+            availableTags,
+            onSearch: this.onSearch
+        };
 
         const columns = [
             {
@@ -138,7 +163,7 @@ class ArticleList extends React.Component {
                     <h2>所有文章</h2>
                     <Link to='/articles/add'><Button type="primary" size="small" icon="plus">新增</Button></Link>
                 </div>
-                <ArticleSearch filter={this.state.filter} onSearch={this.onSearch} />
+                <ArticleSearch {...searchProps}/>
                 <Table
                     dataSource={data}
                     columns={columns}

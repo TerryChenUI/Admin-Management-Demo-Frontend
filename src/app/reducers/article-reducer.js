@@ -3,7 +3,7 @@ import { handleActions } from 'redux-actions';
 
 const INITIAL_STATE = {
     list: { data: [], pagination: null },
-    selected: { data: null },
+    selected: null,
     loading: false
 };
 
@@ -45,7 +45,7 @@ const reducer = handleActions({
         ...state, list: { ...action.payload }, loading: false
     }),
     [ArticleAction.GET_ARTICLE_BY_ID_REQUEST]: (state, action) => ({
-        ...state, selected: { data: null }, loading: true
+        ...state, selected: null, loading: true
     }),
     [ArticleAction.GET_ARTICLE_BY_ID]: (state, action) => ({
         ...state, selected: { ...action.payload }, loading: false

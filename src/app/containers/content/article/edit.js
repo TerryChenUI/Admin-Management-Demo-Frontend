@@ -6,13 +6,17 @@ import { Spin } from 'antd';
 
 import { notify } from '../../../utils';
 import { ArticleAction } from '../../../actions';
-import { ArticleService } from '../../../services';
+import { ArticleService, CategoryService, TagService } from '../../../services';
 
 import ArticleForm from './form';
 
 class ArticleEdit extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            availableCategories: [],
+            availableTags: [],
+        };
     }
 
     componentDidMount() {
@@ -20,18 +24,40 @@ class ArticleEdit extends React.Component {
         if (id) {
             this.props.getArticleById(id);
         }
+        this.getAllCategories();
+        this.getAllTags();
+    }
+
+    getAllCategories = () => {
+        CategoryService.getAll().then(response => {
+            const categories = response.result.data.map(m => { return { value: m._id, text: m.name } });
+            this.setState({ availableCategories: [...this.state.availableCategories, ...categories] });
+        }, notify.error);
+    }
+
+    getAllTags = () => {
+        TagService.getAll().then(response => {
+            const tags = response.result.data.map(m => { return { value: m._id, text: m.name } });
+            this.setState({ availableTags: [...this.state.availableTags, ...tags] });
+        }, notify.error);
     }
 
     render() {
         const { selected, loading, params, createArticle, updateArticle } = this.props;
         const onSubmit = params.id ? updateArticle : createArticle;
+        const formProps = {
+            ...this.state,
+            initialValue: selected,
+            onSubmit: onSubmit
+        };
+
         return (
             <div className="content-inner">
                 <div className="page-title">
                     <h2>{params.id ? '编辑' : '添加'}文章</h2>
                 </div>
                 <Spin spinning={loading} delay={500} >
-                    <ArticleForm initialValue={selected} onSubmit={onSubmit} />
+                    <ArticleForm {...formProps}/>
                 </Spin>
             </div>
         );
@@ -51,27 +77,21 @@ function mapDispatchToProps(dispatch) {
             dispatch(ArticleAction.getArticleByIdRequest());
             ArticleService.getById(id).then((response) => {
                 dispatch(ArticleAction.getArticleById(response.result));
-            }, (error) => {
-                notify.error(error.response.message, error.response.error);
-            });
+            }, notify.error);
         },
         createArticle: (params) => {
             ArticleService.create(params).then((response) => {
                 dispatch(ArticleAction.createArticle(response.result));
                 notify.success(response.message);
                 browserHistory.push('/articles');
-            }, (error) => {
-                notify.error(error.response.message, error.response.error);
-            });
+            }, notify.error);
         },
         updateArticle: (params) => {
             const response = ArticleService.update(params).then((response) => {
                 dispatch(ArticleAction.updateArticle(response.result));
                 notify.success(response.message);
                 browserHistory.push('/articles');
-            }, (error) => {
-                notify.error(error.response.message, error.response.error)
-            });
+            }, notify.error);
         }
     }
 }

@@ -4,7 +4,6 @@ import { Link } from 'react-router';
 import { Form, Button, Input, Switch, InputNumber } from 'antd';
 
 import { time, config } from '../../../utils';
-import { TagService } from '../../../services';
 
 const FormItem = Form.Item;
 let tid = null;
@@ -14,7 +13,7 @@ class TagForm extends React.Component {
         super(props);
 
         this.state = {
-            loading: false
+            saving: false
         };
     }
 
@@ -23,17 +22,16 @@ class TagForm extends React.Component {
         if (value === "" || (initialValue && value === initialValue.slug)) {
             clearTimeout(tid);
             callback();
+            return;
         }
-        if (value !== "") {
-            tid = setTimeout(() => {
-                const param = `slug=${value.trim()}`;
-                TagService.checkExist(param).then(() => {
-                    callback();
-                }, (error) => {
-                    callback(error.response.message)
-                });
-            }, 300);
-        }
+        
+        tid = setTimeout(() => {
+            this.props.checkExist(value).then(() => {
+                callback();
+            }, (error) => {
+                callback(error.response.message)
+            });
+        }, 300);
     }
 
     handleSubmit = (e) => {
@@ -44,7 +42,7 @@ class TagForm extends React.Component {
                 if (this.props.initialValue) {
                     data._id = this.props.initialValue._id;
                 }
-                this.setState({ loading: true });
+                this.setState({ saving: true });
                 this.props.onSubmit(data);
             }
         });
@@ -140,7 +138,7 @@ class TagForm extends React.Component {
                 }
                 <FormItem className="form-action" {...tailFormItemLayout}>
                     <Link to='/tags'><Button size="large">取消</Button></Link>
-                    <Button type="primary" htmlType="submit" size="large" loading={this.state.loading}>保存</Button>
+                    <Button type="primary" htmlType="submit" size="large" loading={this.state.saving}>保存</Button>
                 </FormItem>
             </Form>
         );

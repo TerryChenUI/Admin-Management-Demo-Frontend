@@ -22,16 +22,27 @@ class TagEdit extends React.Component {
         }
     }
 
+    checkSlugExist = (value) => {
+        const param = `slug=${value.trim()}`;
+        return TagService.checkExist(param);
+    }
+
     render() {
         const { selected, loading, params, createTag, updateTag } = this.props;
         const onSubmit = params.id ? updateTag : createTag;
+        const formProps = {
+            initialValue: selected,
+            onSubmit: onSubmit,
+            checkExist: this.checkSlugExist
+        };
+
         return (
             <div className="content-inner">
                 <div className="page-title">
                     <h2>{params.id ? '编辑' : '添加'}标签</h2>
                 </div>
                 <Spin spinning={loading} delay={500} >
-                    <TagForm initialValue={selected} onSubmit={onSubmit} />
+                    <TagForm {...formProps} />
                 </Spin>
             </div>
         );
@@ -51,27 +62,21 @@ function mapDispatchToProps(dispatch) {
             dispatch(TagAction.getTagByIdRequest());
             TagService.getById(id).then((response) => {
                 dispatch(TagAction.getTagById(response.result));
-            }, (error) => {
-                notify.error(error.response.message, error.response.error);
-            });
+            }, notify.error);
         },
         createTag: (params) => {
             TagService.create(params).then((response) => {
                 dispatch(TagAction.createTag(response.result));
                 notify.success(response.message);
                 browserHistory.push('/tags');
-            }, (error) => {
-                notify.error(error.response.message, error.response.error);
-            });
+            }, notify.error);
         },
         updateTag: (params) => {
             const response = TagService.update(params).then((response) => {
                 dispatch(TagAction.updateTag(response.result));
                 notify.success(response.message);
                 browserHistory.push('/tags');
-            }, (error) => {
-                notify.error(error.response.message, error.response.error)
-            });
+            }, notify.error);
         }
     }
 }

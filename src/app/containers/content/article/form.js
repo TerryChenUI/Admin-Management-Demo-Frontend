@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import { Form, Button, Input, Switch, Radio, Upload, Icon, Select, Modal } from 'antd';
 import { EditorState, ContentState, convertFromHTML, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
-import draftToMarkdown from 'draftjs-to-markdown';
+import htmlToDraft from 'html-to-draftjs';
 
 import { Editor } from '../../../components';
 import { time, config } from '../../../utils';
@@ -19,37 +19,25 @@ class ArticleForm extends React.Component {
         super(props);
 
         this.state = {
-            isSaving: false,
+            saving: false,
             editorContent: EditorState.createEmpty(),
-            availableCategories: [],
-            availableTags: [],
             previewVisible: false,
             previewImage: '',
             thumb: null
         };
     }
 
-    componentWillMount() {
-        CategoryService.getAll().then(response => {
-            const categories = response.result.data.map(m => { return { value: m._id, text: m.name } });
-            this.setState({ availableCategories: [...this.state.availableCategories, ...categories] });
-        });
-        TagService.getAll().then(response => {
-            const tags = response.result.data.map(m => { return { value: m._id, text: m.name } });
-            this.setState({ availableTags: [...this.state.availableTags, ...tags] });
-        });
-    }
-
     componentWillReceiveProps(nextProps, nextContext) {
         const { initialValue } = nextProps;
         if (initialValue) {
             // thumb
-            if (initialValue.thumb) {
+            const { thumb, content } = initialValue;
+            if (thumb) {
                 const thumb = {
-                    uid: initialValue.thumb,
-                    name: initialValue.thumb.split('\\')[2],
-                    filePath: initialValue.thumb,
-                    url: `${config.site.CORS}/${initialValue.thumb}`
+                    uid: thumb,
+                    name: thumb.split('\\')[2],
+                    filePath: thumb,
+                    url: `${config.site.CORS}/${thumb}`
                 };
                 this.setState({
                     thumb
@@ -57,7 +45,7 @@ class ArticleForm extends React.Component {
             }
 
             // content
-            const state = ContentState.createFromBlockArray(convertFromHTML(initialValue.content));
+            const state = ContentState.createFromBlockArray(htmlToDraft(content).contentBlocks);
             const editorContent = EditorState.createWithContent(state);
             this.setState({
                 editorContent
@@ -152,7 +140,7 @@ class ArticleForm extends React.Component {
                     data.thumb = null;
                 }
                 data.content = draftToHtml(convertToRaw(this.state.editorContent.getCurrentContent()));
-                this.setState({ isSaving: true });
+                this.setState({ saving: true });
                 this.props.onSubmit(data);
             }
         });
@@ -160,7 +148,7 @@ class ArticleForm extends React.Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const { initialValue } = this.props;
+        const { initialValue, availableCategories, availableTags } = this.props;
         const { formItemLayout, tailFormItemLayout } = config.editForm;
         const { previewVisible, previewImage, thumb } = this.state;
         const fileList = thumb ? [thumb] : [];
@@ -275,7 +263,7 @@ class ArticleForm extends React.Component {
                     })(
                         <Select mode="multiple" placeholder="请选择文章分类">
                             {
-                                this.state.availableCategories.map(data => {
+                                availableCategories.map(data => {
                                     return <Option key={data.value} value={data.value}>{data.text}</Option>
                                 })
                             }
@@ -291,7 +279,7 @@ class ArticleForm extends React.Component {
                     })(
                         <Select mode="multiple" placeholder="请选择文章标签">
                             {
-                                this.state.availableTags.map(data => {
+                                availableTags.map(data => {
                                     return <Option key={data.value} value={data.value}>{data.text}</Option>
                                 })
                             }
@@ -343,7 +331,7 @@ class ArticleForm extends React.Component {
                 }
                 <FormItem className="form-action" {...tailFormItemLayout}>
                     <Link to='/articles'><Button size="large">取消</Button></Link>
-                    <Button type="primary" htmlType="submit" size="large" loading={this.state.isSaving}>保存</Button>
+                    <Button type="primary" htmlType="submit" size="large" loading={this.state.saving}>保存</Button>
                 </FormItem>
             </Form>
         );

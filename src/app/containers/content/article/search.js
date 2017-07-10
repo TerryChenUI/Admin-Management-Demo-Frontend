@@ -12,21 +12,6 @@ let tid = null;
 class ArticleSearch extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            availableCategories: [],
-            availableTags: []
-        };
-    }
-
-    componentWillMount() {
-        CategoryService.getAll().then(response => {
-            const categories = response.result.data.map(m => { return { value: m._id, text: m.name } });
-            this.setState({ availableCategories: [...this.state.availableCategories, ...categories] });
-        });
-        TagService.getAll().then(response => {
-            const tags = response.result.data.map(m => { return { value: m._id, text: m.name } });
-            this.setState({ availableTags: [...this.state.availableTags, ...tags] });
-        });
     }
 
     handleStateChange = (e) => {
@@ -48,12 +33,12 @@ class ArticleSearch extends React.Component {
         this.handleSearch({ tags });
     }
 
-   handleSearch = (params) => {
+    handleSearch = (params) => {
         this.props.onSearch(params);
     }
 
     render() {
-        const { filter, form } = this.props;
+        const { form, filter, availableCategories, availableTags } = this.props;
         const { getFieldDecorator } = form;
         return (
             <Form className="search-form" layout="inline">
@@ -81,7 +66,7 @@ class ArticleSearch extends React.Component {
                         getFieldDecorator('categories')(
                             <Select mode="multiple" placeholder="请选择文章分类" style={{ width: 150 }} onChange={this.handleCategoryChange}>
                                 {
-                                    this.state.availableCategories.map(data => {
+                                    availableCategories.map(data => {
                                         return <Option key={data.value} value={data.value}>{data.text}</Option>
                                     })
                                 }
@@ -94,7 +79,7 @@ class ArticleSearch extends React.Component {
                         getFieldDecorator('tags')(
                             <Select mode="multiple" placeholder="请选择文章标签" style={{ width: 150 }} onChange={this.handleTagChange}>
                                 {
-                                    this.state.availableTags.map(data => {
+                                    availableTags.map(data => {
                                         return <Option key={data.value} value={data.value}>{data.text}</Option>
                                     })
                                 }

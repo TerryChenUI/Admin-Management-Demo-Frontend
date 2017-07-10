@@ -17,6 +17,7 @@ class CategoryList extends React.Component {
                 visible: '-1',
                 pid: '-1'
             },
+            availableCategories: [config.constant.defaultOption],
             pagination: { ...config.pager },
             deletingIds: []
         }
@@ -25,6 +26,14 @@ class CategoryList extends React.Component {
     componentDidMount() {
         const { current, pageSize } = this.state.pagination;
         this.props.getCategories({ current, pageSize });
+        this.loadAllCategories();
+    }
+
+    loadAllCategories = () => {
+        CategoryService.getAll().then(response => {
+            const parentCategories = response.result.data.map(m => { return { value: m._id, text: m.name } });
+            this.setState({ availableCategories: [...this.state.availableCategories, ...parentCategories] });
+        }, notify.error);
     }
 
     getParams = (filter) => {
@@ -39,7 +48,7 @@ class CategoryList extends React.Component {
         const { current, pageSize } = this.state.pagination;
         const filter = { ...this.state.filter, ...fieldsValue }
         this.setState({ filter });
-        
+
         const params = this.getParams(filter);
         this.props.getCategories({ params, current, pageSize });
     }
@@ -66,8 +75,14 @@ class CategoryList extends React.Component {
 
     render() {
         const { list, loading } = this.props;
+        const { filter, availableCategories } = this.state;
         const { data, pagination } = list;
         const pageConfig = { ...pagination, ...this.state.pagination };
+        const searchProps = {
+            filter,
+            availableCategories,
+            onSearch: this.onSearch
+        };
 
         const columns = [
             {
@@ -127,7 +142,7 @@ class CategoryList extends React.Component {
                     <h2>分类目录</h2>
                     <Link to='/categories/add'><Button type="primary" size="small" icon="plus">新增</Button></Link>
                 </div>
-                <CategorySearch filter={this.state.filter} onSearch={this.onSearch} />
+                <CategorySearch {...searchProps} />
                 <Table
                     dataSource={data}
                     columns={columns}

@@ -29,7 +29,7 @@ export const storageKey = {
 
 export const pager = {
   current: 1,
-  pageSize: 2,
+  pageSize: 10,
   showTotal: total => `共 ${total} 条`,
   showQuickJumper: true
 };

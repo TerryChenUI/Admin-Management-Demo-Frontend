@@ -4,7 +4,6 @@ import { Link } from 'react-router';
 import { Form, Button, Input, Switch, Select, InputNumber } from 'antd';
 
 import { time, config } from '../../../utils';
-import { CategoryService } from '../../../services';
 
 const FormItem = Form.Item;
 const { Option, OptGroup } = Select;
@@ -15,16 +14,8 @@ class CategoryForm extends React.Component {
         super(props);
 
         this.state = {
-            loading: false,
-            availableCategories: [config.constant.defaultOption]
+            saving: false
         };
-    }
-
-    componentWillMount() {
-        CategoryService.getAll().then(response => {
-            const categories = response.result.data.map(m => { return { value: m._id, text: m.name } });
-            this.setState({ availableCategories: [...this.state.availableCategories, ...categories] });
-        });
     }
 
     checkExist = (rule, value, callback) => {
@@ -32,17 +23,16 @@ class CategoryForm extends React.Component {
         if (value === "" || (initialValue && value === initialValue.slug)) {
             clearTimeout(tid);
             callback();
+            return;
         }
-        if (value !== "") {
-            tid = setTimeout(() => {
-                const param = `slug=${value.trim()}`;
-                CategoryService.checkExist(param).then(() => {
-                    callback();
-                }, (error) => {
-                    callback(error.response.message)
-                });
-            }, 300);
-        }
+
+        tid = setTimeout(() => {
+            this.props.checkExist(value).then(() => {
+                callback();
+            }, (error) => {
+                callback(error.response.message)
+            });
+        }, 300);
     }
 
     handleSubmit = (e) => {
@@ -56,7 +46,7 @@ class CategoryForm extends React.Component {
                 if (data.pid === "-1") {
                     delete data.pid;
                 }
-                this.setState({ loading: true });
+                this.setState({ saving: true });
                 this.props.onSubmit(data);
             }
         });
@@ -64,7 +54,7 @@ class CategoryForm extends React.Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const { initialValue } = this.props;
+        const { initialValue, availableCategories } = this.props;
         const { formItemLayout, tailFormItemLayout } = config.editForm;
         return (
             <Form onSubmit={this.handleSubmit}>
@@ -105,7 +95,7 @@ class CategoryForm extends React.Component {
                     })(
                         <Select>
                             {
-                                this.state.availableCategories.map(data => {
+                                availableCategories.map(data => {
                                     return <Option key={data.value} value={data.value}>{data.text}</Option>
                                 })
                             }
@@ -168,7 +158,7 @@ class CategoryForm extends React.Component {
                 }
                 <FormItem className="form-action" {...tailFormItemLayout}>
                     <Link to='/categories'><Button size="large">取消</Button></Link>
-                    <Button type="primary" htmlType="submit" size="large" loading={this.state.loading}>保存</Button>
+                    <Button type="primary" htmlType="submit" size="large" loading={this.state.saving}>保存</Button>
                 </FormItem>
             </Form>
         );

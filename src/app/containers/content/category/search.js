@@ -12,17 +12,6 @@ let tid = null;
 class CategorySearch extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            availableCategories: [config.constant.defaultOption]
-        };
-    }
-
-    componentWillMount() {
-        CategoryService.getAll().then(response => {
-            const parentCategories = response.result.data.map(m => { return { value: m._id, text: m.name } });
-            this.setState({ availableCategories: [...this.state.availableCategories, ...parentCategories] });
-        });
     }
 
     handleVisibleChange = (e) => {
@@ -45,7 +34,7 @@ class CategorySearch extends React.Component {
     }
 
     render() {
-        const { filter, form } = this.props;
+        const { form, filter, availableCategories } = this.props;
         const { getFieldDecorator } = form;
         return (
             <Form className="search-form" layout="inline">
@@ -72,7 +61,7 @@ class CategorySearch extends React.Component {
                         getFieldDecorator('pid', { initialValue: filter.pid })(
                             <Select style={{ width: 150 }} onChange={this.handleCategoryChange}>
                                 {
-                                    this.state.availableCategories.map(data => {
+                                    availableCategories.map(data => {
                                         return <Option key={data.value} value={data.value}>{data.text}</Option>
                                     })
                                 }
@@ -87,6 +76,7 @@ class CategorySearch extends React.Component {
 
 CategorySearch.propTypes = {
     filter: PropTypes.object,
+    availableCategories: PropTypes.array,
     onSearch: PropTypes.func
 }
 

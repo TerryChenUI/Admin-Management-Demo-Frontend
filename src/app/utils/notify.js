@@ -7,10 +7,11 @@ export function success(message, description = null) {
   });
 };
 
-export function error(message, description = null) {
+export function error(error) {
+  const { response } = error;
   notification['error']({
-    message,
-    description,
+    message: response.message,
+    description: response.error,
     duration: null
   });
 };
