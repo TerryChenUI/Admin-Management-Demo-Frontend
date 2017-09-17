@@ -191,17 +191,13 @@ function mapDispatchToProps(dispatch) {
             dispatch(ArticleAction.getArticlesRequest());
             ArticleService.loadList({ params, current, pageSize }).then((response) => {
                 dispatch(ArticleAction.getArticles(response.result));
-            }, (error) => {
-                notify.error(error.response.message, error.response.error);
-            });
+            }, notify.error);
         },
         deleteArticle: (id) => {
             ArticleService.remove(id).then((response) => {
                 dispatch(ArticleAction.deleteArticle(response.result));
                 notify.success(response.message);
-            }, (error) => {
-                notify.error(error.response.message, error.response.error);
-            });
+            }, notify.error);
         }
     }
 }

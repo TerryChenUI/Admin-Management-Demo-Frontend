@@ -154,17 +154,13 @@ function mapDispatchToProps(dispatch) {
             dispatch(TagAction.getTagsRequest());
             TagService.loadList({ params, current, pageSize }).then((response) => {
                 dispatch(TagAction.getTags(response.result));
-            }, (error) => {
-                notify.error(error.response.message, error.response.error);
-            });
+            }, notify.error);
         },
         deleteTag: (id) => {
             TagService.remove(id).then((response) => {
                 dispatch(TagAction.deleteTag(response.result));
                 notify.success(response.message);
-            }, (error) => {
-                notify.error(error.response.message, error.response.error);
-            });
+            }, notify.error);
         }
     }
 }

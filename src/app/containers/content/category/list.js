@@ -170,17 +170,13 @@ function mapDispatchToProps(dispatch) {
             dispatch(CategoryAction.getCategoriesRequest());
             CategoryService.loadList({ params, current, pageSize }).then((response) => {
                 dispatch(CategoryAction.getCategories(response.result));
-            }, (error) => {
-                notify.error(error.response.message, error.response.error);
-            });
+            }, notify.error);
         },
         deleteCategory: (id) => {
             CategoryService.remove(id).then((response) => {
                 dispatch(CategoryAction.deleteCategory(response.result));
                 notify.success(response.message);
-            }, (error) => {
-                notify.error(error.response.message, error.response.error);
-            });
+            }, notify.error);
         }
     }
 }
